@@ -1,3 +1,5 @@
+
+// 화면 프레임 -> 60으로 고정
 const FRAME_RATE = 60;
 
 const io = require("socket.io")({

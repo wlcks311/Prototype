@@ -1,3 +1,5 @@
+// 방 코드 제작 관리
+
 module.exports = {
     makeid,
 }
