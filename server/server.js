@@ -1,3 +1,5 @@
+const FRAME_RATE = 60;
+
 const io = require("socket.io")({
     cors: {
         origin: "*",
@@ -32,7 +34,7 @@ io.on('connection', client => {
 
 function startGameInterval(roomName) {
     const intervalId = setInterval(() => {
-        const winner = gameLoop(state[roomName]);
-    })
+
+    }, 1000 / FRAME_RATE);
 }
 
