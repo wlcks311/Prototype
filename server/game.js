@@ -297,7 +297,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     this.attackBox.atkTimer = 0;
                 }
 
-                else if (p2.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
+                if (p2.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
                     //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
                     this.isAttacking = false;
@@ -315,15 +315,27 @@ class NormalZombie extends Creature { //좀비 클래스
 
                     if (collisonCheckX[this.attackBox.position_x + this.attackBox.atkTimer] == 0) { //공격이 플레이어에게 닿은 경우
                         //어느 플레이어에 닿았는지 확인해야 함
-                        
+                        if (p1.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                            // 플레이어 1에 공격이 닿았을 경우
+                            p1.isDamaged = true;
+                        }
+
+                        if (p2.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                            // 플레이어 2에 공격이 닿았을 경우
+                            p2.isDamaged = true;
+                        }
                     }
                     ctx.fillRect(this.attackBox.position_x, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
                 }
             }
 
             else { //공격 종료
-                if (p1.isDamaged == true) { //플레이어가 해당 몬스터의 공격을 받았을 경우
+                if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
                     p1.healthCount--;
+                }
+                
+                if (p2.isDamaged == true) {
+                    p2.healthCount--;
                 }
 
                 //몬스터 공격 정보 초기화
@@ -337,7 +349,13 @@ class NormalZombie extends Creature { //좀비 클래스
             if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                 //공격 상자 늘리기 전에 플레이어의 방어 확인
                 if (p1.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
-                    // 플레이어의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    this.isStunned = true;
+                    this.isAttacking = false;
+                    this.attackBox.atkTimer = 0;
+                }
+                if (p2.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
+                    // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
                     this.isAttacking = false;
                     this.attackBox.atkTimer = 0;
@@ -352,15 +370,27 @@ class NormalZombie extends Creature { //좀비 클래스
                     }
                     
                     if (collisonCheckX[this.attackBox.position_x - this.attackBox.atkTimer] == 0) {//공격이 플레이어에게 닿은 경우
-                        p1.isDamaged = true;
+                        //어느 플레이어에 공격이 닿았는지 확인 해야함
+                        if (p1.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                            // 플레이어 1에 공격이 닿았을 경우
+                            p1.isDamaged = true;
+                        }
+
+                        if (p2.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                            // 플레이어 2에 공격이 닿았을 경우
+                            p2.isDamaged = true;
+                        }
                     }
                     ctx.fillRect(this.attackBox.position_x - this.attackBox.atkTimer, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
                 }
             }
 
             else { //공격 종료
-                if (p1.isDamaged == true) { //플레이어가 해당 몬스터의 공격을 받았을 경우
+                if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
                     p1.healthCount--;
+                }
+                if (p2.isDamaged == true) { //플레이어2가 해당 몬스터의 공격을 받았을 경우
+                    p2.healthCount--;
                 }
 
                 //몬스터 공격 정보 초기화
