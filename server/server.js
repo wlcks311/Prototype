@@ -1,11 +1,21 @@
+// Setup basic express server
+const express = require('express');
+const app = express();
+const path = require('path');
+const server = require('http').createServer(app);
+const port = process.env.PORT || 3000;
+
+server.listen(port, () => {
+  console.log('Server listening at port %d', port);
+});
+
+// Routing
+app.use(express.static(path.join('../frontend')));
+
 // 화면 프레임 -> 60으로 고정
 const FRAME_RATE = 60;
 
-const io = require("socket.io")({
-    cors: {
-        origin: "*",
-    }
-});
+const io = require('socket.io')(server);
 
 const { initGame, gameLoop, getUpdatedVelocityUp, getUpdatedVelocityDown,  } = require('./game');
 const { makeid } = require('./util');
@@ -127,5 +137,3 @@ function emitGameState(roomName, state) {
 function emitGameOver(roomName, winner) {
     io.sockets.in(roomName).emit('gameOver', JSON.stringify({ winner }));
 }
-
-io.listen(process.env.PORT || 3000);
