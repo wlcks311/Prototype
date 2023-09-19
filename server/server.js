@@ -10,7 +10,7 @@ server.listen(port, () => {
 });
 
 // Routing
-app.use(express.static(path.join('../frontend')));
+app.use(express.static(path.join('./frontend')));
 
 // 화면 프레임 -> 60으로 고정
 const FRAME_RATE = 60;
