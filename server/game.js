@@ -15,6 +15,24 @@ collisonCheckX = createFillArray(2000, -1); //캔버스의 가로 길이만큼�
 // 플레이어가 서 있는 곳 -> 0
 // 몬스터가 서 있는 곳 -> 1
 
+function biggerX(p1_x, p2_x) {
+    if (p1_x >= p2_x) {
+        return p1_x;
+    }
+    else {
+        return p2_x;
+    }
+}
+
+function smallerX(p1_x, p2_x){
+    if (p1_x <= p2_x) {
+        return p1_x;
+    }
+    else {
+        return p2_x;
+    }
+}
+
 //canvas = document.getElementById('canvas'); 문서객체에서 참고할 수 없기때문에
 let canvas_width = 2000;
 let canvas_height = 1000;
@@ -401,7 +419,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    move(p1_x_left, p1_x_right) {
+    move(bigX, smallX) {
 
         //몹의 공격 범위 갱신
         this.x_detectLeft = this.x - 150;
@@ -425,14 +443,14 @@ class NormalZombie extends Creature { //좀비 클래스
                 this.stun();
             }
              // 플레이어가 탐지 범위 안에 들어온 경우
-            else if((this.x_detectLeft <= p1_x_right && p1_x_right < this.x + 50) || (this.x + this.CanvasLength - 50 < p1_x_left && p1_x_left <= this.x_detectRight)) { 
+            else if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
-                if ((this.x_attackLeft < p1_x_right && p1_x_right < this.x + 50) || (this.x + this.CanvasLength - 50 < p1_x_left && p1_x_left < this.x_attackRight)) {
+                if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
                     this.isAttacking = true;
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
-                    if (this.x_detectLeft < p1_x_right && p1_x_right < this.x + 50) { //왼쪽으로 이동
+                    if (this.x_detectLeft < bigX && bigX < this.x + 50) { //왼쪽으로 이동
                         this.isMoving = true;
                         this.isLookingRight = false;
                         collisonCheckX[this.x + 49] = 1;
@@ -440,7 +458,7 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.x--;
                     }
 
-                    else if (this.x + this.CanvasLength - 50 < p1_x_left && p1_x_left <= this.x_detectRight) { //오른쪽으로 이동
+                    else if (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight) { //오른쪽으로 이동
                         this.isMoving = true;
                         this.isLookingRight = true;
                         collisonCheckX[this.x + 50] = -1;
@@ -533,8 +551,8 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    checkAttacked(atkTimer) {//공격이 해당 물체에 가해졌는지 확인
-        if ((collisonCheckX[atkTimer] == 1) && (this.x <= atkTimer && atkTimer <= this.x + this.CanvasLength)) {
+    checkAttacked(atkTimer_p1, atkTimer_p2) {//공격이 해당 물체에 가해졌는지 확인
+        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.CanvasLength)) {
             this.healthCount--;
             if (this.healthCount == 0) {
                 console.log('nz1 dead');
@@ -542,8 +560,14 @@ class NormalZombie extends Creature { //좀비 클래스
             }
         }
 
+        if ((collisonCheckX[atkTimer_p2] == 1) && (this.x <= atkTimer_p2 && atkTimer_p2 <= this.x + this.CanvasLength)) {
+            this.healthCount--;
+            if (this.healthCount == 0) {
+                console.log('nz1 dead');
+                this.isDead = true;
+            }
+        }
     }
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -581,6 +605,9 @@ function gameLoop(state) {
     const p1 = state.players[0];
     const p2 = state.players[1];
     const collisonCheckX = state.collisonCheckX;
+
+    var bigX = biggerX(p1.x, p2.x);
+    var smallX = smallerX(p1.x, p2.x);
 
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
