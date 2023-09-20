@@ -53,15 +53,6 @@ img_BG_test.src = './img/BG_test.png'
 
 var img_Player_health = new Image();
 img_Player_health.src = './img/Player_healthBar.png'
-
-//////////////////////////////////////애니메이션 변수
-var p1_frameCount = 0;
-var p1_damagedCount = 0;
-var p1_walkingCount = 0;
-
-var p2_frameCount = 0;
-var p2_damagedCount = 0;
-var p2_walkingCount = 0;
 //////////////////////////////////////
 
 //socket.emit 은 이벤트 명을 지정하고 데이터 전송 (데이터 필요 없을 수도 있음)
@@ -123,7 +114,7 @@ function drawPlayer(player) {
 
         if (player.vel.isAttacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
             PlayerAttack(player);
-            console.log(player.attackFrame);
+            console.log(player.attackCount);
         }
 
         //플레이어가 몬스터에게 맞은 경우 -> 맞은 모션
