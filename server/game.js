@@ -714,37 +714,36 @@ function gameLoop(state) {
                 p1.attackTimer+=2;
             }
         }
-
-        if (p1.vel.isAttacking_motion == true) {
-            //애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
-            if (p1.attackFrame < 30 && (p1.attackCount <= 1)) {
-                p1.attackFrame+=6;
-            }
-            
-            else if (p1.attackFrame < 30 && (p1.attackCount == 2)) {
-                p1.attackFrame+=3;
-            }
-            else if (p1.attackFrame < 30 && (p1.attackCount <= 4)) {
-                p1.attackFrame+=5
-            }
-            else if (p1.attackFrame < 30 && (p1.attackCount == 5)) {
-                p1.attackFrame+=3;
-            }
-            
-            else if(p1.attackFrame == 30) {
-                p1.attackFrame = 0;
-                if (p1.attackCount == p1.attackLoop - 1) {
-                    p1.attackCount = 0;
-                    p1.vel.isAttacking_motion = false; //공격 동작 종료
-                }
-                else {
-                    p1.attackCount++;
-                }
-            }
-            
-        }
     }
-
+    //플레이어1 공격 애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
+    if (p1.vel.isAttacking_motion == true) {
+        
+        if (p1.attackFrame < 30 && (p1.attackCount <= 1)) {
+            p1.attackFrame+=6;
+        }
+        
+        else if (p1.attackFrame < 30 && (p1.attackCount == 2)) {
+            p1.attackFrame+=3;
+        }
+        else if (p1.attackFrame < 30 && (p1.attackCount <= 4)) {
+            p1.attackFrame+=5
+        }
+        else if (p1.attackFrame < 30 && (p1.attackCount == 5)) {
+            p1.attackFrame+=3;
+        }
+        
+        else if(p1.attackFrame == 30) {
+            p1.attackFrame = 0;
+            if (p1.attackCount == p1.attackLoop - 1) {
+                p1.attackCount = 0;
+                p1.vel.isAttacking_motion = false; //공격 동작 종료
+            }
+            else {
+                p1.attackCount++;
+            }
+        }
+        
+    }
 
     //플레이어1이 공격에 맞은 경우
     if (p1.isDamaged == true) {
@@ -849,37 +848,36 @@ function gameLoop(state) {
                 p2.attackTimer+=2;
             }
         }
+    }
 
-        if (p2.vel.isAttacking_motion == true) {
-            //애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
-            if (p2.attackFrame < 30 && (p2.attackCount <= 1)) {
-                p2.attackFrame+=6;
+    //플레이어2 공격 애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
+    if (p2.vel.isAttacking_motion == true) {
+        
+        if (p2.attackFrame < 30 && (p2.attackCount <= 1)) {
+            p2.attackFrame+=6;
+        }
+        
+        else if (p2.attackFrame < 30 && (p2.attackCount == 2)) {
+            p2.attackFrame+=3;
+        }
+        else if (p2.attackFrame < 30 && (p2.attackCount <= 4)) {
+            p2.attackFrame+=5
+        }
+        else if (p2.attackFrame < 30 && (p2.attackCount == 5)) {
+            p2.attackFrame+=3;
+        }
+        
+        else if(p2.attackFrame == 30) {
+            p2.attackFrame = 0;
+            if (p2.attackCount == p2.attackLoop - 1) {
+                p2.attackCount = 0;
+                p2.vel.isAttacking_motion = false; //공격 동작 종료
             }
-            
-            else if (p2.attackFrame < 30 && (p2.attackCount == 2)) {
-                p2.attackFrame+=3;
-            }
-            else if (p2.attackFrame < 30 && (p2.attackCount <= 4)) {
-                p2.attackFrame+=5
-            }
-            else if (p2.attackFrame < 30 && (p2.attackCount == 5)) {
-                p2.attackFrame+=3;
-            }
-            
-            else if(p2.attackFrame == 30) {
-                p2.attackFrame = 0;
-                if (p2.attackCount == p2.attackLoop - 1) {
-                    p2.attackCount = 0;
-                    p2.vel.isAttacking_motion = false; //공격 동작 종료
-                }
-                else {
-                    p2.attackCount++;
-                }
+            else {
+                p2.attackCount++;
             }
         }
     }
-
-    
 }
 
 
