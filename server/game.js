@@ -733,7 +733,6 @@ function gameLoop(state) {
             
             else if(p1.attackFrame == 30) {
                 p1.attackFrame = 0;
-                console.log(p1.attackCount);
                 if (p1.attackCount == p1.attackLoop - 1) {
                     p1.attackCount = 0;
                     p1.vel.isAttacking_motion = false; //공격 동작 종료
