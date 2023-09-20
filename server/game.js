@@ -697,7 +697,7 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p1.vel.isLookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) {
-                p1.isAttacking = false;
+                p1.vel.isAttacking = false;
                 p1.attackTimer = 0;
             }
             else {
@@ -707,7 +707,7 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p1.vel.isLookingRight == false) {
             if (p1.attackTimer >= p1.attackBox.width) {
-                p1.isAttacking = false;
+                p1.vel.isAttacking = false;
                 p1.attackTimer = 0;
             }
             else {
@@ -832,7 +832,7 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p2.vel.isLookingRight == true) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                p2.isAttacking = false;
+                p2.vel.isAttacking = false;
                 p2.attackTimer = 0;
             }
             else {
@@ -842,7 +842,7 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p2.vel.isLookingRight == false) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                p2.isAttacking = false;
+                p2.vel.isAttacking = false;
                 p2.attackTimer = 0;
             }
             else {
