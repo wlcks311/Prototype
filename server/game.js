@@ -857,13 +857,13 @@ function gameLoop(state) {
             }
             
             else if (p2.attackFrame < 30 && (p2.attackCount == 2)) {
-                p1.attackFrame+=3;
+                p2.attackFrame+=3;
             }
             else if (p2.attackFrame < 30 && (p2.attackCount <= 4)) {
-                p1.attackFrame+=5
+                p2.attackFrame+=5
             }
             else if (p2.attackFrame < 30 && (p2.attackCount == 5)) {
-                p1.attackFrame+=3;
+                p2.attackFrame+=3;
             }
             
             else if(p2.attackFrame == 30) {
