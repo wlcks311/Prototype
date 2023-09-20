@@ -114,7 +114,7 @@ function drawPlayer(player) {
 
         if (player.vel.isAttacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
             PlayerAttack(player);
-            console.log(player.attackCount);
+            console.log(player.vel.isAttacking);
         }
 
         //플레이어가 몬스터에게 맞은 경우 -> 맞은 모션
