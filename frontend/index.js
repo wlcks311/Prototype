@@ -189,13 +189,55 @@ function drawBG(BackGround) {
     ctx.drawImage(img_BG_test, BackGround.BG_x, 0, BackGround.BG_length * (canvas.width / canvas.height), BackGround.BG_length, 0, 0, canvas.width, canvas.height);
 }
 
+function drawZombie(zombie) {
+    //zombie 체력바
+    ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y - 40, zombie.CanvasLength, zombie.CanvasLength);
+    if (zombie.vel.isMoving == false) { //움직이지 않는 경우
+        if (zombie.isStunned == true) {//기절한 경우
+            if (zombie.vel.isLookingRight == true) {//오른쪽 기절
+                ctx.drawImage(img_Zombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+            else {
+                ctx.drawImage(img_Zombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+        }
+        //텀이 끝나고 공격하고 있는 중인 경우
+        else if (zombie.vel.isAttacking == true && zombie.waitCount == 30) {
+            if (zombie.vel.isLookingRight == true) {//오른쪽 공격
+                ctx.drawImage(img_Zombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+            else {//왼쪽 공격
+                ctx.drawImage(img_Zombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+        }
+        //가만히 서 있는 경우
+        else {
+            if (zombie.vel.isLookingRight == true) { // 오른쪽
+                ctx.drawImage(img_Zombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+            else { //왼쪽
+                ctx.drawImage(img_Zombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            }
+        }
+    }
+    else {//움직이는 경우
+        if (zombie.vel.isLookingRight == true) {//오른쪽 걷기
+            ctx.drawImage(img_Zombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+        }
+        else {
+            ctx.drawImage(img_Zombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+        }
+    }
+}
+
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //console.log(state.players[0]); // 속성은 넘어오지만 메소드는 넘어오지 않는다.
     //draw함수가 안먹히는 상황 -> 그렇다면 여기다가 함수를 구현하자.
+    drawBG(state.bg);
     drawPlayer(state.players[0]);
     drawPlayer(state.players[1]);
-    drawBG(state.bg);
+    drawZombie(state.nz1);
 }
 
 function handleInit(number) {

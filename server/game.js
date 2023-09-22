@@ -246,6 +246,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.isMovingDone = true;
         this.isDead = false;
         this.attackBox.width = 100;
+        this.attackFrame = 0;
         this.isStunned = false;
         this.stunCount = 0;
         this.stunAnimaitonCount = 0;
@@ -270,10 +271,10 @@ class NormalZombie extends Creature { //좀비 클래스
 
     comeBackToPosition() {
         console.log('come back to position');
-        this.isMoving = true;
+        this.vel.isMoving = true;
         if(this.x < (this.xMax_left + this.xMax_right) / 2) { //왼쪽으로 벗어난 경우
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
-                this.isLookingRight = true;
+                this.vel.isLookingRight = true;
                 collisonCheckX[this.x + 50] = -1;
                 collisonCheckX[this.x + this.CanvasLength - 49] = 1;
                 this.x++;
@@ -281,7 +282,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
         else if ((this.xMax_left + this.xMax_right) / 2 < this.x) {  // 오른쪽으로 벗어난 경우
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
-                this.isLookingRight = false;
+                this.vel.isLookingRight = false;
                 collisonCheckX[this.x + 49] = 1;
                 collisonCheckX[this.x + this.CanvasLength - 50] = -1;
                 this.x--;
@@ -290,7 +291,7 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     stun() {
-        this.isMoving = false;
+        this.vel.isMoving = false;
         if (this.stunCount < 120) {
             this.stunCount++;
         }
@@ -301,24 +302,24 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     attack(p1, p2) {
-        this.isMoving = false;
+        this.vel.isMoving = false;
         ctx.fillStyle = 'red';
         console.log('attack');
 
-        if (this.isLookingRight == true) { // 오른쪽 보고있는 경우
+        if (this.vel.isLookingRight == true) { // 오른쪽 보고있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 100, 프레임당 2. 50프레임 소모
                 //공격 상자 늘리기 전에 플레이어들의 방어 확인
-                if (p1.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
+                if (p1.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
                     // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.isAttacking = false;
+                    this.vel.isAttacking = false;
                     this.attackBox.atkTimer = 0;
                 }
 
-                if (p2.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
+                if (p2.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
                     //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.isAttacking = false;
+                    this.vel.isAttacking = false;
                     this.attackBox.atkTimer = 0;
                 }
                 else {
@@ -359,23 +360,23 @@ class NormalZombie extends Creature { //좀비 클래스
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
-                this.isAttacking = false;
+                this.vel.isAttacking = false;
             }
         }
 
         else { //왼쪽을 보고 있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                 //공격 상자 늘리기 전에 플레이어의 방어 확인
-                if (p1.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
+                if (p1.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
                     // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.isAttacking = false;
+                    this.vel.isAttacking = false;
                     this.attackBox.atkTimer = 0;
                 }
-                if (p2.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
+                if (p2.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
                     // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.isAttacking = false;
+                    this.vel.isAttacking = false;
                     this.attackBox.atkTimer = 0;
                 }
                 else {
@@ -414,12 +415,12 @@ class NormalZombie extends Creature { //좀비 클래스
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
-                this.isAttacking = false;
+                this.vel.isAttacking = false;
             }
         }
     }
 
-    move(bigX, smallX) {
+    move(bigX, smallX, p1, p2) {
 
         //몹의 공격 범위 갱신
         this.x_detectLeft = this.x - 150;
@@ -435,8 +436,8 @@ class NormalZombie extends Creature { //좀비 클래스
                 collisonCheckX[this.x + 50 + i] = 1;
             }
 
-            if (this.isAttacking == true) { // 공격중인 경우
-                this.attack();
+            if (this.vel.isAttacking == true) { // 공격중인 경우
+                this.attack(p1, p2);
             }
 
             else if (this.isStunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
@@ -451,16 +452,16 @@ class NormalZombie extends Creature { //좀비 클래스
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
                     if (this.x_detectLeft < bigX && bigX < this.x + 50) { //왼쪽으로 이동
-                        this.isMoving = true;
-                        this.isLookingRight = false;
+                        this.vel.isMoving = true;
+                        this.vel.isLookingRight = false;
                         collisonCheckX[this.x + 49] = 1;
                         collisonCheckX[this.x + this.CanvasLength - 50] = -1;
                         this.x--;
                     }
 
                     else if (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight) { //오른쪽으로 이동
-                        this.isMoving = true;
-                        this.isLookingRight = true;
+                        this.vel.isMoving = true;
+                        this.vel.isLookingRight = true;
                         collisonCheckX[this.x + 50] = -1;
                         collisonCheckX[this.x + this.CanvasLength - 49] = 1;
                         this.x++;
@@ -475,7 +476,7 @@ class NormalZombie extends Creature { //좀비 클래스
             else { // 탐지가 된것도 아니고, 지정된 구역을 벗어난 경우도 아닌 경우 -> 일반 무작위 움직임
                 if (this.isMovingDone == true) { // 움직임이 끝난 상태일 때
                     if (this.moveCount < 90) {// 1.5초 동안 잠시 멈췄다가
-                        this.isMoving = false;
+                        this.vel.isMoving = false;
                         this.moveCount++;
                     }
                     
@@ -492,7 +493,7 @@ class NormalZombie extends Creature { //좀비 클래스
         
                 else { //움직임이 끝나지 않았을 때
                     if (this.move_randNum <= 10 && this.moveCount < this.move_randNum) { //난수가 일정 수보다 작으면 가만히 서 있는 걸로
-                        this.isMoving = false;
+                        this.vel.isMoving = false;
                         this.moveCount+=this.speed;
                         console.log('small number');
                     }
@@ -501,16 +502,16 @@ class NormalZombie extends Creature { //좀비 클래스
 
                         if ((this.move_randNum % 2 == 0) && this.moveCount < this.move_randNum) { //짝수인 경우 -> 오른쪽으로 이동
                             if (this.x + this.CanvasLength + this.speed <= this.xMax_right) { //고정 범위 안에 있는 경우
-                                this.isMoving = true;
+                                this.vel.isMoving = true;
                                 collisonCheckX[this.x + 50] = -1;
                                 collisonCheckX[this.x + this.CanvasLength -49] = 1;
-                                this.isLookingRight = true;
+                                this.vel.isLookingRight = true;
                                 this.x+=this.speed;
                                 this.moveCount+=this.speed;
                                 console.log('is moving');
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
-                                this.isMoving = false;
+                                this.vel.isMoving = false;
                                 this.isMovingDone = true;
                                 console.log('is moving done edge');
                             }
@@ -519,23 +520,23 @@ class NormalZombie extends Creature { //좀비 클래스
                         else if ((this.move_randNum % 2 == 1) && this.moveCount < this.move_randNum) {//홀수인 경우 -> 왼쪽으로 이동
                             console.log(this.x - this.speed);
                             if (this.x - this.speed >= this.xMax_left) { //고정 범위 안에 있는 경우
-                                this.isMoving = true;
+                                this.vel.isMoving = true;
                                 collisonCheckX[this.x + 49] = 1;
                                 collisonCheckX[this.x + this.CanvasLength - 50] = -1;
-                                this.isLookingRight = false;
+                                this.vel.isLookingRight = false;
                                 this.x-=this.speed;
                                 this.moveCount+=this.speed;
                                 console.log('is moving left');
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
-                                this.isMoving = false;
+                                this.vel.isMoving = false;
                                 this.isMovingDone = true;
                                 console.log('is moving done edge');
                             }
                         }
         
                         else if (this.moveCount >= this.move_randNum) {
-                            this.isMoving = false;
+                            this.vel.isMoving = false;
                             this.isMovingDone = true;
                             this.moveCount = 0;
                         }
@@ -578,13 +579,20 @@ function initGame() {
 
 function createGameState() {
     bg = new BackGround();
-    p1 = new MainCharacter(500, 350, 500, 500, 200);
+    //constructor(x, y, width, height, CanvasLength)
+    p1 = new MainCharacter(200, 800, 500, 500, 200);
     p1.setLoops(4, 8, 6);
-    p2 = new MainCharacter(800, 350, 500, 500, 200);
+    p2 = new MainCharacter(500, 800, 500, 500, 200);
     p2.setLoops(4, 8, 6);
+
+    nz1 = new NormalZombie(1200, 800, 500, 500, 200);
+    nz1.setLoops(6, 7, 4);
+    nz1.setFixedRange(1000, 1400);
+    nz1.setStunLoop(3);
     return {
         bg,
         players: [p1, p2],
+        nz1,
         collisonCheckX,
         activate: true,
     }
@@ -604,6 +612,7 @@ function gameLoop(state) {
 
     const p1 = state.players[0];
     const p2 = state.players[1];
+    const nz1 = state.nz1;
     const collisonCheckX = state.collisonCheckX;
 
     var bigX = biggerX(p1.x, p2.x);
@@ -611,6 +620,8 @@ function gameLoop(state) {
 
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
+
+    nz1.move(bigX, smallX, p1, p2);
 
     for (var i = 0; i <= p1.CanvasLength - 80; i++) { //플레이어1이 서 있는 곳은 0 으로 표시
         collisonCheckX[p1.x + 40 + i] = 0;
@@ -877,6 +888,56 @@ function gameLoop(state) {
                 p2.attackCount++;
             }
         }
+    }
+
+
+    //NormalZombie 애니메이션 변수
+    if (nz1.vel.isMoving == false) {
+         //플레이어가 해당 몬스터의 공격을 막았을 경우
+        if (nz1.isStunned == true) {
+            if (nz1.stunCount % 40 == 39) {
+                nz1.stunAnimaitonCount++;
+                nz1.stunAnimaitonCount = nz1.stunAnimaitonCount % nz1.stunLoop;
+            }
+        }
+        //텀이 지나고 다시 공격하는 경우
+        else if (nz1.vel.isAttacking == true && nz1.waitCount == 30) {
+            
+            if (nz1.attackFrame < 10) {
+                nz1.attackCount = 0;
+            }
+            else if (nz1.attackFrame < 20) {
+                nz1.attackCount = 1;
+            }
+            else if (nz1.attackFrame < 40) {
+                nz1.attackCount = 2;
+            }
+            else if (nz1.attackFrame < 50) {
+                nz1.attackCount = 3;
+            }
+            else if (nz1.attackFrame == 50) {
+                nz1.attackCount = 0;
+            }
+            nz1.attackFrame++;
+        }
+        //가만히 서 있는 경우
+        else {
+            if(nz1.idleCount == 30) {
+                nz1.idleCount = 0;
+                nz1.idleCut++;
+                nz1.idleCut = nz1.idleCut % nz1.idleLoop;
+            }
+            nz1.idleCount++;
+        }
+    }
+
+    else if (nz1.vel.isMoving == true) {
+        if (nz1.walkingCount == 30) {
+            nz1.walkingCount = 0;
+            nz1.walkingCut++;
+            nz1.walkingCut = nz1.walkingCut % nz1.walkingLoop;
+        }
+        nz1.walkingCount++;
     }
 }
 
