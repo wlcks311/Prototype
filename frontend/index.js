@@ -53,6 +53,39 @@ img_BG_test.src = './img/BG_test.png'
 
 var img_Player_health = new Image();
 img_Player_health.src = './img/Player_healthBar.png'
+
+var img_Zombie_health = new Image();
+img_Zombie_health.src = './img/Zombie_healthBar.png'
+
+var img_Player_attacked = new Image();
+img_Player_attacked.src = './img/Player_attacked.png'
+
+var img_Player_attacked_left = new Image();
+img_Player_attacked_left.src = './img/Player_attacked_left.png'
+
+var img_Zombie_idle = new Image();
+img_Zombie_idle.src = './img/Zombie_idle.png'
+
+var img_Zombie_idle_left = new Image();
+img_Zombie_idle_left.src = './img/Zombie_idle_left.png'
+
+var img_Zombie_attack = new Image();
+img_Zombie_attack.src = './img/Zombie_attack.png'
+
+var img_Zombie_attack_left = new Image();
+img_Zombie_attack_left.src = './img/Zombie_attack_left.png'
+
+var img_Zombie_walking = new Image();
+img_Zombie_walking.src = './img/Zombie_walking.png'
+
+var img_Zombie_walking_left = new Image();
+img_Zombie_walking_left.src = './img/Zombie_walking_left.png'
+
+var img_Zombie_stunned = new Image();
+img_Zombie_stunned.src = './img/Zombie_stunned.png'
+
+var img_Zombie_stunned_left = new Image();
+img_Zombie_stunned_left.src = './img/Zombie_stunned_left.png'
 //////////////////////////////////////
 
 //socket.emit 은 이벤트 명을 지정하고 데이터 전송 (데이터 필요 없을 수도 있음)
