@@ -484,7 +484,6 @@ class NormalZombie extends Creature { //좀비 클래스
                         // floor -> 정수로 반올림, random -> 0~1사이 난수 발생 여기선 move_range만큼 곱해줌
             
                         this.isMovingDone = false;
-                        console.log('move again');
                     }
         
                 }
@@ -493,7 +492,6 @@ class NormalZombie extends Creature { //좀비 클래스
                     if (this.move_randNum <= 10 && this.moveCount < this.move_randNum) { //난수가 일정 수보다 작으면 가만히 서 있는 걸로
                         this.vel.isMoving = false;
                         this.moveCount+=this.speed;
-                        console.log('small number');
                     }
         
                     else { //움직이는 경우
@@ -506,12 +504,10 @@ class NormalZombie extends Creature { //좀비 클래스
                                 this.vel.isLookingRight = true;
                                 this.x+=this.speed;
                                 this.moveCount+=this.speed;
-                                console.log('is moving');
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
                                 this.vel.isMoving = false;
                                 this.isMovingDone = true;
-                                console.log('is moving done edge');
                             }
         
                         }
@@ -524,12 +520,10 @@ class NormalZombie extends Creature { //좀비 클래스
                                 this.vel.isLookingRight = false;
                                 this.x-=this.speed;
                                 this.moveCount+=this.speed;
-                                console.log('is moving left');
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
                                 this.vel.isMoving = false;
                                 this.isMovingDone = true;
-                                console.log('is moving done edge');
                             }
                         }
         
@@ -613,7 +607,7 @@ function gameLoop(state) {
     const nz1 = state.nz1;
     const collisonCheckX = state.collisonCheckX;
 
-    var bigX = biggerX(p1.x, p2.x);
+    var bigX = biggerX(p1.x + p1.CanvasLength, p2.x + p2.CanvasLength);
     var smallX = smallerX(p1.x, p2.x);
 
     updateBlockBox(p1, p1.x, p1.y);

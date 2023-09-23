@@ -142,8 +142,6 @@ function PlayerAttack(player) {
 }
 
 function drawPlayer(player) {
-    //gameLoop에 옮겨야ㅐ댐
-    updateBlockBox(player.x + player.CanvasLength - 70, player.x + 30, player.y + 60, player); //플레이어의 움직임에 따라 해당 좌표를 방어 상자에 갱신
 
         if (player.vel.isAttacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
             PlayerAttack(player);
