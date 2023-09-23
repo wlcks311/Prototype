@@ -269,7 +269,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.stunLoop = stunLoop;
     }
 
-    comeBackToPosition() {
+    comeBackToPosition(collisonCheckX) {
         console.log('come back to position');
         this.vel.isMoving = true;
         if(this.x < (this.xMax_left + this.xMax_right) / 2) { //왼쪽으로 벗어난 경우
@@ -301,7 +301,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    attack(p1, p2) {
+    attack(p1, p2, collisonCheckX) {
         this.vel.isMoving = false;
 
         if (this.vel.isLookingRight == true) { // 오른쪽 보고있는 경우
@@ -418,7 +418,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    move(bigX, smallX, p1, p2) {
+    move(bigX, smallX, p1, p2, collisonCheckX) {
 
         //몹의 공격 범위 갱신
         this.x_detectLeft = this.x - 150;
@@ -435,7 +435,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
 
             if (this.vel.isAttacking == true) { // 공격중인 경우
-                this.attack(p1, p2);
+                this.attack(p1, p2, collisonCheckX);
             }
 
             else if (this.isStunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
@@ -468,7 +468,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
 
             else if((this.x + 50 < this.xMax_left) || (this.xMax_right < this.x + this.CanvasLength - 40)) {//지정된 구역을 벗어난 경우
-                this.comeBackToPosition();
+                this.comeBackToPosition(collisonCheckX);
             }
 
             else { // 탐지가 된것도 아니고, 지정된 구역을 벗어난 경우도 아닌 경우 -> 일반 무작위 움직임
@@ -544,7 +544,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    checkAttacked(atkTimer_p1, atkTimer_p2) {//공격이 해당 물체에 가해졌는지 확인
+    checkAttacked(atkTimer_p1, atkTimer_p2, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
         if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.CanvasLength)) {
             this.healthCount--;
             if (this.healthCount == 0) {
@@ -613,7 +613,7 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    nz1.move(bigX, smallX, p1, p2);
+    nz1.move(bigX, smallX, p1, p2, collisonCheckX);
 
     for (var i = 0; i <= p1.CanvasLength - 80; i++) { //플레이어1이 서 있는 곳은 0 으로 표시
         collisonCheckX[p1.x + 40 + i] = 0;
