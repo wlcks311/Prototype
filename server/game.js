@@ -252,6 +252,9 @@ class NormalZombie extends Creature { //좀비 클래스
         this.stunAnimaitonCount = 0;
         this.stunLoop = 0;
         this.waitCount = 0;
+
+        //확인용 임시 변수
+        this.isCommingBackToPosition = false;
     }
 
     setSpeed(speed) {
@@ -270,7 +273,7 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     comeBackToPosition(collisonCheckX) {
-        console.log('come back to position');
+        this.isCommingBackToPosition = true;
         this.vel.isMoving = true;
         if(this.x < (this.xMax_left + this.xMax_right) / 2) { //왼쪽으로 벗어난 경우
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
@@ -472,6 +475,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
 
             else { // 탐지가 된것도 아니고, 지정된 구역을 벗어난 경우도 아닌 경우 -> 일반 무작위 움직임
+                this.isCommingBackToPosition = false;
                 if (this.isMovingDone == true) { // 움직임이 끝난 상태일 때
                     if (this.moveCount < 90) {// 1.5초 동안 잠시 멈췄다가
                         this.vel.isMoving = false;
