@@ -305,7 +305,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    attack(p1, p2, collisonCheckX) {
+    ZombieAttack(p1, p2, collisonCheckX) {
         this.vel.isMoving = false;
         this.enteredAttackFunction = true;
 
@@ -440,7 +440,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
 
             if (this.vel.isAttacking == true) { // 공격중인 경우
-                this.attack(p1, p2, collisonCheckX);
+                this.ZombieAttack(p1, p2, collisonCheckX); //여기서 함수를 실행시키지 못하고 서버가 끊김. 다른 함수들은 잘 실행되는데 왜 이 함수만 안될까
             }
 
             else if (this.isStunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
