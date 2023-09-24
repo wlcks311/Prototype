@@ -447,7 +447,7 @@ class NormalZombie extends Creature { //좀비 클래스
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
                     this.vel.isAttacking = true;
-                    this.zombieAttack(p1, p2, collisonCheckX);
+                    //this.zombieAttack(p1, p2, collisonCheckX);
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
