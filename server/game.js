@@ -253,8 +253,9 @@ class NormalZombie extends Creature { //좀비 클래스
         this.stunLoop = 0;
         this.waitCount = 0;
 
-        //확인용 임시 변수
+        //콘솔 확인용 임시 변수
         this.isCommingBackToPosition = false;
+        this.enteredAttackFunction = false;
     }
 
     setSpeed(speed) {
@@ -306,6 +307,7 @@ class NormalZombie extends Creature { //좀비 클래스
 
     attack(p1, p2, collisonCheckX) {
         this.vel.isMoving = false;
+        this.enteredAttackFunction = true;
 
         if (this.vel.isLookingRight == true) { // 오른쪽 보고있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 100, 프레임당 2. 50프레임 소모
