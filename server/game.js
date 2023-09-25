@@ -305,27 +305,27 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    zombieAttack() { //매개변수에 플레이어가 들어가니까 오류가 뜸-> 매개변수에서 제외시키니 오류 안뜸
+    zombieAttack(p1, p2) { //매개변수에 플레이어가 들어가니까 오류가 뜸-> 매개변수에서 제외시키니 오류 안뜸
         this.vel.isMoving = false;
         this.enteredAttackFunction = true;
 
         if (this.vel.isLookingRight == true) { // 오른쪽 보고있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 100, 프레임당 2. 50프레임 소모
                 //공격 상자 늘리기 전에 플레이어들의 방어 확인
-                // if (p1.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
-                //     // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
-                //     this.isStunned = true;
-                //     this.vel.isAttacking = false;
-                //     this.attackBox.atkTimer = 0;
-                // }
+                if (p1.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
+                    // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    this.isStunned = true;
+                    this.vel.isAttacking = false;
+                    this.attackBox.atkTimer = 0;
+                }
 
-                // if (p2.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
-                //     //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
-                //     this.isStunned = true;
-                //     this.vel.isAttacking = false;
-                //     this.attackBox.atkTimer = 0;
-                // }
-                //else {
+                if (p2.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
+                    //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    this.isStunned = true;
+                    this.vel.isAttacking = false;
+                    this.attackBox.atkTimer = 0;
+                }
+                else {
                     if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
@@ -335,30 +335,30 @@ class NormalZombie extends Creature { //좀비 클래스
                     }
 
 
-                    // if (collisonCheckX[this.attackBox.position_x + this.attackBox.atkTimer] == 0) { //공격이 플레이어에게 닿은 경우
-                    //     //어느 플레이어에 닿았는지 확인해야 함
-                    //     if (p1.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
-                    //         // 플레이어 1에 공격이 닿았을 경우
-                    //         p1.isDamaged = true;
-                    //     }
+                    if (collisonCheckX[this.attackBox.position_x + this.attackBox.atkTimer] == 0) { //공격이 플레이어에게 닿은 경우
+                        //어느 플레이어에 닿았는지 확인해야 함
+                        if (p1.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                            // 플레이어 1에 공격이 닿았을 경우
+                            p1.isDamaged = true;
+                        }
 
-                    //     if (p2.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
-                    //         // 플레이어 2에 공격이 닿았을 경우
-                    //         p2.isDamaged = true;
-                    //     }
-                    // }
-                    // ctx.fillRect(this.attackBox.position_x, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
-                //}
+                        if (p2.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                            // 플레이어 2에 공격이 닿았을 경우
+                            p2.isDamaged = true;
+                        }
+                    }
+                    //ctx.fillRect(this.attackBox.position_x, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
+                }
             }
 
             else { //공격 종료
-                // if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
-                //     p1.healthCount--;
-                // }
+                if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
+                    p1.healthCount--;
+                }
                 
-                // if (p2.isDamaged == true) {
-                //     p2.healthCount--;
-                // }
+                if (p2.isDamaged == true) {
+                    p2.healthCount--;
+                }
 
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
@@ -370,19 +370,19 @@ class NormalZombie extends Creature { //좀비 클래스
         else { //왼쪽을 보고 있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                 //공격 상자 늘리기 전에 플레이어의 방어 확인
-                // if (p1.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
-                //     // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
-                //     this.isStunned = true;
-                //     this.vel.isAttacking = false;
-                //     this.attackBox.atkTimer = 0;
-                // }
-                // if (p2.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
-                //     // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
-                //     this.isStunned = true;
-                //     this.vel.isAttacking = false;
-                //     this.attackBox.atkTimer = 0;
-                // }
-                //else {
+                if (p1.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
+                    // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    this.isStunned = true;
+                    this.vel.isAttacking = false;
+                    this.attackBox.atkTimer = 0;
+                }
+                if (p2.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
+                    // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                    this.isStunned = true;
+                    this.vel.isAttacking = false;
+                    this.attackBox.atkTimer = 0;
+                }
+                else {
                     if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
@@ -391,29 +391,29 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.attackBox.atkTimer+=2;
                     }
                     
-                    // if (collisonCheckX[this.attackBox.position_x - this.attackBox.atkTimer] == 0) {//공격이 플레이어에게 닿은 경우
-                    //     //어느 플레이어에 공격이 닿았는지 확인 해야함
-                    //     if (p1.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
-                    //         // 플레이어 1에 공격이 닿았을 경우
-                    //         p1.isDamaged = true;
-                    //     }
+                    if (collisonCheckX[this.attackBox.position_x - this.attackBox.atkTimer] == 0) {//공격이 플레이어에게 닿은 경우
+                        //어느 플레이어에 공격이 닿았는지 확인 해야함
+                        if (p1.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                            // 플레이어 1에 공격이 닿았을 경우
+                            p1.isDamaged = true;
+                        }
 
-                    //     if (p2.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
-                    //         // 플레이어 2에 공격이 닿았을 경우
-                    //         p2.isDamaged = true;
-                    //     }
-                    // }
-                    // ctx.fillRect(this.attackBox.position_x - this.attackBox.atkTimer, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
-                //}
+                        if (p2.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                            // 플레이어 2에 공격이 닿았을 경우
+                            p2.isDamaged = true;
+                        }
+                    }
+                    //ctx.fillRect(this.attackBox.position_x - this.attackBox.atkTimer, this.attackBox.position_y, this.attackBox.atkTimer, this.attackBox.height);
+                }
             }
 
             else { //공격 종료
-                // if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
-                //     p1.healthCount--;
-                // }
-                // if (p2.isDamaged == true) { //플레이어2가 해당 몬스터의 공격을 받았을 경우
-                //     p2.healthCount--;
-                // }
+                if (p1.isDamaged == true) { //플레이어1이 해당 몬스터의 공격을 받았을 경우
+                    p1.healthCount--;
+                }
+                if (p2.isDamaged == true) { //플레이어2가 해당 몬스터의 공격을 받았을 경우
+                    p2.healthCount--;
+                }
 
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
@@ -434,7 +434,7 @@ class NormalZombie extends Creature { //좀비 클래스
 
         this.attackBox.position_x = this.x + this.CanvasLength / 2;
 
-        if (this.isDead == false) { // 몹이 살아있으면 움직임
+        if (this.isDead == false && this.vel.isAttacking == false) { // 몹이 살아있고, 공격하고 있지 않다면 움직임
             for (var i = 0; i <= this.CanvasLength - 100; i++) {
                 collisonCheckX[this.x + 50 + i] = 1;
             }
@@ -447,7 +447,6 @@ class NormalZombie extends Creature { //좀비 클래스
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
                     this.vel.isAttacking = true;
-                    this.zombieAttack();
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
@@ -616,7 +615,14 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    nz1.move(bigX, smallX, collisonCheckX);
+    if (nz1.vel.isAttacking == true) {
+        nz1.zombieAttack(p1, p2);
+    }
+
+    else if (nz1.vel.isAttacking == false) {
+        nz1.move(bigX, smallX, collisonCheckX);
+    }
+    
 
     for (var i = 0; i <= p1.CanvasLength - 80; i++) { //플레이어1이 서 있는 곳은 0 으로 표시
         collisonCheckX[p1.x + 40 + i] = 0;
