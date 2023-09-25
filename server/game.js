@@ -892,6 +892,16 @@ function gameLoop(state) {
     }
 
 
+    //플레이어2이 공격에 맞은 경우
+    if (p2.isDamaged == true) {
+        p2.damagedCount++;
+        if (p2.damagedCount == 60) {
+            p2.isDamaged = false;
+            p2.damagedCount = 0;
+        }
+    }
+    
+
     //NormalZombie 애니메이션 변수
     if (nz1.vel.isMoving == false) {
          //플레이어가 해당 몬스터의 공격을 막았을 경우
