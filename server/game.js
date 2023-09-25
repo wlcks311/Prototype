@@ -40,18 +40,18 @@ let canvas_height = 1000;
 /////////////////////   Classes  /////////////////////////////
 class BackGround {
     constructor() {
-        this.BG_length = canvas_width;
-        this.BG_CanvasLength = canvas_height;
-        this.BG_x = 0;
-        this.BG_count = 4;
-        this.BG_xMax = (this.BG_length * this.BG_count) - this.BG_length * (canvas_width / canvas_height);
-        this.ratio = this.BG_length / canvas_height;
-        this.isBGmovingRight = false;
-        this.isBGmovingLeft = false;
-         //주인공이 화면 끝까지 이동할 수 있는 경우는 오른쪽으로 가면서 BG_x == BG_xMax이거나, 왼쪽으로 가면서 BG_x == 0 인 경우. 그 이외에는 화면이 움직여야 함
+        this.bg_length = canvas_width;
+        this.bg_CanvasLength = canvas_height;
+        this.bg_x = 0;
+        this.bg_count = 4;
+        this.bg_xMax = (this.bg_length * this.bg_count) - this.bg_length * (canvas_width / canvas_height);
+        this.ratio = this.bg_length / canvas_height;
+        this.isbgmovingRight = false;
+        this.isbgmovingLeft = false;
+         //주인공이 화면 끝까지 이동할 수 있는 경우는 오른쪽으로 가면서 bg_x == bg_xMax이거나, 왼쪽으로 가면서 bg_x == 0 인 경우. 그 이외에는 화면이 움직여야 함
     }
     draw() {
-        ctx.drawImage(img_BG_test, this.BG_x, 0, this.BG_length * (canvas_width / canvas_height), this.BG_length, 0, 0, canvas_width, canvas_height);
+        ctx.drawImage(img_bg_test, this.bg_x, 0, this.bg_length * (canvas_width / canvas_height), this.bg_length, 0, 0, canvas_width, canvas_height);
     }
 }
 
@@ -89,19 +89,19 @@ class Creature {
         //해당 플레이어의 키보드 입력에 영향을 받는 속성들
         this.vel = {
             // 보고 있는 방향
-            isLookingRight : true,
+            lookingRight : true,
 
             // 공격하고 있는지 여부
-            isAttacking : false,
-            isAttacking_motion : false,
+            attacking : false,
+            attacking_motion : false,
 
             //움직이고 있는지 여부
-            isMoving : false,
-            isMovingRight : false,
-            isMovingLeft : false,
+            moving : false,
+            movingRight : false,
+            movingLeft : false,
 
             //방어 하고있는지 여부
-            isBlocking : false
+            bocking : false
         }
 
 
@@ -167,7 +167,7 @@ class MainCharacter extends Creature {
 
 
     attack() {
-        if (this.vel.isLookingRight == true) {
+        if (this.vel.lookingRight == true) {
             if (attackFrame < 30 && (this.attackCount <= 1)) {
                 attackFrame+=6;
             }
@@ -186,7 +186,7 @@ class MainCharacter extends Creature {
                 attackFrame = 0;
                 if (this.attackCount == this.attackLoop - 1) {
                     this.attackCount = 0;
-                    this.isAttacking_motion = false; //공격 동작 종료
+                    this.attacking_motion = false; //공격 동작 종료
                 }
 
                 else {
@@ -195,7 +195,7 @@ class MainCharacter extends Creature {
             }
         }
 
-        else if (this.vel.isLookingRight == false) {
+        else if (this.vel.lookingRight == false) {
             if (attackFrame < 30 && (this.attackCount <= 1)) {
                 attackFrame+=6;
                 ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
@@ -218,7 +218,7 @@ class MainCharacter extends Creature {
                 attackFrame = 0;
                 if (this.attackCount == this.attackLoop - 1) {
                     this.attackCount = 0;
-                    this.isAttacking_motion = false; //공격 동작 종료
+                    this.attacking_motion = false; //공격 동작 종료
                 }
 
                 else {
@@ -243,7 +243,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.x_detectRight = this.x + this.CanvasLength + 150; //몹이 오른쪽에서 플레이어를 감지 할 수 있는 범위
         this.x_attackLeft = this.x + 30; //몹이 왼쪽에서 플레이어를 공격 할 수 있는 범위
         this.x_attackRight = this.x + this.CanvasLength - 30; 
-        this.isMovingDone = true;
+        this.movingDone = true;
         this.isDead = false;
         this.attackBox.width = 100;
         this.attackFrame = 0;
@@ -275,10 +275,10 @@ class NormalZombie extends Creature { //좀비 클래스
 
     comeBackToPosition(collisonCheckX) {
         this.isCommingBackToPosition = true;
-        this.vel.isMoving = true;
+        this.vel.moving = true;
         if(this.x < (this.xMax_left + this.xMax_right) / 2) { //왼쪽으로 벗어난 경우
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
-                this.vel.isLookingRight = true;
+                this.vel.lookingRight = true;
                 collisonCheckX[this.x + 50] = -1;
                 collisonCheckX[this.x + this.CanvasLength - 49] = 1;
                 this.x++;
@@ -286,7 +286,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
         else if ((this.xMax_left + this.xMax_right) / 2 < this.x) {  // 오른쪽으로 벗어난 경우
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
-                this.vel.isLookingRight = false;
+                this.vel.lookingRight = false;
                 collisonCheckX[this.x + 49] = 1;
                 collisonCheckX[this.x + this.CanvasLength - 50] = -1;
                 this.x--;
@@ -295,7 +295,7 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     stun() {
-        this.vel.isMoving = false;
+        this.vel.moving = false;
         if (this.stunCount < 120) {
             this.stunCount++;
         }
@@ -306,23 +306,23 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     zombieAttack(p1, p2) { //매개변수에 플레이어가 들어가니까 오류가 뜸-> 매개변수에서 제외시키니 오류 안뜸
-        this.vel.isMoving = false;
+        this.vel.moving = false;
         this.enteredAttackFunction = true;
 
-        if (this.vel.isLookingRight == true) { // 오른쪽 보고있는 경우
+        if (this.vel.lookingRight == true) { // 오른쪽 보고있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 100, 프레임당 2. 50프레임 소모
                 //공격 상자 늘리기 전에 플레이어들의 방어 확인
-                if (p1.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
+                if (p1.vel.bocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
                     // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.vel.isAttacking = false;
+                    this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
 
-                if (p2.vel.isBlocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
+                if (p2.vel.bocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
                     //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.vel.isAttacking = false;
+                    this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
                 else {
@@ -363,23 +363,23 @@ class NormalZombie extends Creature { //좀비 클래스
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
-                this.vel.isAttacking = false;
+                this.vel.attacking = false;
             }
         }
 
         else { //왼쪽을 보고 있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                 //공격 상자 늘리기 전에 플레이어의 방어 확인
-                if (p1.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
+                if (p1.vel.bocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
                     // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.vel.isAttacking = false;
+                    this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
-                if (p2.vel.isBlocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
+                if (p2.vel.bocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
                     // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.isStunned = true;
-                    this.vel.isAttacking = false;
+                    this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
                 else {
@@ -418,7 +418,7 @@ class NormalZombie extends Creature { //좀비 클래스
                 //몬스터 공격 정보 초기화
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
-                this.vel.isAttacking = false;
+                this.vel.attacking = false;
             }
         }
     }
@@ -434,7 +434,7 @@ class NormalZombie extends Creature { //좀비 클래스
 
         this.attackBox.position_x = this.x + this.CanvasLength / 2;
 
-        if (this.isDead == false && this.vel.isAttacking == false) { // 몹이 살아있고, 공격하고 있지 않다면 움직임
+        if (this.isDead == false && this.vel.attacking == false) { // 몹이 살아있고, 공격하고 있지 않다면 움직임
             for (var i = 0; i <= this.CanvasLength - 100; i++) {
                 collisonCheckX[this.x + 50 + i] = 1;
             }
@@ -446,21 +446,21 @@ class NormalZombie extends Creature { //좀비 클래스
             else if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
-                    this.vel.isAttacking = true;
+                    this.vel.attacking = true;
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
                     if (this.x_detectLeft < bigX && bigX < this.x + 50) { //왼쪽으로 이동
-                        this.vel.isMoving = true;
-                        this.vel.isLookingRight = false;
+                        this.vel.moving = true;
+                        this.vel.lookingRight = false;
                         collisonCheckX[this.x + 49] = 1;
                         collisonCheckX[this.x + this.CanvasLength - 50] = -1;
                         this.x--;
                     }
 
                     else if (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight) { //오른쪽으로 이동
-                        this.vel.isMoving = true;
-                        this.vel.isLookingRight = true;
+                        this.vel.moving = true;
+                        this.vel.lookingRight = true;
                         collisonCheckX[this.x + 50] = -1;
                         collisonCheckX[this.x + this.CanvasLength - 49] = 1;
                         this.x++;
@@ -474,9 +474,9 @@ class NormalZombie extends Creature { //좀비 클래스
 
             else { // 탐지가 된것도 아니고, 지정된 구역을 벗어난 경우도 아닌 경우 -> 일반 무작위 움직임
                 this.isCommingBackToPosition = false;
-                if (this.isMovingDone == true) { // 움직임이 끝난 상태일 때
+                if (this.movingDone == true) { // 움직임이 끝난 상태일 때
                     if (this.moveCount < 90) {// 1.5초 동안 잠시 멈췄다가
-                        this.vel.isMoving = false;
+                        this.vel.moving = false;
                         this.moveCount++;
                     }
                     
@@ -485,14 +485,14 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.move_randNum = Math.floor(Math.random() * this.move_range);
                         // floor -> 정수로 반올림, random -> 0~1사이 난수 발생 여기선 move_range만큼 곱해줌
             
-                        this.isMovingDone = false;
+                        this.movingDone = false;
                     }
         
                 }
         
                 else { //움직임이 끝나지 않았을 때
                     if (this.move_randNum <= 10 && this.moveCount < this.move_randNum) { //난수가 일정 수보다 작으면 가만히 서 있는 걸로
-                        this.vel.isMoving = false;
+                        this.vel.moving = false;
                         this.moveCount+=this.speed;
                     }
         
@@ -500,38 +500,38 @@ class NormalZombie extends Creature { //좀비 클래스
 
                         if ((this.move_randNum % 2 == 0) && this.moveCount < this.move_randNum) { //짝수인 경우 -> 오른쪽으로 이동
                             if (this.x + this.CanvasLength + this.speed <= this.xMax_right) { //고정 범위 안에 있는 경우
-                                this.vel.isMoving = true;
+                                this.vel.moving = true;
                                 collisonCheckX[this.x + 50] = -1;
                                 collisonCheckX[this.x + this.CanvasLength -49] = 1;
-                                this.vel.isLookingRight = true;
+                                this.vel.lookingRight = true;
                                 this.x+=this.speed;
                                 this.moveCount+=this.speed;
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
-                                this.vel.isMoving = false;
-                                this.isMovingDone = true;
+                                this.vel.moving = false;
+                                this.movingDone = true;
                             }
         
                         }
                         else if ((this.move_randNum % 2 == 1) && this.moveCount < this.move_randNum) {//홀수인 경우 -> 왼쪽으로 이동
                             console.log(this.x - this.speed);
                             if (this.x - this.speed >= this.xMax_left) { //고정 범위 안에 있는 경우
-                                this.vel.isMoving = true;
+                                this.vel.moving = true;
                                 collisonCheckX[this.x + 49] = 1;
                                 collisonCheckX[this.x + this.CanvasLength - 50] = -1;
-                                this.vel.isLookingRight = false;
+                                this.vel.lookingRight = false;
                                 this.x-=this.speed;
                                 this.moveCount+=this.speed;
                             }
                             else { // 고정 범위 끝까지 간 경우 -> 움직임 마쳤다고 판단
-                                this.vel.isMoving = false;
-                                this.isMovingDone = true;
+                                this.vel.moving = false;
+                                this.movingDone = true;
                             }
                         }
         
                         else if (this.moveCount >= this.move_randNum) {
-                            this.vel.isMoving = false;
-                            this.isMovingDone = true;
+                            this.vel.moving = false;
+                            this.movingDone = true;
                             this.moveCount = 0;
                         }
                     }
@@ -615,11 +615,11 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    if (nz1.vel.isAttacking == true) {
+    if (nz1.vel.attacking == true) {
         nz1.zombieAttack(p1, p2);
     }
 
-    else if (nz1.vel.isAttacking == false) {
+    else if (nz1.vel.attacking == false) {
         nz1.move(bigX, smallX, collisonCheckX);
     }
     
@@ -633,7 +633,7 @@ function gameLoop(state) {
     }
 
     //플레이어1 이 가만히 서 있는 경우
-    if (p1.vel.isAttacking == false && p1.vel.isMoving == false && p1.vel.isBlocking == false) {
+    if (p1.vel.attacking == false && p1.vel.moving == false && p1.vel.bocking == false) {
         if (p1.frameCount < p1.refreshRate) {
             p1.frameCount++;
         }
@@ -651,7 +651,7 @@ function gameLoop(state) {
     }
 
     //플래이어1 이 왼쪽으로 이동하는 경우
-    if ((p1.vel.isMovingLeft == true && collisonCheckX[p1.x + 38] != 1) && (p1.vel.isAttacking == false && p1.vel.isBlocking == false && p1.isDamaged == false)) {
+    if ((p1.vel.movingLeft == true && collisonCheckX[p1.x + 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
         if (p1.x > 0) {
             collisonCheckX[p1.x + 38] = 0;
             collisonCheckX[p1.x + 39] = 0;
@@ -678,7 +678,7 @@ function gameLoop(state) {
     }
 
     //플래이어1이 오른쪽으로 이동하는 경우
-    if ((p1.vel.isMovingRight == true && collisonCheckX[p1.x + p1.CanvasLength - 38] != 1) && (p1.vel.isAttacking == false && p1.vel.isBlocking == false && p1.isDamaged == false)) {
+    if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.CanvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
         if (p1.x < canvas_width - p1.CanvasLength) {
             collisonCheckX[p1.x + 40] = -1;
             collisonCheckX[p1.x + 41] = -1;
@@ -705,11 +705,11 @@ function gameLoop(state) {
     }
 
     //플레이어1이 공격 중인 경우
-    if (p1.vel.isAttacking == true) {
+    if (p1.vel.attacking == true) {
         //오른쪽 공격
-        if(p1.vel.isLookingRight == true) {
+        if(p1.vel.lookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) {
-                p1.vel.isAttacking = false;
+                p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
             else {
@@ -717,9 +717,9 @@ function gameLoop(state) {
             }
         }
         //왼쪽 공격
-        else if(p1.vel.isLookingRight == false) {
+        else if(p1.vel.lookingRight == false) {
             if (p1.attackTimer >= p1.attackBox.width) {
-                p1.vel.isAttacking = false;
+                p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
             else {
@@ -728,7 +728,7 @@ function gameLoop(state) {
         }
     }
     //플레이어1 공격 애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
-    if (p1.vel.isAttacking_motion == true) {
+    if (p1.vel.attacking_motion == true) {
         
         if (p1.attackFrame < 30 && (p1.attackCount <= 1)) {
             p1.attackFrame+=6;
@@ -748,7 +748,7 @@ function gameLoop(state) {
             p1.attackFrame = 0;
             if (p1.attackCount == p1.attackLoop - 1) {
                 p1.attackCount = 0;
-                p1.vel.isAttacking_motion = false; //공격 동작 종료
+                p1.vel.attacking_motion = false; //공격 동작 종료
             }
             else {
                 p1.attackCount++;
@@ -767,7 +767,7 @@ function gameLoop(state) {
     }
 
     //플레이어2가 가만히 서 있는 경우
-    if (p2.vel.isAttacking == false && p2.vel.isMoving == false && p2.vel.isBlocking == false) {
+    if (p2.vel.attacking == false && p2.vel.moving == false && p2.vel.bocking == false) {
         if (p2.frameCount < p2.refreshRate) {
             p2.frameCount++;
         }
@@ -785,7 +785,7 @@ function gameLoop(state) {
     }
 
     //플래이어2 가 왼쪽으로 이동하는 경우
-    if ((p2.vel.isMovingLeft == true && collisonCheckX[p2.x + 38] != 1) && (p2.vel.isAttacking == false && p2.vel.isBlocking == false && p2.isDamaged == false)) {
+    if ((p2.vel.movingLeft == true && collisonCheckX[p2.x + 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
         if (p2.x > 0) {
             collisonCheckX[p2.x + 38] = 0;
             collisonCheckX[p2.x + 39] = 0;
@@ -812,7 +812,7 @@ function gameLoop(state) {
     }
 
     //플래이어2가 오른쪽으로 이동하는 경우
-    if ((p2.vel.isMovingRight == true && collisonCheckX[p2.x + p2.CanvasLength - 38] != 1) && (p2.vel.isAttacking == false && p2.vel.isBlocking == false && p2.isDamaged == false)) {
+    if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.CanvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
         if (p2.x < canvas_width - p2.CanvasLength) {
             collisonCheckX[p2.x + 40] = -1;
             collisonCheckX[p2.x + 41] = -1;
@@ -839,11 +839,11 @@ function gameLoop(state) {
     }
 
     //플레이어2가 공격 중인 경우
-    if (p2.vel.isAttacking == true) {
+    if (p2.vel.attacking == true) {
         //오른쪽 공격
-        if(p2.vel.isLookingRight == true) {
+        if(p2.vel.lookingRight == true) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                p2.vel.isAttacking = false;
+                p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
             else {
@@ -851,9 +851,9 @@ function gameLoop(state) {
             }
         }
         //왼쪽 공격
-        else if(p2.vel.isLookingRight == false) {
+        else if(p2.vel.lookingRight == false) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                p2.vel.isAttacking = false;
+                p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
             else {
@@ -863,7 +863,7 @@ function gameLoop(state) {
     }
 
     //플레이어2 공격 애니메이션 변수 attackFrame 이 30이 될때 마다 장면이 바뀜
-    if (p2.vel.isAttacking_motion == true) {
+    if (p2.vel.attacking_motion == true) {
         
         if (p2.attackFrame < 30 && (p2.attackCount <= 1)) {
             p2.attackFrame+=6;
@@ -883,7 +883,7 @@ function gameLoop(state) {
             p2.attackFrame = 0;
             if (p2.attackCount == p2.attackLoop - 1) {
                 p2.attackCount = 0;
-                p2.vel.isAttacking_motion = false; //공격 동작 종료
+                p2.vel.attacking_motion = false; //공격 동작 종료
             }
             else {
                 p2.attackCount++;
@@ -903,7 +903,7 @@ function gameLoop(state) {
     
 
     //NormalZombie 애니메이션 변수
-    if (nz1.vel.isMoving == false) {
+    if (nz1.vel.moving == false) {
          //플레이어가 해당 몬스터의 공격을 막았을 경우
         if (nz1.isStunned == true) {
             if (nz1.stunCount % 40 == 39) {
@@ -912,7 +912,7 @@ function gameLoop(state) {
             }
         }
         //텀이 지나고 다시 공격하는 경우
-        else if (nz1.vel.isAttacking == true && nz1.waitCount == 30) {
+        else if (nz1.vel.attacking == true && nz1.waitCount == 30) {
             
             if (nz1.attackFrame < 10) {
                 nz1.attackCount = 0;
@@ -942,7 +942,7 @@ function gameLoop(state) {
         }
     }
 
-    else if (nz1.vel.isMoving == true) {
+    else if (nz1.vel.moving == true) {
         if (nz1.walkingCount == 30) {
             nz1.walkingCount = 0;
             nz1.walkingCut++;
@@ -958,22 +958,22 @@ function getUpdatedVelocityDown(keyCode, player) { // 키 눌렀을때(누르고
     switch (keyCode) {
         //a -> 왼쪽 이동
         case 65:
-            if (player.isDamaged == false && player.vel.isAttacking == false && player.vel.isBlocking == false) {
+            if (player.isDamaged == false && player.vel.attacking == false && player.vel.bocking == false) {
                 return {
                     // 보고 있는 방향
-                    isLookingRight : false,
+                    lookingRight : false,
 
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
 
                     //움직이고 있는지 여부
-                    isMoving : true,
-                    isMovingRight : false,
-                    isMovingLeft : true,
+                    moving : true,
+                    movingRight : false,
+                    movingLeft : true,
                     
                     //방어하고 있는지 여부
-                    isBlocking: false
+                    bocking: false
                 };
             }
             else {
@@ -981,22 +981,22 @@ function getUpdatedVelocityDown(keyCode, player) { // 키 눌렀을때(누르고
             }
         //d -> 오른쪽 이동
         case 68:
-            if (player.isDamaged == false && player.vel.isAttacking == false && player.vel.isBlocking == false) {
+            if (player.isDamaged == false && player.vel.attacking == false && player.vel.bocking == false) {
                 return {
                     // 보고 있는 방향
-                    isLookingRight : true,
+                    lookingRight : true,
 
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
 
                     //움직이고 있는지 여부
-                    isMoving : true,
-                    isMovingRight : true,
-                    isMovingLeft : false,
+                    moving : true,
+                    movingRight : true,
+                    movingLeft : false,
 
                     //방어하고 있는지 여부
-                    isBlocking: false
+                    bocking: false
                 };
             }
             else {
@@ -1005,79 +1005,79 @@ function getUpdatedVelocityDown(keyCode, player) { // 키 눌렀을때(누르고
         // f -> 공격
         case 70:
             if (player.isDamaged == false) {
-                if (player.vel.isLookingRight == true) { // 오른쪽
+                if (player.vel.lookingRight == true) { // 오른쪽
                     return {
                         // 보고 있는 방향
-                        isLookingRight : true,
+                        lookingRight : true,
     
                         // 공격하고 있는지 여부
-                        isAttacking : true,
-                        isAttacking_motion : true,
+                        attacking : true,
+                        attacking_motion : true,
     
                         //움직이고 있는지 여부
-                        isMoving : false,
-                        isMovingRight : false,
-                        isMovingLeft : false,
+                        moving : false,
+                        movingRight : false,
+                        movingLeft : false,
 
                         //방어하고 있는지 여부
-                        isBlocking: false
+                        bocking: false
                     };
                 }
                 else { //왼쪽
                     return {
                         // 보고 있는 방향
-                        isLookingRight : false,
+                        lookingRight : false,
     
                         // 공격하고 있는지 여부
-                        isAttacking : true,
-                        isAttacking_motion : true,
+                        attacking : true,
+                        attacking_motion : true,
     
                         //움직이고 있는지 여부
-                        isMoving : false,
-                        isMovingRight : false,
-                        isMovingLeft : false,
+                        moving : false,
+                        movingRight : false,
+                        movingLeft : false,
 
                         //방어하고 있는지 여부
-                        isBlocking: false
+                        bocking: false
                     };
                 }
             }
         //r -> 방어
         case 82:
-            if (player.vel.isLookingRight == true) { //오른쪽 방어
+            if (player.vel.lookingRight == true) { //오른쪽 방어
                 return {
                     // 보고 있는 방향
-                    isLookingRight : true,
+                    lookingRight : true,
 
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
 
                     //움직이고 있는지 여부
-                    isMoving : false,
-                    isMovingRight : false,
-                    isMovingLeft : false,
+                    moving : false,
+                    movingRight : false,
+                    movingLeft : false,
 
                     //방어하고 있는지 여부
-                    isBlocking: true
+                    bocking: true
                 };
             }
             else {  //왼쪽 방어
                 return {
                     // 보고 있는 방향
-                    isLookingRight : false,
+                    lookingRight : false,
 
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
 
                     //움직이고 있는지 여부
-                    isMoving : false,
-                    isMovingRight : false,
-                    isMovingLeft : false,
+                    moving : false,
+                    movingRight : false,
+                    movingLeft : false,
 
                     //방어하고 있는지 여부
-                    isBlocking: true
+                    bocking: true
                 };
             }
             
@@ -1090,75 +1090,75 @@ function getUpdatedVelocityUp(keyCode, player) { // 키 눌렀다가 땠을 때 
         case 65:
             return {
                 // 보고 있는 방향
-                isLookingRight : false,
+                lookingRight : false,
 
                 // 공격하고 있는지 여부
-                isAttacking : false,
-                isAttacking_motion : false,
+                attacking : false,
+                attacking_motion : false,
 
                 //움직이고 있는지 여부
-                isMoving : false,
-                isMovingRight : false,
-                isMovingLeft : false,
+                moving : false,
+                movingRight : false,
+                movingLeft : false,
 
                 //방어하고 있는지 여부
-                isBlocking: false
+                bocking: false
             };
         //d -> 오른쪽 이동하다가 멈추는 경우
         case 68:
             return {
                 // 보고 있는 방향
-                isLookingRight : true,
+                lookingRight : true,
 
                 // 공격하고 있는지 여부
-                isAttacking : false,
-                isAttacking_motion : false,
+                attacking : false,
+                attacking_motion : false,
 
                 //움직이고 있는지 여부
-                isMoving : false,
-                isMovingRight : false,
-                isMovingLeft : false,
+                moving : false,
+                movingRight : false,
+                movingLeft : false,
 
                 //방어하고 있는지 여부
-                isBlocking: false
+                bocking: false
             };
         //r -> 방어 했다가 푸는 경우
         case 82:
-            if (player.vel.isLookingRight == true) { //오른쪽 방어였던 경우
+            if (player.vel.lookingRight == true) { //오른쪽 방어였던 경우
                 return {
                     // 보고 있는 방향
-                    isLookingRight : true,
+                    lookingRight : true,
     
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
     
                     //움직이고 있는지 여부
-                    isMoving : false,
-                    isMovingRight : false,
-                    isMovingLeft : false,
+                    moving : false,
+                    movingRight : false,
+                    movingLeft : false,
     
                     //방어하고 있는지 여부
-                    isBlocking: false
+                    bocking: false
                 };
             }
 
             else {
                 return {
                     // 보고 있는 방향
-                    isLookingRight : false,
+                    lookingRight : false,
     
                     // 공격하고 있는지 여부
-                    isAttacking : false,
-                    isAttacking_motion : false,
+                    attacking : false,
+                    attacking_motion : false,
     
                     //움직이고 있는지 여부
-                    isMoving : false,
-                    isMovingRight : false,
-                    isMovingLeft : false,
+                    moving : false,
+                    movingRight : false,
+                    movingLeft : false,
     
                     //방어하고 있는지 여부
-                    isBlocking: false
+                    bocking: false
                 };
             }
     }
