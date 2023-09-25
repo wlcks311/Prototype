@@ -264,6 +264,7 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //console.log(state.players[0]); // 속성은 넘어오지만 메소드는 넘어오지 않는다.
     //draw함수가 안먹히는 상황 -> 그렇다면 여기다가 함수를 구현하자.
+    console.log(state.players[0]);
     drawBG(state.bg);
     drawPlayer(state.players[0]);
     drawPlayer(state.players[1]);

@@ -305,7 +305,7 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    zombieAttack() {
+    zombieAttack() { //매개변수에 플레이어가 들어가니까 오류가 뜸-> 매개변수에서 제외시키니 오류 안뜸
         this.vel.isMoving = false;
         this.enteredAttackFunction = true;
 
