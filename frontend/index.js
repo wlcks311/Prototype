@@ -86,6 +86,12 @@ img_Zombie_stunned.src = './img/Zombie_stunned.png'
 
 var img_Zombie_stunned_left = new Image();
 img_Zombie_stunned_left.src = './img/Zombie_stunned_left.png'
+
+var img_Zombie_death = new Image();
+img_Zombie_death.src = './img/Zombie_death.png'
+
+var img_Zombie_death_left = new Image();
+img_Zombie_death_left.src = './img/Zombie_death_left.png'
 //////////////////////////////////////
 
 //socket.emit 은 이벤트 명을 지정하고 데이터 전송 (데이터 필요 없을 수도 있음)
@@ -222,40 +228,50 @@ function drawbg(BackGround) {
 function drawZombie(zombie) {
     //zombie 체력바
     ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y - 40, zombie.CanvasLength, zombie.CanvasLength);
-    if (zombie.vel.moving == false) { //움직이지 않는 경우
-        if (zombie.isStunned == true) {//기절한 경우
-            if (zombie.vel.lookingRight == true) {//오른쪽 기절
-                ctx.drawImage(img_Zombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+    if (zombie.dead == false) {
+        if (zombie.vel.moving == false) { //움직이지 않는 경우
+            if (zombie.stunned == true) {//기절한 경우
+                if (zombie.vel.lookingRight == true) {//오른쪽 기절
+                    ctx.drawImage(img_Zombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+                else {
+                    ctx.drawImage(img_Zombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+            }
+            //텀이 끝나고 공격하고 있는 중인 경우
+            else if (zombie.vel.attacking == true && zombie.waitCount == 30) {
+                if (zombie.vel.lookingRight == true) {//오른쪽 공격
+                    ctx.drawImage(img_Zombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+                else {//왼쪽 공격
+                    ctx.drawImage(img_Zombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+            }
+            //가만히 서 있는 경우
+            else {
+                if (zombie.vel.lookingRight == true) { // 오른쪽
+                    ctx.drawImage(img_Zombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+                else { //왼쪽
+                    ctx.drawImage(img_Zombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                }
+            }
+        }
+        else {//움직이는 경우
+            if (zombie.vel.lookingRight == true) {//오른쪽 걷기
+                ctx.drawImage(img_Zombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
             }
             else {
-                ctx.drawImage(img_Zombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
-            }
-        }
-        //텀이 끝나고 공격하고 있는 중인 경우
-        else if (zombie.vel.attacking == true && zombie.waitCount == 30) {
-            if (zombie.vel.lookingRight == true) {//오른쪽 공격
-                ctx.drawImage(img_Zombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
-            }
-            else {//왼쪽 공격
-                ctx.drawImage(img_Zombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
-            }
-        }
-        //가만히 서 있는 경우
-        else {
-            if (zombie.vel.lookingRight == true) { // 오른쪽
-                ctx.drawImage(img_Zombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
-            }
-            else { //왼쪽
-                ctx.drawImage(img_Zombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                ctx.drawImage(img_Zombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
             }
         }
     }
-    else {//움직이는 경우
-        if (zombie.vel.lookingRight == true) {//오른쪽 걷기
-            ctx.drawImage(img_Zombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+    else {
+        if (zombie.lookingRight == true) {
+            ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
         }
         else {
-            ctx.drawImage(img_Zombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            ctx.drawImage(img_Zombie_death_left, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
         }
     }
 }
