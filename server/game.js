@@ -385,7 +385,14 @@ class NormalZombie extends Creature { //좀비 클래스
             else if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
+                    if (this.x_attackLeft < bigX && bigX < this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
+                        this.lookingRight == false;
+                    }
+                    else { //오른쪽으로 감지 했을 경우
+                        this.lookingRight == true;
+                    }
                     this.vel.attacking = true;
+
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
