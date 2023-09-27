@@ -373,16 +373,17 @@ class NormalZombie extends Creature { //좀비 클래스
 
         this.attackBox.position_x = this.x + this.CanvasLength / 2;
 
-        if (this.dead == false && this.vel.attacking == false) { // 몹이 살아있고, 공격하고 있지 않다면 움직임
+        if (this.stunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
+            this.stun();
+        }
+        if (this.dead == false && this.vel.attacking == false && this.stunned == false) { // 몹이 살아있고, 공격하고 있지 않고, 스턴에 걸리지 않은 상태라면 움직임
             for (var i = 0; i <= this.CanvasLength - 100; i++) {
                 collisonCheckX[this.x + 50 + i] = 1;
             }
 
-            if (this.stunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
-                this.stun();
-            }
+
              // 플레이어가 탐지 범위 안에 들어온 경우
-            else if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
+            if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
                     if (this.x_attackLeft < bigX && bigX < this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
@@ -391,12 +392,12 @@ class NormalZombie extends Creature { //좀비 클래스
                     else { //오른쪽으로 감지 했을 경우
                         this.lookingRight == true;
                     }
-                    this.vel.attacking = true;
+                    this.vel.attacking = true; //공격 활성화
 
                 }
 
                 else { //탐지 범위 안에 들어왔지만 공격 범위는 아닌 경우 -> 플레이어 따라가기
-                    if (this.x_detectLeft < bigX && bigX < this.x + 50) { //왼쪽으로 이동
+                    if (this.x_detectLeft < bigX && bigX < this.x_attackLeft) { //왼쪽으로 이동
                         this.vel.moving = true;
                         this.vel.lookingRight = false;
                         collisonCheckX[this.x + 49] = 1;
@@ -404,7 +405,7 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.x--;
                     }
 
-                    else if (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight) { //오른쪽으로 이동
+                    else if (this.x_attackRight < smallX && smallX <= this.x_detectRight) { //오른쪽으로 이동
                         this.vel.moving = true;
                         this.vel.lookingRight = true;
                         collisonCheckX[this.x + 50] = -1;
@@ -492,16 +493,8 @@ class NormalZombie extends Creature { //좀비 클래스
         }
     }
 
-    checkAttacked(atkTimer_p1, atkTimer_p2, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
+    checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
         if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.CanvasLength)) {
-            this.healthCount--;
-            if (this.healthCount == 0) {
-                console.log('nz1 dead');
-                this.dead = true;
-            }
-        }
-
-        if ((collisonCheckX[atkTimer_p2] == 1) && (this.x <= atkTimer_p2 && atkTimer_p2 <= this.x + this.CanvasLength)) {
             this.healthCount--;
             if (this.healthCount == 0) {
                 console.log('nz1 dead');
@@ -560,8 +553,6 @@ function gameLoop(state) {
 
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
-
-    nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
 
     if (nz1.vel.attacking == true) {
         nz1.zombieAttack(p1, p2);
@@ -781,6 +772,7 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p1.vel.lookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) {
+                nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -791,6 +783,7 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p1.vel.lookingRight == false) {
             if (Math.abs(p1.attackTimer) >= p1.attackBox.width) {
+                nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -915,6 +908,7 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p2.vel.lookingRight == true) {
             if (p2.attackTimer >= p2.attackBox.width) {
+                nz1.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
@@ -925,6 +919,7 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p2.vel.lookingRight == false) {
             if (Math.abs(p2.attackTimer) >= p2.attackBox.width) {
+                nz1.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
