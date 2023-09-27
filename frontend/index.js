@@ -287,7 +287,7 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.fillRect(state.players[0].x + 40, 800, 5, 30);
     ctx.fillRect(state.players[0].x + state.players[0].CanvasLength - 40, 800, 5, 30);
     
-    ctx.fillRect(state.players[1].x + 40, 800, 30);
+    ctx.fillRect(state.players[1].x + 40, 800, 5, 30);
     ctx.fillRect(state.players[1].x + state.players[1].CanvasLength - 40, 800, 5, 30);
 
     //몬스터 -> 빨간색
