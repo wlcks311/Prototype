@@ -182,7 +182,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.x_attackRight = this.x + this.CanvasLength - 30; 
         this.movingDone = true;
         this.dead = false;
-        this.attackBox.width = 100;
+        this.attackBox.width = 80;
         this.attackFrame = 0;
         this.stunned = false;
         this.stunCount = 0;
@@ -249,7 +249,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.enteredAttackFunction = true;
 
         if (this.vel.lookingRight == true) { // 오른쪽 보고있는 경우
-            if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 100, 프레임당 2. 50프레임 소모
+            if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 80, 프레임당 2. 40프레임 소모
                 //공격 상자 늘리기 전에 플레이어들의 방어 확인
                 if (p1.vel.bocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
                     // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
