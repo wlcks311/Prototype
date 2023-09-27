@@ -266,7 +266,7 @@ function drawZombie(zombie) {
             }
         }
     }
-    else {
+    else { //죽는 경우
         if (zombie.lookingRight == true) {
             ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
         }

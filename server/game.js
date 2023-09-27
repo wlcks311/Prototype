@@ -617,6 +617,8 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
+    nz1.checkAttacked(p1.attackTimer, p2.attackTimer, collisonCheckX);
+
     if (nz1.vel.attacking == true) {
         nz1.zombieAttack(p1, p2);
     }
@@ -1040,23 +1042,18 @@ function gameLoop(state) {
            }
            //텀이 지나고 다시 공격하는 경우
            else if (nz1.vel.attacking == true && nz1.waitCount == 30) {
-               
                if (nz1.attackFrame < 10) {
-                   nz1.attackCount = 0;
+                    nz1.attackFrame++;
                }
-               else if (nz1.attackFrame < 20) {
-                   nz1.attackCount = 1;
+               else if (nz1.attackFrame == 10) {
+                    nz1.attackFrame = 0;
+                    if (nz1.attackCount < nz1.attackLoop - 1) {
+                        nz1.attackCount++;
+                    }
+                    else {
+                        nz1.attackCount = 0;
+                    }
                }
-               else if (nz1.attackFrame < 40) {
-                   nz1.attackCount = 2;
-               }
-               else if (nz1.attackFrame < 50) {
-                   nz1.attackCount = 3;
-               }
-               else if (nz1.attackFrame == 50) {
-                   nz1.attackCount = 0;
-               }
-               nz1.attackFrame++;
            }
            //가만히 서 있는 경우
            else {
