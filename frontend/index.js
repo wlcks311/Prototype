@@ -284,24 +284,24 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     //////////// 범위 확인 용 fillRect
     //플레이어 -> 파란색
     ctx.fillStyle = 'blue';
-    ctx.fillRect(state.players[0].x + 40, 800, 50);
-    ctx.fillRect(state.players[0].x + state.players[0].CanvasLength - 40, 800, 50);
+    ctx.fillRect(state.players[0].x + 40, 800, 5, 30);
+    ctx.fillRect(state.players[0].x + state.players[0].CanvasLength - 40, 800, 5, 30);
     
-    ctx.fillRect(state.players[1].x + 40, 800, 50);
-    ctx.fillRect(state.players[1].x + state.players[1].CanvasLength - 40, 800, 50);
+    ctx.fillRect(state.players[1].x + 40, 800, 30);
+    ctx.fillRect(state.players[1].x + state.players[1].CanvasLength - 40, 800, 5, 30);
 
     //몬스터 -> 빨간색
     ctx.fillStyle = 'red';
-    ctx.fillRect(state.nz1.x + 40, 800, 50);
-    ctx.fillRect(state.nz1.x + state.nz1.CanvasLength - 40, 800, 50);
+    ctx.fillRect(state.nz1.x + 40, 800, 5, 30);
+    ctx.fillRect(state.nz1.x + state.nz1.CanvasLength - 40, 800, 5, 30);
 
     //몬스터 감지 범위, 공격 범위 -> 노란색
     ctx.fillStyle = 'yellow';
-    ctx.fillRect(state.nz1.x_detectLeft, 800, 50);
-    ctx.fillRect(state.nz1.x_detectRight, 800, 50);
+    ctx.fillRect(state.nz1.x_detectLeft, 800, 5, 30);
+    ctx.fillRect(state.nz1.x_detectRight, 800, 5, 30);
 
-    ctx.fillRect(state.nz1.x_attackLeft, 800, 50);
-    ctx.fillRect(state.nz1.x_attackRight, 800, 50);
+    ctx.fillRect(state.nz1.x_attackLeft, 800, 5, 30);
+    ctx.fillRect(state.nz1.x_attackRight, 800, 5, 30);
     //////////////////////////
     console.log(state.players[0]);
     drawbg(state.bg);
