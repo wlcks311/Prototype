@@ -368,8 +368,8 @@ class NormalZombie extends Creature { //좀비 클래스
         this.x_detectLeft = this.x - 150;
         this.x_detectRight = this.x + this.CanvasLength + 150;
 
-        this.x_attackLeft = this.x + 30;
-        this.x_attackRight = this.x + this.CanvasLength - 30;
+        this.x_attackLeft = this.x + 10;
+        this.x_attackRight = this.x + this.CanvasLength - 10;
 
         this.attackBox.position_x = this.x + this.CanvasLength / 2;
 
@@ -383,9 +383,9 @@ class NormalZombie extends Creature { //좀비 클래스
 
 
              // 플레이어가 탐지 범위 안에 들어온 경우
-            if((this.x_detectLeft <= bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX <= this.x_detectRight)) { 
+            if((this.x_detectLeft <= bigX && bigX < this.x_attackLeft) || (this.x_attackRight < smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
-                if ((this.x_attackLeft < bigX && bigX < this.x + 50) || (this.x + this.CanvasLength - 50 < smallX && smallX < this.x_attackRight)) {
+                if ((this.x_attackLeft <= bigX && bigX <= this.x + 50) || (this.x + this.CanvasLength - 50 <= smallX && smallX <= this.x_attackRight)) {
                     if (this.x_attackLeft < bigX && bigX < this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
                         this.lookingRight == false;
                     }
@@ -1019,6 +1019,7 @@ function gameLoop(state) {
             nz1.deathFrame++;
         }
         else if (nz1.deathFrame == 30 && nz1.deathCount < 7) {
+            nz1.deathFrame = 0;
             nz1.deathCount++;
         }
         else {
