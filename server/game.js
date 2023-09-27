@@ -165,69 +165,6 @@ class MainCharacter extends Creature {
         }
     }
 
-
-    attack() {
-        if (this.vel.lookingRight == true) {
-            if (attackFrame < 30 && (this.attackCount <= 1)) {
-                attackFrame+=6;
-            }
-
-            else if (attackFrame < 30 && (this.attackCount == 2)) {
-                attackFrame+=3;
-            }
-            else if (attackFrame < 30 && (this.attackCount <= 4)) {
-                attackFrame+=5
-            }
-            else if (attackFrame < 30 && (this.attackCount == 5)) {
-                attackFrame+=3;
-            }
-
-            else if(attackFrame == 30) {
-                attackFrame = 0;
-                if (this.attackCount == this.attackLoop - 1) {
-                    this.attackCount = 0;
-                    this.attacking_motion = false; //공격 동작 종료
-                }
-
-                else {
-                    this.attackCount++;
-                }
-            }
-        }
-
-        else if (this.vel.lookingRight == false) {
-            if (attackFrame < 30 && (this.attackCount <= 1)) {
-                attackFrame+=6;
-                ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
-            }
-
-            else if (attackFrame < 30 && (this.attackCount == 2)) {
-                attackFrame+=3;
-                ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
-            }
-            else if (attackFrame < 30 && (this.attackCount <= 4)) {
-                attackFrame+=5
-                ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
-            }
-            else if (attackFrame < 30 && (this.attackCount == 5)) {
-                attackFrame+=3;
-                ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
-            }
-
-            else if(attackFrame == 30) {
-                attackFrame = 0;
-                if (this.attackCount == this.attackLoop - 1) {
-                    this.attackCount = 0;
-                    this.attacking_motion = false; //공격 동작 종료
-                }
-
-                else {
-                    this.attackCount++;
-                }
-                ctx.drawImage(img_Middle_Attack_full_left, this.width * this.attackCount, 0, this.width, this.height, this.x, this.y, this.CanvasLength, this.CanvasLength);
-            }
-        }
-    }
 }
 
 class NormalZombie extends Creature { //좀비 클래스
@@ -617,7 +554,7 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    nz1.checkAttacked(p1.attackTimer, p2.attackTimer, collisonCheckX);
+    nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
 
     if (nz1.vel.attacking == true) {
         nz1.zombieAttack(p1, p2);
@@ -846,12 +783,12 @@ function gameLoop(state) {
         }
         //왼쪽 공격
         else if(p1.vel.lookingRight == false) {
-            if (p1.attackTimer >= p1.attackBox.width) {
+            if (Math.abs(p1.attackTimer) >= p1.attackBox.width) {
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
             else {
-                p1.attackTimer+=2;
+                p1.attackTimer-=2;
             }
         }
     }
@@ -980,12 +917,12 @@ function gameLoop(state) {
         }
         //왼쪽 공격
         else if(p2.vel.lookingRight == false) {
-            if (p2.attackTimer >= p2.attackBox.width) {
+            if (Math.abs(p2.attackTimer) >= p2.attackBox.width) {
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
             else {
-                p2.attackTimer+=2;
+                p2.attackTimer-=2;
             }
         }
     }
