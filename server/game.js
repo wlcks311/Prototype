@@ -548,8 +548,8 @@ function gameLoop(state) {
     const nz1 = state.nz1;
     const collisonCheckX = state.collisonCheckX;
 
-    var bigX = biggerX(p1.x + p1.CanvasLength, p2.x + p2.CanvasLength);
-    var smallX = smallerX(p1.x, p2.x);
+    var bigX = biggerX(p1.x + p1.CanvasLength - 40, p2.x + p2.CanvasLength - 40);
+    var smallX = smallerX(p1.x + 40, p2.x + 40);
 
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
