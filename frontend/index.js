@@ -280,6 +280,29 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //console.log(state.players[0]); // 속성은 넘어오지만 메소드는 넘어오지 않는다.
     //draw함수가 안먹히는 상황 -> 그렇다면 여기다가 함수를 구현하자.
+
+    //////////// 범위 확인 용 fillRect
+    //플레이어 -> 파란색
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(state.players[0].x + 40, 800, 50);
+    ctx.fillRect(state.players[0].x + state.players[0].CanvasLength - 40, 800, 50);
+    
+    ctx.fillRect(state.players[1].x + 40, 800, 50);
+    ctx.fillRect(state.players[1].x + state.players[1].CanvasLength - 40, 800, 50);
+
+    //몬스터 -> 빨간색
+    ctx.fillStyle = 'red';
+    ctx.fillRect(state.nz1.x + 40, 800, 50);
+    ctx.fillRect(state.nz1.x + state.nz1.CanvasLength - 40, 800, 50);
+
+    //몬스터 감지 범위, 공격 범위 -> 노란색
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(state.nz1.x_detectLeft, 800, 50);
+    ctx.fillRect(state.nz1.x_detectRight, 800, 50);
+
+    ctx.fillRect(state.nz1.x_attackLeft, 800, 50);
+    ctx.fillRect(state.nz1.x_attackRight, 800, 50);
+    //////////////////////////
     console.log(state.players[0]);
     drawbg(state.bg);
     drawPlayer(state.players[0]);

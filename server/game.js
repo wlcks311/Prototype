@@ -513,12 +513,12 @@ function initGame() {
 function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, CanvasLength)
-    p1 = new MainCharacter(200, 800, 500, 500, 200);
+    p1 = new MainCharacter(200, 600, 500, 500, 200);
     p1.setLoops(4, 8, 6);
-    p2 = new MainCharacter(500, 800, 500, 500, 200);
+    p2 = new MainCharacter(500, 600, 500, 500, 200);
     p2.setLoops(4, 8, 6);
 
-    nz1 = new NormalZombie(1200, 800, 500, 500, 200);
+    nz1 = new NormalZombie(1200, 600, 500, 500, 200);
     nz1.setLoops(6, 7, 4);
     nz1.setFixedRange(1000, 1400);
     nz1.setStunLoop(3);
