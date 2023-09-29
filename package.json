@@ -4,7 +4,6 @@
   "author": "wlcks311",
   "description": "My Electron app",
   "main": "main.js",
-
   "dependencies": {
     "express": "^4.18.2",
     "nodemon": "^3.0.1",
@@ -12,5 +11,35 @@
   },
   "scripts": {
     "start": "nodemon server/server.js"
+  },
+  "build": {
+    "productName": "test",
+    "appId": "com.electron.hello",
+    "asar": true,
+    "protocols": {
+      "name": "test",
+      "schemes": [
+        "test"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "./resources/installer/Icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "buildResources": "./resources/installer/",
+      "output": "./exeResult/",
+      "app": "."
+    }
+  },
+  "devDependencies": {
+    "electron-builder": "^24.6.4"
   }
 }
