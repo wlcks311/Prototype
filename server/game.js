@@ -66,7 +66,7 @@ class Creature {
         this.attackBox = {
             position_x : this.x + this.canvasLength / 2,
             position_y : this.y - 50,
-            width: 80,
+            width: 120,
             height: 50,
             atkTimer: 0
         }
@@ -182,7 +182,6 @@ class NormalZombie extends Creature { //좀비 클래스
         this.x_attackRight = this.x + this.canvasLength - 30; 
         this.movingDone = true;
         this.dead = false;
-        this.attackBox.width = 80;
         this.attackFrame = 0;
         this.stunned = false;
         this.stunCount = 0;
@@ -498,7 +497,7 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
-        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength)) {
+        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength) && this.dead == false) {
             this.healthCount--;
             if (this.healthCount == 0) {
                 console.log('nz1 dead');
@@ -775,13 +774,13 @@ function gameLoop(state) {
     if (p1.vel.attacking == true) {
         //오른쪽 공격
         if(p1.vel.lookingRight == true) {
-            if (p1.attackTimer >= p1.attackBox.width) {
+            if (p1.attackTimer >= p1.attackBox.width) { // 공격 범위 120 0.5초 -> 30frmae 1 frame당 4 증가
                 nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
             else {
-                p1.attackTimer+=2;
+                p1.attackTimer+=4;
             }
         }
         //왼쪽 공격
@@ -792,7 +791,7 @@ function gameLoop(state) {
                 p1.attackTimer = 0;
             }
             else {
-                p1.attackTimer-=2;
+                p1.attackTimer-=4;
             }
         }
     }
@@ -917,7 +916,7 @@ function gameLoop(state) {
                 p2.attackTimer = 0;
             }
             else {
-                p2.attackTimer+=2;
+                p2.attackTimer+=4;
             }
         }
         //왼쪽 공격
@@ -928,7 +927,7 @@ function gameLoop(state) {
                 p2.attackTimer = 0;
             }
             else {
-                p2.attackTimer-=2;
+                p2.attackTimer-=4;
             }
         }
     }
