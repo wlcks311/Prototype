@@ -1,0 +1,21 @@
+directories:
+  output: ./exeResult/
+  buildResources: ./resources/installer/
+  app: .
+productName: test
+appId: com.electron.hello
+asar: true
+protocols:
+  name: test
+  schemes:
+    - test
+win:
+  target:
+    - zip
+    - nsis
+  icon: ./resources/installer/Icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+files: []
+electronVersion: 7.0.0
