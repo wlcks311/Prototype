@@ -139,11 +139,11 @@ function updateBlockBox(x_right, x_left, y, player) {
 
 function PlayerAttack(player) {
     if (player.vel.lookingRight == true) {
-        ctx.drawImage(img_Middle_Attack_full, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+        ctx.drawImage(img_Middle_Attack_full, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
     }
 
     else if (player.vel.lookingRight == false) {
-        ctx.drawImage(img_Middle_Attack_full_left, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+        ctx.drawImage(img_Middle_Attack_full_left, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
     }
 }
 
@@ -158,28 +158,28 @@ function drawPlayer(player) {
             if (player.vel.lookingRight == true) { //오른쪽을 보고있다가 맞은 경우
                 if (player.damagedCount < 60) {
                     if (player.damagedCount <= 30) {
-                        ctx.drawImage(img_Player_attacked, 0, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                        ctx.drawImage(img_Player_attacked, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     }
                     else {
-                        ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                        ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     }
                 }
                 else if (damagedCount == 60) {
-                    ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
 
             else if(player.vel.lookingRight == false) { //왼쪽을 보고 있다가 맞은 경우
                 if (player.damagedCount < 60) {
                     if (player.damagedCount <= 30) {
-                        ctx.drawImage(img_Player_attacked_left, 0, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                        ctx.drawImage(img_Player_attacked_left, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     }
                     else {
-                        ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                        ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     }
                 }
                 else if (player.damagedCount == 60) {
-                    ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
         }
@@ -189,33 +189,33 @@ function drawPlayer(player) {
             if (player.vel.bocking == true) {
                 ctx.fillStyle = 'blue';
                 if(player.vel.lookingRight == true) { //오른쪽 보고있는 경우 -> 오른쪽 방어
-                    ctx.drawImage(img_Block, 0, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Block, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     ctx.fillRect(player.BlockBox.x_right, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
                 }
 
                 else if (player.vel.lookingRight == false) { //왼쪽 보고있는 경우 -> 왼쪽 방어
-                    ctx.drawImage(img_Block_left, 0, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Block_left, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                     ctx.fillRect(player.BlockBox.x_left, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
                 }
             }
 
             else if (player.vel.moving == true) { //걷는 경우
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
-                    ctx.drawImage(img_Walking_full, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Walking_full, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
         
                 else { // 왼쪽을 보고있는 경우
-                    ctx.drawImage(img_Walking_full_left, player.width *player.walkingCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Walking_full_left, player.width *player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
     
             else { // 가만히 서 있는 경우
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
-                    ctx.drawImage(img_Idle_full, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Idle_full, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
         
                 else { // 왼쪽을 보고있는 경우
-                    ctx.drawImage(img_Idle_full_left, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.CanvasLength, player.CanvasLength);
+                    ctx.drawImage(img_Idle_full_left, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
         }
@@ -227,51 +227,51 @@ function drawbg(BackGround) {
 
 function drawZombie(zombie) {
     //zombie 체력바
-    ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y - 40, zombie.CanvasLength, zombie.CanvasLength);
+    ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y - 40, zombie.canvasLength, zombie.canvasLength);
     if (zombie.dead == false) {
         if (zombie.vel.moving == false) { //움직이지 않는 경우
             if (zombie.stunned == true) {//기절한 경우
                 if (zombie.vel.lookingRight == true) {//오른쪽 기절
-                    ctx.drawImage(img_Zombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
                 else {
-                    ctx.drawImage(img_Zombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
             }
             //텀이 끝나고 공격하고 있는 중인 경우
             else if (zombie.vel.attacking == true && zombie.waitCount == 30) {
                 if (zombie.vel.lookingRight == true) {//오른쪽 공격
-                    ctx.drawImage(img_Zombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
                 else {//왼쪽 공격
-                    ctx.drawImage(img_Zombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
             }
             //가만히 서 있는 경우
             else {
                 if (zombie.vel.lookingRight == true) { // 오른쪽
-                    ctx.drawImage(img_Zombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
                 else { //왼쪽
-                    ctx.drawImage(img_Zombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                    ctx.drawImage(img_Zombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                 }
             }
         }
         else {//움직이는 경우
             if (zombie.vel.lookingRight == true) {//오른쪽 걷기
-                ctx.drawImage(img_Zombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                ctx.drawImage(img_Zombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
             else {
-                ctx.drawImage(img_Zombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+                ctx.drawImage(img_Zombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
         }
     }
     else { //죽는 경우
         if (zombie.lookingRight == true) {
-            ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
         else {
-            ctx.drawImage(img_Zombie_death_left, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.CanvasLength, zombie.CanvasLength);
+            ctx.drawImage(img_Zombie_death_left, zombie.width * zombie.deathCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
     }
 }
@@ -285,15 +285,15 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     //플레이어 -> 파란색
     ctx.fillStyle = 'blue';
     ctx.fillRect(state.players[0].x + 40, 800, 5, 30);
-    ctx.fillRect(state.players[0].x + state.players[0].CanvasLength - 40, 800, 5, 30);
+    ctx.fillRect(state.players[0].x + state.players[0].canvasLength - 40, 800, 5, 30);
     
     ctx.fillRect(state.players[1].x + 40, 800, 5, 30);
-    ctx.fillRect(state.players[1].x + state.players[1].CanvasLength - 40, 800, 5, 30);
+    ctx.fillRect(state.players[1].x + state.players[1].canvasLength - 40, 800, 5, 30);
 
     //몬스터 -> 빨간색
     ctx.fillStyle = 'red';
     ctx.fillRect(state.nz1.x + 40, 800, 5, 30);
-    ctx.fillRect(state.nz1.x + state.nz1.CanvasLength - 40, 800, 5, 30);
+    ctx.fillRect(state.nz1.x + state.nz1.canvasLength - 40, 800, 5, 30);
 
     //몬스터 감지 범위, 공격 범위 -> 노란색
     ctx.fillStyle = 'yellow';
@@ -303,7 +303,7 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.fillRect(state.nz1.x_attackLeft, 800, 5, 30);
     ctx.fillRect(state.nz1.x_attackRight, 800, 5, 30);
     //////////////////////////
-    console.log(state.players[0]);
+    console.log(state.nz1.attackBox.width);
     drawbg(state.bg);
     drawPlayer(state.players[0]);
     drawPlayer(state.players[1]);

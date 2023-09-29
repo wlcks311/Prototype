@@ -41,7 +41,7 @@ let canvas_height = 1000;
 class BackGround {
     constructor() {
         this.bg_length = canvas_width;
-        this.bg_CanvasLength = canvas_height;
+        this.bg_canvasLength = canvas_height;
         this.bg_x = 0;
         this.bg_count = 4;
         this.bg_xMax = (this.bg_length * this.bg_count) - this.bg_length * (canvas_width / canvas_height);
@@ -57,14 +57,14 @@ class BackGround {
 
 // 몹 기본 상위 클래스
 class Creature {
-    constructor(x, y, width, height, CanvasLength) {
+    constructor(x, y, width, height, canvasLength) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.CanvasLength = CanvasLength;
+        this.canvasLength = canvasLength;
         this.attackBox = {
-            position_x : this.x + this.CanvasLength / 2,
+            position_x : this.x + this.canvasLength / 2,
             position_y : this.y - 50,
             width: 80,
             height: 50,
@@ -125,8 +125,8 @@ class Creature {
         this.height = height;
     }
 
-    setCanvasSize(CanvasLength) {
-        this.CanvasLength = CanvasLength;
+    setCanvasSize(canvasLength) {
+        this.canvasLength = canvasLength;
     }
 
     setAttackBoxSize(width, height) {
@@ -148,8 +148,8 @@ class Creature {
 }
 
 class MainCharacter extends Creature {
-    constructor(x, y, width, height, CanvasLength) {
-        super(x, y, width, height, CanvasLength);
+    constructor(x, y, width, height, canvasLength) {
+        super(x, y, width, height, canvasLength);
         this.frameCount = 0;
         this.damagedCount = 0;
         this.refreshRate = 10;
@@ -157,7 +157,7 @@ class MainCharacter extends Creature {
         this.attackFrame = 0;
         this.damagedLoop = 0;
         this.BlockBox = {
-            x_right : this.x + this.CanvasLength - 10,
+            x_right : this.x + this.canvasLength - 10,
             x_left : this.x + 10,
             y : this.y + 60,
             width : 40,
@@ -168,8 +168,8 @@ class MainCharacter extends Creature {
 }
 
 class NormalZombie extends Creature { //좀비 클래스
-    constructor(x, y, width, height, CanvasLength) {
-        super(x, y, width, height, CanvasLength);
+    constructor(x, y, width, height, canvasLength) {
+        super(x, y, width, height, canvasLength);
         this.move_range = 100; // 몹이 무작위로 움직이는 최대 범위
         this.move_randNum = 0; // 몹이 무작위로 움직이는 범위
         this.moveCount = 0;
@@ -177,9 +177,9 @@ class NormalZombie extends Creature { //좀비 클래스
         this.xMax_left = 0;
         this.xMax_right = 0;
         this.x_detectLeft = this.x - 150; //몹이 왼쪽에서 플레이어를 감지 할 수 있는 범위
-        this.x_detectRight = this.x + this.CanvasLength + 150; //몹이 오른쪽에서 플레이어를 감지 할 수 있는 범위
+        this.x_detectRight = this.x + this.canvasLength + 150; //몹이 오른쪽에서 플레이어를 감지 할 수 있는 범위
         this.x_attackLeft = this.x + 30; //몹이 왼쪽에서 플레이어를 공격 할 수 있는 범위
-        this.x_attackRight = this.x + this.CanvasLength - 30; 
+        this.x_attackRight = this.x + this.canvasLength - 30; 
         this.movingDone = true;
         this.dead = false;
         this.attackBox.width = 80;
@@ -219,7 +219,7 @@ class NormalZombie extends Creature { //좀비 클래스
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
                 this.vel.lookingRight = true;
                 collisonCheckX[this.x + 50] = -1;
-                collisonCheckX[this.x + this.CanvasLength - 49] = 1;
+                collisonCheckX[this.x + this.canvasLength - 49] = 1;
                 this.x++;
             }
         }
@@ -227,7 +227,7 @@ class NormalZombie extends Creature { //좀비 클래스
             if (this.x != (this.xMax_left + this.xMax_right) / 2) { //가운데로 올 때까지 이동
                 this.vel.lookingRight = false;
                 collisonCheckX[this.x + 49] = 1;
-                collisonCheckX[this.x + this.CanvasLength - 50] = -1;
+                collisonCheckX[this.x + this.canvasLength - 50] = -1;
                 this.x--;
             }
         }
@@ -278,12 +278,12 @@ class NormalZombie extends Creature { //좀비 클래스
 
                     if (collisonCheckX[this.attackBox.position_x + this.attackBox.atkTimer] == 0) { //공격이 플레이어에게 닿은 경우
                         //어느 플레이어에 닿았는지 확인해야 함
-                        if (p1.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                        if (p1.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p1.x + p1.canvasLength) {
                             // 플레이어 1에 공격이 닿았을 경우
                             p1.isDamaged = true;
                         }
 
-                        if (p2.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                        if (p2.x < this.attackBox.position_x + this.attackBox.atkTimer && this.attackBox.position_x + this.attackBox.atkTimer < p2.x + p2.canvasLength) {
                             // 플레이어 2에 공격이 닿았을 경우
                             p2.isDamaged = true;
                         }
@@ -336,12 +336,12 @@ class NormalZombie extends Creature { //좀비 클래스
                     
                     if (collisonCheckX[this.attackBox.position_x - this.attackBox.atkTimer] == 0) {//공격이 플레이어에게 닿은 경우
                         //어느 플레이어에 공격이 닿았는지 확인 해야함
-                        if (p1.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p1.x + p1.CanvasLength) {
+                        if (p1.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p1.x + p1.canvasLength) {
                             // 플레이어 1에 공격이 닿았을 경우
                             p1.isDamaged = true;
                         }
 
-                        if (p2.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p2.x + p2.CanvasLength) {
+                        if (p2.x < this.attackBox.position_x - this.attackBox.atkTimer && this.attackBox.position_x - this.attackBox.atkTimer < p2.x + p2.canvasLength) {
                             // 플레이어 2에 공격이 닿았을 경우
                             p2.isDamaged = true;
                         }
@@ -370,26 +370,26 @@ class NormalZombie extends Creature { //좀비 클래스
 
         //몹의 공격 범위 갱신
         this.x_detectLeft = this.x - 150;
-        this.x_detectRight = this.x + this.CanvasLength + 150;
+        this.x_detectRight = this.x + this.canvasLength + 150;
 
         this.x_attackLeft = this.x + 10;
-        this.x_attackRight = this.x + this.CanvasLength - 10;
+        this.x_attackRight = this.x + this.canvasLength - 10;
 
-        this.attackBox.position_x = this.x + this.CanvasLength / 2;
+        this.attackBox.position_x = this.x + this.canvasLength / 2;
 
         if (this.stunned == true) { //공격이 막혀 잠시 스턴에 걸린 경우
             this.stun();
         }
         if (this.dead == false && this.vel.attacking == false && this.stunned == false) { // 몹이 살아있고, 공격하고 있지 않고, 스턴에 걸리지 않은 상태라면 움직임
-            for (var i = 0; i <= this.CanvasLength - 100; i++) {
+            for (var i = 0; i <= this.canvasLength - 100; i++) {
                 collisonCheckX[this.x + 50 + i] = 1;
             }
 
 
              // 플레이어가 탐지 범위 안에 들어온 경우
-            if((this.x_detectLeft <= bigX && bigX <= this.x + 50) || (this.x + this.CanvasLength - 50 <= smallX && smallX <= this.x_detectRight)) { 
+            if((this.x_detectLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
-                if ((this.x_attackLeft <= bigX && bigX <= this.x + 50) || (this.x + this.CanvasLength - 50 <= smallX && smallX <= this.x_attackRight)) {
+                if ((this.x_attackLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_attackRight)) {
                     if (this.x_attackLeft <= bigX && bigX <= this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
                         this.lookingRight == false;
                     }
@@ -405,7 +405,7 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.vel.moving = true;
                         this.vel.lookingRight = false;
                         collisonCheckX[this.x + 49] = 1;
-                        collisonCheckX[this.x + this.CanvasLength - 50] = -1;
+                        collisonCheckX[this.x + this.canvasLength - 50] = -1;
                         this.x--;
                     }
 
@@ -413,13 +413,13 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.vel.moving = true;
                         this.vel.lookingRight = true;
                         collisonCheckX[this.x + 50] = -1;
-                        collisonCheckX[this.x + this.CanvasLength - 49] = 1;
+                        collisonCheckX[this.x + this.canvasLength - 49] = 1;
                         this.x++;
                     }
                 }
             }
 
-            else if((this.x + 50 < this.xMax_left) || (this.xMax_right < this.x + this.CanvasLength - 40)) {//지정된 구역을 벗어난 경우
+            else if((this.x + 50 < this.xMax_left) || (this.xMax_right < this.x + this.canvasLength - 40)) {//지정된 구역을 벗어난 경우
                 this.comeBackToPosition(collisonCheckX);
             }
 
@@ -450,10 +450,10 @@ class NormalZombie extends Creature { //좀비 클래스
                     else { //움직이는 경우
 
                         if ((this.move_randNum % 2 == 0) && this.moveCount < this.move_randNum) { //짝수인 경우 -> 오른쪽으로 이동
-                            if (this.x + this.CanvasLength + this.speed <= this.xMax_right) { //고정 범위 안에 있는 경우
+                            if (this.x + this.canvasLength + this.speed <= this.xMax_right) { //고정 범위 안에 있는 경우
                                 this.vel.moving = true;
                                 collisonCheckX[this.x + 50] = -1;
-                                collisonCheckX[this.x + this.CanvasLength -49] = 1;
+                                collisonCheckX[this.x + this.canvasLength -49] = 1;
                                 this.vel.lookingRight = true;
                                 this.x+=this.speed;
                                 this.moveCount+=this.speed;
@@ -469,7 +469,7 @@ class NormalZombie extends Creature { //좀비 클래스
                             if (this.x - this.speed >= this.xMax_left) { //고정 범위 안에 있는 경우
                                 this.vel.moving = true;
                                 collisonCheckX[this.x + 49] = 1;
-                                collisonCheckX[this.x + this.CanvasLength - 50] = -1;
+                                collisonCheckX[this.x + this.canvasLength - 50] = -1;
                                 this.vel.lookingRight = false;
                                 this.x-=this.speed;
                                 this.moveCount+=this.speed;
@@ -498,7 +498,7 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
-        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.CanvasLength)) {
+        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength)) {
             this.healthCount--;
             if (this.healthCount == 0) {
                 console.log('nz1 dead');
@@ -516,7 +516,7 @@ function initGame() {
 
 function createGameState() {
     bg = new BackGround();
-    //constructor(x, y, width, height, CanvasLength)
+    //constructor(x, y, width, height, canvasLength)
     p1 = new MainCharacter(200, 600, 500, 500, 200);
     p1.setLoops(4, 8, 6);
     p2 = new MainCharacter(500, 600, 500, 500, 200);
@@ -537,7 +537,7 @@ function createGameState() {
 
 //플레이어 방어 상자 갱신
 function updateBlockBox(player, x, y) {
-    player.BlockBox.x_right = x + player.CanvasLength - 10;
+    player.BlockBox.x_right = x + player.canvasLength - 10;
     player.BlockBox.x_left = x + 10;
     player.BlockBox.y = y + 60;
 }
@@ -552,7 +552,7 @@ function gameLoop(state) {
     const nz1 = state.nz1;
     const collisonCheckX = state.collisonCheckX;
 
-    var bigX = biggerX(p1.x + p1.CanvasLength - 40, p2.x + p2.CanvasLength - 40);
+    var bigX = biggerX(p1.x + p1.canvasLength - 40, p2.x + p2.canvasLength - 40);
     var smallX = smallerX(p1.x + 40, p2.x + 40);
 
     updateBlockBox(p1, p1.x, p1.y);
@@ -567,11 +567,11 @@ function gameLoop(state) {
     }
     
 
-    for (var i = 0; i <= p1.CanvasLength - 80; i++) { //플레이어1이 서 있는 곳은 0 으로 표시
+    for (var i = 0; i <= p1.canvasLength - 80; i++) { //플레이어1이 서 있는 곳은 0 으로 표시
         collisonCheckX[p1.x + 40 + i] = 0;
     }
 
-    for (var i = 0; i <= p2.CanvasLength - 80; i++) { //플레이어2가 서 있는 곳은 0 으로 표시
+    for (var i = 0; i <= p2.canvasLength - 80; i++) { //플레이어2가 서 있는 곳은 0 으로 표시
         collisonCheckX[p2.x + 40 + i] = 0;
     }
 
@@ -590,8 +590,8 @@ function gameLoop(state) {
             else if (p1.x > 0 && p2.x > 0){ // 그냥 각자 움직이는 경우
                 collisonCheckX[p1.x + 38] = 0;
                 collisonCheckX[p1.x + 39] = 0;
-                collisonCheckX[p1.x + p1.CanvasLength - 40] = -1;
-                collisonCheckX[p1.x + p1.CanvasLength - 41] = -1;
+                collisonCheckX[p1.x + p1.canvasLength - 40] = -1;
+                collisonCheckX[p1.x + p1.canvasLength - 41] = -1;
                 p1.x-=2;
                 p1.attackBox.position_x-=2;
     
@@ -612,8 +612,8 @@ function gameLoop(state) {
 
                 collisonCheckX[p2.x + 38] = 0;
                 collisonCheckX[p2.x + 39] = 0;
-                collisonCheckX[p2.x + p2.CanvasLength - 40] = -1;
-                collisonCheckX[p2.x + p2.CanvasLength - 41] = -1;
+                collisonCheckX[p2.x + p2.canvasLength - 40] = -1;
+                collisonCheckX[p2.x + p2.canvasLength - 41] = -1;
                 p2.x-=2;
                 p2.attackBox.position_x-=2;
     
@@ -637,8 +637,8 @@ function gameLoop(state) {
     }
 
     //둘 다 오른쪽으로 움직일 때
-    if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.CanvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
-        if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.CanvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
+    if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.canvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
+        if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.canvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
             if ((smallX >= (canvas_width - 400)) && bg.bg_x > 0) { //배경화면 오른쪽으로 이동
                 bg.bgmovingLeft = true;
                 bg.bg_x += bg.ratio * 2;
@@ -646,11 +646,11 @@ function gameLoop(state) {
                 // 플레이어 이외의 물체나 몬스터들
                 nz1.x-=2;
             }
-            else if (p1.x + p1.CanvasLength < canvas_width && p2.x + p2.CanvasLength < canvas_width){ // 그냥 각자 움직이는 경우
+            else if (p1.x + p1.canvasLength < canvas_width && p2.x + p2.canvasLength < canvas_width){ // 그냥 각자 움직이는 경우
                 collisonCheckX[p1.x + 40] = -1;
                 collisonCheckX[p1.x + 41] = -1;
-                collisonCheckX[p1.x + p1.CanvasLength - 39] = 0;
-                collisonCheckX[p1.x + p1.CanvasLength - 38] = 0;
+                collisonCheckX[p1.x + p1.canvasLength - 39] = 0;
+                collisonCheckX[p1.x + p1.canvasLength - 38] = 0;
                 p1.x+=2;
                 p1.attackBox.position_x+=2;
     
@@ -671,8 +671,8 @@ function gameLoop(state) {
                 
                 collisonCheckX[p2.x + 40] = -1;
                 collisonCheckX[p2.x + 41] = -1;
-                collisonCheckX[p2.x + p2.CanvasLength - 39] = 0;
-                collisonCheckX[p2.x + p2.CanvasLength - 38] = 0;
+                collisonCheckX[p2.x + p2.canvasLength - 39] = 0;
+                collisonCheckX[p2.x + p2.canvasLength - 38] = 0;
                 p2.x+=2;
                 p2.attackBox.position_x+=2;
     
@@ -722,8 +722,8 @@ function gameLoop(state) {
         if (p1.x > 0 && p2.vel.movingLeft == false) {
             collisonCheckX[p1.x + 38] = 0;
             collisonCheckX[p1.x + 39] = 0;
-            collisonCheckX[p1.x + p1.CanvasLength - 40] = -1;
-            collisonCheckX[p1.x + p1.CanvasLength - 41] = -1;
+            collisonCheckX[p1.x + p1.canvasLength - 40] = -1;
+            collisonCheckX[p1.x + p1.canvasLength - 41] = -1;
             p1.x-=2;
             p1.attackBox.position_x-=2;
 
@@ -745,12 +745,12 @@ function gameLoop(state) {
     }
 
     //플래이어1이 오른쪽으로 이동하는 경우 (플레이어2는 오른쪽으로 가지 않을 때)
-    if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.CanvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
-        if (p1.x < canvas_width - p1.CanvasLength && p2.vel.movingRight == false) {
+    if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.canvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
+        if (p1.x < canvas_width - p1.canvasLength && p2.vel.movingRight == false) {
             collisonCheckX[p1.x + 40] = -1;
             collisonCheckX[p1.x + 41] = -1;
-            collisonCheckX[p1.x + p1.CanvasLength - 39] = 0;
-            collisonCheckX[p1.x + p1.CanvasLength - 38] = 0;
+            collisonCheckX[p1.x + p1.canvasLength - 39] = 0;
+            collisonCheckX[p1.x + p1.canvasLength - 38] = 0;
             p1.x+=2;
             p1.attackBox.position_x+=2;
 
@@ -858,8 +858,8 @@ function gameLoop(state) {
         if (p2.x > 0 && p1.vel.movingLeft == false) {
             collisonCheckX[p2.x + 38] = 0;
             collisonCheckX[p2.x + 39] = 0;
-            collisonCheckX[p2.x + p2.CanvasLength - 40] = -1;
-            collisonCheckX[p2.x + p2.CanvasLength - 41] = -1;
+            collisonCheckX[p2.x + p2.canvasLength - 40] = -1;
+            collisonCheckX[p2.x + p2.canvasLength - 41] = -1;
             p2.x-=2;
             p2.attackBox.position_x-=2;
 
@@ -881,12 +881,12 @@ function gameLoop(state) {
     }
 
     //플래이어2가 오른쪽으로 이동하는 경우 (플레이어1은 오른쪽으로 가지 않을 때)
-    if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.CanvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
-        if (p2.x < canvas_width - p2.CanvasLength && p1.vel.movingRight == false) {
+    if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.canvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
+        if (p2.x < canvas_width - p2.canvasLength && p1.vel.movingRight == false) {
             collisonCheckX[p2.x + 40] = -1;
             collisonCheckX[p2.x + 41] = -1;
-            collisonCheckX[p2.x + p2.CanvasLength - 39] = 0;
-            collisonCheckX[p2.x + p2.CanvasLength - 38] = 0;
+            collisonCheckX[p2.x + p2.canvasLength - 39] = 0;
+            collisonCheckX[p2.x + p2.canvasLength - 38] = 0;
             p2.x+=2;
             p2.attackBox.position_x+=2;
 
