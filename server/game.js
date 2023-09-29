@@ -157,8 +157,8 @@ class MainCharacter extends Creature {
         this.attackFrame = 0;
         this.damagedLoop = 0;
         this.BlockBox = {
-            x_right : this.x + this.CanvasLength - 70,
-            x_left : this.x + 30,
+            x_right : this.x + this.CanvasLength - 10,
+            x_left : this.x + 10,
             y : this.y + 60,
             width : 40,
             height : 70
@@ -248,17 +248,17 @@ class NormalZombie extends Creature { //좀비 클래스
         this.vel.moving = false;
         this.enteredAttackFunction = true;
 
-        if (this.vel.lookingRight == true) { // 오른쪽 보고있는 경우
-            if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 80, 프레임당 2. 40프레임 소모
+        if (this.vel.lookingRight == true) { // 몬스터가 오른쪽 보고있는 경우
+            if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                 //공격 상자 늘리기 전에 플레이어들의 방어 확인
-                if (p1.vel.bocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p1.BlockBox.x_left) { 
+                if (p1.vel.bocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                     // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.stunned = true;
                     this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
 
-                if (p2.vel.bocking == true && (this.attackBox.position_x + this.attackBox.atkTimer + 1) >= p2.BlockBox.x_left) {
+                if (p2.vel.bocking == true && p2.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p2.BlockBox.x_left) {
                     //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.stunned = true;
                     this.vel.attacking = false;
@@ -270,7 +270,9 @@ class NormalZombie extends Creature { //좀비 클래스
                     }
 
                     else if (this.waitCount == 30) {
-                        this.attackBox.atkTimer+=2;
+                        if (this.attackCount >= 2) {
+                            this.attackBox.atkTimer += 6;
+                        }
                     }
 
 
@@ -309,13 +311,13 @@ class NormalZombie extends Creature { //좀비 클래스
         else { //왼쪽을 보고 있는 경우
             if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                 //공격 상자 늘리기 전에 플레이어의 방어 확인
-                if (p1.vel.bocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p1.BlockBox.x_right) {
+                if (p1.vel.bocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                     // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.stunned = true;
                     this.vel.attacking = false;
                     this.attackBox.atkTimer = 0;
                 }
-                if (p2.vel.bocking == true && (this.attackBox.position_x - this.attackBox.atkTimer - 1) <= p2.BlockBox.x_right) {
+                if (p2.vel.bocking == true && p2.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p2.BlockBox.x_right) {
                     // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
                     this.stunned = true;
                     this.vel.attacking = false;
@@ -327,7 +329,9 @@ class NormalZombie extends Creature { //좀비 클래스
                     }
 
                     else if (this.waitCount == 30) {
-                        this.attackBox.atkTimer+=2;
+                        if (this.attackCount >= 2) {
+                            this.attackBox.atkTimer += 6;
+                        }
                     }
                     
                     if (collisonCheckX[this.attackBox.position_x - this.attackBox.atkTimer] == 0) {//공격이 플레이어에게 닿은 경우
@@ -533,8 +537,8 @@ function createGameState() {
 
 //플레이어 방어 상자 갱신
 function updateBlockBox(player, x, y) {
-    player.BlockBox.x_right = x + player.CanvasLength - 70;
-    player.BlockBox.x_left = x + 30;
+    player.BlockBox.x_right = x + player.CanvasLength - 10;
+    player.BlockBox.x_left = x + 10;
     player.BlockBox.y = y + 60;
 }
 
