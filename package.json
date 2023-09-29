@@ -10,7 +10,8 @@
     "socket.io": "^4.7.1"
   },
   "scripts": {
-    "start": "nodemon server/server.js"
+    "start": "nodemon server/server.js",
+    "deploy": "electron-builder --windows nsis:ia32"
   },
   "build": {
     "productName": "test",
