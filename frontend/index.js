@@ -303,7 +303,7 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.fillRect(state.nz1.x_attackLeft, 800, 5, 30);
     ctx.fillRect(state.nz1.x_attackRight, 800, 5, 30);
     //////////////////////////
-    console.log(state.nz1.attackBox.width);
+    console.log(state.bg.bgmovingLeft);
     drawbg(state.bg);
     drawPlayer(state.players[0]);
     drawPlayer(state.players[1]);
