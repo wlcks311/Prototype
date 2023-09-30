@@ -37,6 +37,9 @@ function smallerX(p1_x, p2_x){
 let canvas_width = 2000;
 let canvas_height = 1000;
 
+var currentStageNum = 0;
+var maxStageNum = 1;
+
 /////////////////////   Classes  /////////////////////////////
 class BackGround {
     constructor() {
@@ -49,6 +52,7 @@ class BackGround {
         this.bgmovingRight = false;
         this.bgmovingLeft = false;
          //주인공이 화면 끝까지 이동할 수 있는 경우는 오른쪽으로 가면서 bg_x == bg_xMax이거나, 왼쪽으로 가면서 bg_x == 0 인 경우. 그 이외에는 화면이 움직여야 함
+        this.stageNum = 0;// 스테이지는 0부터 시작, 맵이 바뀔 때 마다 1씩 증가함
     }
     draw() {
         ctx.drawImage(img_bg_test, this.bg_x, 0, this.bg_length * (canvas_width / canvas_height), this.bg_length, 0, 0, canvas_width, canvas_height);
@@ -190,7 +194,8 @@ class NormalZombie extends Creature { //좀비 클래스
         this.waitCount = 0;
         this.deathFrame = 0;
         this.deathCount = 0;
-
+        this.stageNum = 0; //stage 정보
+        this.attackRandomNum = 0; //공격 종류를 결정하는 난수
         //콘솔 확인용 임시 변수
         this.isCommingBackToPosition = false;
         this.enteredAttackFunction = false;
@@ -528,7 +533,7 @@ function createGameState() {
     return {
         bg,
         players: [p1, p2],
-        nz1,
+        zombies: [nz1],
         collisonCheckX,
         activate: true,
     }
@@ -548,7 +553,7 @@ function gameLoop(state) {
 
     const p1 = state.players[0];
     const p2 = state.players[1];
-    const nz1 = state.nz1;
+    const nz1 = state.zombies[0];
     const collisonCheckX = state.collisonCheckX;
 
     var bigX = biggerX(p1.x + p1.canvasLength - 40, p2.x + p2.canvasLength - 40);
@@ -557,11 +562,11 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    if (nz1.vel.attacking == true) {
+    if (nz1.vel.attacking == true && nz1.stageNum == currentStageNum) {
         nz1.zombieAttack(p1, p2);
     }
 
-    else if (nz1.vel.attacking == false) {
+    else if (nz1.vel.attacking == false && nz1.stageNum == currentStageNum) {
         nz1.move(bigX, smallX, collisonCheckX);
     }
     
@@ -638,7 +643,7 @@ function gameLoop(state) {
     //둘 다 오른쪽으로 움직일 때
     if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.canvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.bocking == false && p1.isDamaged == false)) {
         if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.canvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.bocking == false && p2.isDamaged == false)) {
-            if ((smallX >= (canvas_width - 400)) && bg.bg_x > 0) { //배경화면 오른쪽으로 이동
+            if ((smallX >= (canvas_width - 400)) && bg.bg_x < bg.bg_xMax) { //배경화면 오른쪽으로 이동
                 bg.bgmovingLeft = true;
                 bg.bg_x += bg.ratio * 2;
 
@@ -973,7 +978,7 @@ function gameLoop(state) {
     
 
     //NormalZombie 애니메이션 변수
-    if (nz1.dead == false) {
+    if (nz1.dead == false && nz1.stageNum == currentStageNum) {
         if (nz1.vel.moving == false) {
             //플레이어가 해당 몬스터의 공격을 막았을 경우
            if (nz1.stunned == true) {
