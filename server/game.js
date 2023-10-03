@@ -37,7 +37,7 @@ function smallerX(p1_x, p2_x){
 let canvas_width = 2000;
 let canvas_height = 1000;
 
-var currentStageNum = 0;
+
 var maxStageNum = 1;
 
 /////////////////////   Classes  /////////////////////////////
@@ -46,7 +46,7 @@ class BackGround {
         this.bg_length = canvas_width;
         this.bg_canvasLength = canvas_height;
         this.bg_x = 0;
-        this.bg_count = 4;
+        this.bg_count = 3;
         this.bg_xMax = (this.bg_length * this.bg_count) - this.bg_length * (canvas_width / canvas_height);
         this.ratio = this.bg_length / canvas_height;
         this.bgmovingRight = false;
@@ -615,16 +615,17 @@ function initGame() {
 function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
-    p1 = new MainCharacter(200, 600, 500, 500, 200);
+    p1 = new MainCharacter(200, 700, 500, 500, 200);
     p1.setLoops(4, 8, 6);
-    p2 = new MainCharacter(500, 600, 500, 500, 200);
+    p2 = new MainCharacter(500, 700, 500, 500, 200);
     p2.setLoops(4, 8, 6);
-
-    nz1 = new NormalZombie(1200, 600, 500, 500, 200);
+    var currentStageNum = 0;
+    nz1 = new NormalZombie(1200, 700, 500, 500, 200);
     nz1.setLoops(6, 7, 4);
     nz1.setFixedRange(1000, 1400);
     nz1.setStunLoop(3);
     return {
+        currentStageNum,
         bg,
         players: [p1, p2],
         zombies: [nz1],
@@ -644,7 +645,7 @@ function gameLoop(state) {
     if (!state) {
         return;
     }
-
+    const currentStageNum = state.currentStageNum;
     const p1 = state.players[0];
     const p2 = state.players[1];
     const nz1 = state.zombies[0];
@@ -678,7 +679,7 @@ function gameLoop(state) {
     //둘 다 왼쪽으로 움직일 때
     if ((p1.vel.movingLeft == true && collisonCheckX[p1.x + 38] != 1) && (p1.vel.attacking == false && p1.vel.blocking == false && p1.isDamaged == false)) {
         if ((p2.vel.movingLeft == true && collisonCheckX[p2.x + 38] != 1) && (p2.vel.attacking == false && p2.vel.blocking == false && p2.isDamaged == false)) {
-            if ((bigX <= 600) && bg.bg_x > 0) { //배경화면 오른쪽으로 이동
+            if ((bigX <= 800) && bg.bg_x > 0) { //배경화면 오른쪽으로 이동
                 bg.bgmovingRight = true;
                 bg.bg_x -= bg.ratio * 2;
 
@@ -767,7 +768,7 @@ function gameLoop(state) {
     //둘 다 오른쪽으로 움직일 때
     if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.canvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.blocking == false && p1.isDamaged == false)) {
         if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.canvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.blocking == false && p2.isDamaged == false)) {
-            if ((smallX >= (canvas_width - 400)) && bg.bg_x < bg.bg_xMax) { //배경화면 오른쪽으로 이동
+            if ((smallX >= (canvas_width - 700)) && bg.bg_x < bg.bg_xMax) { //배경화면 오른쪽으로 이동
                 bg.bgmovingLeft = true;
                 bg.bg_x += bg.ratio * 2;
 
@@ -1190,6 +1191,15 @@ function gameLoop(state) {
     
 
 
+
+    //스테이지 이동 로직 -> 오른쪽으로만 이동
+    if (bg.bg_x == bg.bg_xMax && bigX == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
+        p1.x = 100;
+        p2.x = 300;
+        currentStageNum++;
+        bg.x = 0;
+    }
+    
 }
 
 

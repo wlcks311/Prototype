@@ -1,8 +1,8 @@
 version: 0.1.0
 files:
   - url: test-Setup-0.1.0.exe
-    sha512: H6UDl8lU+EbblgVhLcOqvv+dPxJzf1ZZ5LJQfWg6gugMVNvH2DRqw8k7cUltlg9Z8eGz9IXM0eY7kzJQ64JBpg==
-    size: 43881607
+    sha512: uh5gXcE9ZCtOHI5F3Yt8ZJ6wiw06zSccip7nFzEtfOy8OCo08xmfTt1DOIfTTBsevU0dMFFNWKFVLJPXa2CveA==
+    size: 43955134
 path: test-Setup-0.1.0.exe
-sha512: H6UDl8lU+EbblgVhLcOqvv+dPxJzf1ZZ5LJQfWg6gugMVNvH2DRqw8k7cUltlg9Z8eGz9IXM0eY7kzJQ64JBpg==
-releaseDate: '2023-10-02T14:43:26.261Z'
+sha512: uh5gXcE9ZCtOHI5F3Yt8ZJ6wiw06zSccip7nFzEtfOy8OCo08xmfTt1DOIfTTBsevU0dMFFNWKFVLJPXa2CveA==
+releaseDate: '2023-10-03T12:01:13.880Z'

@@ -24,6 +24,8 @@ let playerNumber;
 let gameActive = false;
 
 /////////////////////////////img files
+
+//player 1
 var img_Idle_full = new Image();
 img_Idle_full.src = './img/Player_idle.png'
 
@@ -42,26 +44,11 @@ img_Middle_Attack_full.src = './img/Player_attack.png'
 var img_Middle_Attack_full_left = new Image();
 img_Middle_Attack_full_left.src = './img/Player_attack_left.png'
 
-var img_Middle_Attack_full2 = new Image();
-img_Middle_Attack_full2.src = './img/Player2_attack.png'
-
-var img_Middle_Attack_full_left2 = new Image();
-img_Middle_Attack_full_left2.src = './img/Player2_attack_left.png'
-
 var img_Block = new Image();
 img_Block.src = './img/Player_block.PNG'
 
 var img_Block_left = new Image();
 img_Block_left.src = './img/Player_block_left.png'
-
-var img_bg_test = new Image();
-img_bg_test.src = './img/BG_test.png'
-
-var img_Player_health = new Image();
-img_Player_health.src = './img/Player_healthBar.png'
-
-var img_Zombie_health = new Image();
-img_Zombie_health.src = './img/Zombie_healthBar.png'
 
 var img_Player_attacked = new Image();
 img_Player_attacked.src = './img/Player_attacked.png'
@@ -69,6 +56,60 @@ img_Player_attacked.src = './img/Player_attacked.png'
 var img_Player_attacked_left = new Image();
 img_Player_attacked_left.src = './img/Player_attacked_left.png'
 
+//player 2
+var img_Idle_full2 = new Image();
+img_Idle_full2.src = './img/Player2_idle.png'
+
+var img_Idle_full_left2 = new Image();
+img_Idle_full_left2.src = './img/Player2_idle_left.png'
+
+var img_Walking_full2 = new Image();
+img_Walking_full2.src = './img/Player2_walking.png'
+
+var img_Walking_full_left2 = new Image();
+img_Walking_full_left2.src = './img/Player2_walking_left.png'
+
+var img_Middle_Attack_full2 = new Image();
+img_Middle_Attack_full2.src = './img/Player2_attack.png'
+
+var img_Middle_Attack_full_left2 = new Image();
+img_Middle_Attack_full_left2.src = './img/Player2_attack_left.png'
+
+var img_Block2 = new Image();
+img_Block2.src = './img/Player2_block.PNG'
+
+var img_Block_left2 = new Image();
+img_Block_left2.src = './img/Player2_block_left.png'
+
+var img_Player_attacked2 = new Image();
+img_Player_attacked2.src = './img/Player2_attacked.png'
+
+var img_Player_attacked_left2 = new Image();
+img_Player_attacked_left2.src = './img/Player2_attacked_left.png'
+
+//BackGrounds
+var img_bg_test = new Image();
+img_bg_test.src = './img/BG_test.png'
+
+var img_bg_test1 = new Image();
+img_bg_test1.src = './img/Bg_test1.png'
+
+var img_bg_test2 = new Image();
+img_bg_test2.src = './img/Bg_test2.png'
+
+var bgArray = [ img_bg_test1, img_bg_test2 ];
+
+//utils
+var img_Player_health = new Image();
+img_Player_health.src = './img/Player_healthBar.png'
+
+var img_Zombie_health = new Image();
+img_Zombie_health.src = './img/Zombie_healthBar.png'
+
+var img_attack_warning = new Image();
+img_attack_warning.src = './img/Attack_warning.png'
+
+//zombies
 var img_Zombie_idle = new Image();
 img_Zombie_idle.src = './img/Zombie_idle.png'
 
@@ -99,8 +140,7 @@ img_Zombie_death.src = './img/Zombie_death.png'
 var img_Zombie_death_left = new Image();
 img_Zombie_death_left.src = './img/Zombie_death_left.png'
 
-var img_attack_warning = new Image();
-img_attack_warning.src = './img/Attack_warning.png'
+
 //////////////////////////////////////
 
 //socket.emit 은 이벤트 명을 지정하고 데이터 전송 (데이터 필요 없을 수도 있음)
@@ -242,7 +282,7 @@ function drawPlayer(player) { //player 1 그림
 
 function drawPlayer2(player) {
     if (player.vel.attacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
-        PlayerAttack(player);
+        Player2Attack(player);
     }
 
     //플레이어가 몬스터에게 맞은 경우 -> 맞은 모션
@@ -250,28 +290,28 @@ function drawPlayer2(player) {
         if (player.vel.lookingRight == true) { //오른쪽을 보고있다가 맞은 경우
             if (player.damagedCount < 60) {
                 if (player.damagedCount <= 30) {
-                    ctx.drawImage(img_Player_attacked, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                    ctx.drawImage(img_Player_attacked2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
                 else {
-                    ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                    ctx.drawImage(img_Player_attacked2, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
             else if (damagedCount == 60) {
-                ctx.drawImage(img_Player_attacked, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Player_attacked2, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
         }
 
         else if(player.vel.lookingRight == false) { //왼쪽을 보고 있다가 맞은 경우
             if (player.damagedCount < 60) {
                 if (player.damagedCount <= 30) {
-                    ctx.drawImage(img_Player_attacked_left, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                    ctx.drawImage(img_Player_attacked_left2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
                 else {
-                    ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                    ctx.drawImage(img_Player_attacked_left2, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
             }
             else if (player.damagedCount == 60) {
-                ctx.drawImage(img_Player_attacked_left, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Player_attacked_left2, 500, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
         }
     }
@@ -281,45 +321,54 @@ function drawPlayer2(player) {
         if (player.vel.blocking == true) {
             ctx.fillStyle = 'blue';
             if(player.vel.lookingRight == true) { //오른쪽 보고있는 경우 -> 오른쪽 방어
-                ctx.drawImage(img_Block, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Block2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 ctx.fillRect(player.BlockBox.x_right, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
             }
 
             else if (player.vel.lookingRight == false) { //왼쪽 보고있는 경우 -> 왼쪽 방어
-                ctx.drawImage(img_Block_left, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Block_left2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 ctx.fillRect(player.BlockBox.x_left, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
             }
         }
 
         else if (player.vel.moving == true) { //걷는 경우
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
-                ctx.drawImage(img_Walking_full, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Walking_full2, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
     
             else { // 왼쪽을 보고있는 경우
-                ctx.drawImage(img_Walking_full_left, player.width *player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Walking_full_left2, player.width *player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
         }
 
         else { // 가만히 서 있는 경우
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
-                ctx.drawImage(img_Idle_full, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Idle_full2, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
     
             else { // 왼쪽을 보고있는 경우
-                ctx.drawImage(img_Idle_full_left, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
+                ctx.drawImage(img_Idle_full_left2, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
         }
     }
 }
 
-function drawbg(BackGround) {
-    ctx.drawImage(img_bg_test, BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
+function drawbg(BackGround, currentStageNum) {
+    ctx.drawImage(bgArray[currentStageNum], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
 }
 
 function drawZombie(zombie) {
+    //공격 경고 알림
+    if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
+        ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+    }
+
+    else if (zombie.attackRandomNum >= 0) {// 가드 불가 공격
+        ctx.drawImage(img_attack_warning, 250, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+    }
+
     //zombie 체력바
-    ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y - 40, zombie.canvasLength, zombie.canvasLength);
+    ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
     if (zombie.dead == false) {
         if (zombie.vel.moving == false) { //움직이지 않는 경우
             if (zombie.stunned == true) {//기절한 경우
@@ -396,9 +445,9 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     ctx.fillRect(state.zombies[0].x_attackRight, 800, 5, 30);
     //////////////////////////
     console.log(state.bg.bgmovingLeft);
-    drawbg(state.bg);
+    drawbg(state.bg, state.currentStageNum);
     drawPlayer(state.players[0]);
-    drawPlayer(state.players[1]);
+    drawPlayer2(state.players[1]);
     drawZombie(state.zombies[0]);
 }
 
