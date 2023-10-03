@@ -183,7 +183,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.x_detectLeft = this.x - 150; //몹이 왼쪽에서 플레이어를 감지 할 수 있는 범위
         this.x_detectRight = this.x + this.canvasLength + 150; //몹이 오른쪽에서 플레이어를 감지 할 수 있는 범위
         this.x_attackLeft = this.x + 30; //몹이 왼쪽에서 플레이어를 공격 할 수 있는 범위
-        this.x_attackRight = this.x + this.canvasLength - 30; 
+        this.x_attackRight = this.x + this.canvasLength - 30;
         this.movingDone = true;
         this.dead = false;
         this.attackFrame = 0;
@@ -645,7 +645,6 @@ function gameLoop(state) {
     if (!state) {
         return;
     }
-    const currentStageNum = state.currentStageNum;
     const p1 = state.players[0];
     const p2 = state.players[1];
     const nz1 = state.zombies[0];
@@ -657,11 +656,11 @@ function gameLoop(state) {
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    if (nz1.vel.attacking == true && nz1.stageNum == currentStageNum) {
+    if (nz1.vel.attacking == true && nz1.stageNum == state.currentStageNum) {
         nz1.zombieAttack(p1, p2);
     }
 
-    else if (nz1.vel.attacking == false && nz1.stageNum == currentStageNum) {
+    else if (nz1.vel.attacking == false && nz1.stageNum == state.currentStageNum) {
         nz1.move(bigX, smallX, collisonCheckX);
     }
     
@@ -1132,7 +1131,7 @@ function gameLoop(state) {
     
 
     //NormalZombie 애니메이션 변수
-    if (nz1.dead == false && nz1.stageNum == currentStageNum) {
+    if (nz1.dead == false && nz1.stageNum == state.currentStageNum) {
         if (nz1.vel.moving == false) {
             //플레이어가 해당 몬스터의 공격을 막았을 경우
            if (nz1.stunned == true) {
@@ -1193,11 +1192,11 @@ function gameLoop(state) {
 
 
     //스테이지 이동 로직 -> 오른쪽으로만 이동
-    if (bg.bg_x == bg.bg_xMax && bigX == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
+    if (bg.bg_x == bg.bg_xMax && bigX + 40 == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
         p1.x = 100;
         p2.x = 300;
-        currentStageNum++;
-        bg.x = 0;
+        state.currentStageNum++;
+        bg.bg_x = 0;
     }
     
 }
