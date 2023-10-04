@@ -34,8 +34,8 @@ function smallerX(p1_x, p2_x){
 }
 
 //canvas = document.getElementById('canvas'); 문서객체에서 참고할 수 없기때문에
-let canvas_width = 2000;
-let canvas_height = 1000;
+let canvas_width = 1920;
+let canvas_height = 960;
 
 
 var maxStageNum = 1;
@@ -615,12 +615,12 @@ function initGame() {
 function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
-    p1 = new MainCharacter(200, 700, 500, 500, 200);
+    p1 = new MainCharacter(200, 664, 500, 500, 200);
     p1.setLoops(4, 8, 6);
-    p2 = new MainCharacter(500, 700, 500, 500, 200);
+    p2 = new MainCharacter(500, 664, 500, 500, 200);
     p2.setLoops(4, 8, 6);
     var currentStageNum = 0;
-    nz1 = new NormalZombie(1200, 700, 500, 500, 200);
+    nz1 = new NormalZombie(1200, 664, 500, 500, 200);
     nz1.setLoops(6, 7, 4);
     nz1.setFixedRange(1000, 1400);
     nz1.setStunLoop(3);

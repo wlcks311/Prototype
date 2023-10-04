@@ -28,7 +28,6 @@
             display: inline-block;
             width: 480px;
             height: 480px;
-            background-color: red;
             position: absolute;
             top: 50%;
             left: 75%;
@@ -70,6 +69,68 @@
 
             border: none;
         }
+
+        input.createRoom-button {
+            background: url("lobbyImg/Create_room.png") no-repeat;
+            width: 179px;
+            height: 21px;
+            background-size: cover;
+
+            position: absolute;
+            top: 44%;
+            left: 50%;
+
+            margin-top: -21px;
+
+            border: none;
+        }
+
+        input.createRoom-button:hover {
+            background: url("lobbyImg/Create_room_onMouse.png") no-repeat;
+            width: 179px;
+            height: 21px;
+            background-size: cover;
+
+            position: absolute;
+            top: 44%;
+            left: 50%;
+
+            margin-top: -21px;
+
+            border: none;
+        }
+
+        .form-group {
+            position: absolute;
+            top: 47%;
+            left: 50%;
+        }
+
+        input.joinRoom-button {
+            background: url("lobbyImg/Join_room.png") no-repeat;
+            width: 95px;
+            height: 19px;
+            background-size: cover;
+
+            position: absolute;
+            top: 55%;
+            left: 50%;
+
+            border: none;
+        }
+
+        input.joinRoom-button:hover {
+            background: url("lobbyImg/Join_room_onMouse.png") no-repeat;
+            width: 95px;
+            height: 19px;
+            background-size: cover;
+
+            position: absolute;
+            top: 55%;
+            left: 50%;
+
+            border: none;
+        }
     </style>
 </head>
 
@@ -81,23 +142,15 @@
         <div id="singlePlay">
             <input type="button" class="single-button" onclick="alert('single play button')">
         </div>
-        
+
         <div id="multiPlay">
-            <button
-            type="submit"
-            class="btn btn-success"
-            id="newGameButton"
-            >Create New Game</button><br>
-            OR
-            <br>
+            <input type="button" class="createRoom-button" id="newGameButton">
+
             <div class="form-group">
                 <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
             </div>
-            <button
-            type="submit"
-            class="btn btn-success"
-            id="joinGameButton"
-            >Join game</button>
+
+            <input type="button" class="joinRoom-button" id="joinGameButton">
         </div>
     </div>
 
