@@ -1,33 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height:100%">
 <head>
     <meta charset="UTF-8">
     <title>Prototype</title>
     <style>
+        #initialScreen {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top:-540px;
+            margin-left:-960px;
+        }
+
+        #singlePlay {
+            display: inline-block;
+            width: 480px;
+            height: 480px;
+            position: absolute;
+	        top: 50%;
+            left: 0%;
+	        margin-top: -240px;
+        }
+
+        #multiPlay {
+            display: inline-block;
+            width: 480px;
+            height: 480px;
+            background-color: red;
+            position: absolute;
+            top: 50%;
+            left: 75%;
+	        margin-top: -240px;
+        }
+        
         #gameScreen {
             display: none;
+        }
+
+        input.single-button {
+            background: url("lobbyImg/Single.png") no-repeat;
+            width: 403px;
+            height: 70px;
+            background-size: cover;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            margin-top: -35px;
+            margin-left: -201px;
+
+            border: none;
+        }
+
+        input.single-button:hover {
+            background: url("lobbyImg/Single_onMouse.png") no-repeat;
+            width: 403px;
+            height: 70px;
+            background-size: cover;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            margin-top: -35px;
+            margin-left: -201px;
+
+            border: none;
         }
     </style>
 </head>
 
-<body>
+<body style="height:100%">
     <div id="initialScreen">
-        <h1>Prototype</h1>
-        <button
+        <div style="width:1920px; height:960px; position:absolute; top: 50%; margin-top: -480px;">
+            <img src="lobbyImg/Lobby.png" alt="" width="1920" height="960">
+        </div>
+        <div id="singlePlay">
+            <input type="button" class="single-button" onclick="alert('single play button')">
+        </div>
+        
+        <div id="multiPlay">
+            <button
             type="submit"
             class="btn btn-success"
             id="newGameButton"
-        >Create New Game</button><br>
-        OR
-        <br>
-        <div class="form-group">
-            <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
-        </div>
-        <button
+            >Create New Game</button><br>
+            OR
+            <br>
+            <div class="form-group">
+                <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+            </div>
+            <button
             type="submit"
             class="btn btn-success"
             id="joinGameButton"
-        >Join game</button>
+            >Join game</button>
+        </div>
     </div>
 
     <div id="gameScreen">
