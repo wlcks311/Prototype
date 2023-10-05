@@ -164,8 +164,8 @@ function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
-    canvas.width = 2000;
-    canvas.height = 1000;
+    canvas.width = 1920;
+    canvas.height = 960;
 
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
