@@ -16,7 +16,9 @@ const joinGameBtn = document.getElementById('joinGameButton');
 const gameCodeInput = document.getElementById('gameCodeInput'); //들어가고자 하는 방의 코드
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
 
-newGameBtn.addEventListener('click', newGame);
+const gameCodeScreen = document.getElementById('gameCode');
+
+newGameBtn.addEventListener('click', newGame); //create room 누를시 -> newGame함수 실행
 joinGameBtn.addEventListener('click', joinGame);
 
 let canvas, ctx;
@@ -144,7 +146,7 @@ img_Zombie_death_left.src = './img/Zombie_death_left.png'
 //////////////////////////////////////
 
 //socket.emit 은 이벤트 명을 지정하고 데이터 전송 (데이터 필요 없을 수도 있음)
-function newGame() {
+function newGame() { //create room 누를때 발생되는 함수
     socket.emit('newGame');
     init();
 }
@@ -418,6 +420,7 @@ function drawZombie(zombie) {
 }
 
 function paintGame(state) { //draw 함수를 이용해야 할 듯
+    gameCodeScreen.style.display = "none";
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //console.log(state.players[0]); // 속성은 넘어오지만 메소드는 넘어오지 않는다.
     //draw함수가 안먹히는 상황 -> 그렇다면 여기다가 함수를 구현하자.

@@ -11,7 +11,7 @@ function createWindow () {
     }
   })
 
-  win.loadFile('./frontend/index.html')
+  win.loadFile('./frontend/login.html')
 }
 
 app.whenReady().then(() => {

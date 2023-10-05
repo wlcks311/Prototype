@@ -131,6 +131,12 @@
 
             border: none;
         }
+
+        #gameCode {
+            position:absolute;
+            top: 50%;
+            left: 50%;
+        }
     </style>
 </head>
 
@@ -155,8 +161,7 @@
     </div>
 
     <div id="gameScreen">
-        <h1>Your Game code is : <span id="gameCodeDisplay"></span></h1>
-
+        <h1 id="gameCode">Your Game code is : <span id="gameCodeDisplay"></span></h1>
         <canvas id="canvas"></canvas>
     </div>
 
