@@ -142,6 +142,49 @@ img_Zombie_death.src = './img/Zombie_death.png'
 var img_Zombie_death_left = new Image();
 img_Zombie_death_left.src = './img/Zombie_death_left.png'
 
+//runningZombie
+var img_RunningZombie_idle = new Image();
+img_RunningZombie_idle.src = './img/RunningZombie_idle.png'
+
+var img_RunningZombie_idle_left = new Image();
+img_RunningZombie_idle_left.src = './img/RunningZombie_idle_left.png'
+
+var img_RunningZombie_attack = new Image();
+img_RunningZombie_attack.src = './img/RunningZombie_attack.png'
+
+var img_RunningZombie_attack_left = new Image();
+img_RunningZombie_attack_left.src = './img/RunningZombie_attack_left.png'
+
+var img_RunningZombie_walking = new Image();
+img_RunningZombie_walking.src = './img/RunningZombie_walking.png'
+
+var img_RunningZombie_walking_left = new Image();
+img_RunningZombie_walking_left.src = './img/RunningZombie_walking_left.png'
+
+var img_RunningZombie_stunned = new Image();
+img_RunningZombie_stunned.src = './img/RunningZombie_stunned.png'
+
+var img_RunningZombie_stunned_left = new Image();
+img_RunningZombie_stunned_left.src = './img/RunningZombie_stunned_left.png'
+
+var img_RunningZombie_death = new Image();
+img_RunningZombie_death.src = './img/RunningZombie_death.png'
+
+var img_RunningZombie_death_left = new Image();
+img_RunningZombie_death_left.src = './img/RunningZombie_death_left.png'
+
+var img_RunningZombie_running = new Image();
+img_RunningZombie_running.src = './img/RunningZombie_running.png'
+
+var img_RunningZombie_running_left = new Image();
+img_RunningZombie_running_left.src = './img/RunningZombie_running_left.png'
+
+var img_RunningZombie_grabbing = new Image();
+img_RunningZombie_grabbing.src = './img/RunningZombie_grabbing.png'
+
+var img_RunningZombie_grabbing_left = new Image();
+img_RunningZombie_grabbing_left.src = './img/RunningZombie_grabbing_left.png'
+
 
 //////////////////////////////////////
 
