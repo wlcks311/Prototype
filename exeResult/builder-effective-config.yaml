@@ -2,7 +2,7 @@ directories:
   output: ./exeResult/
   buildResources: ./resources/installer/
   app: .
-productName: test
+productName: seoulStation
 appId: com.electron.hello
 asar: true
 protocols:

@@ -1,8 +1,8 @@
 version: 0.1.0
 files:
-  - url: test-Setup-0.1.0.exe
-    sha512: 7UYDRzgRkxe5K11HHAs4qH6OB1I3EQFNAzMm7MtdgMInCZfj7w/2Cv3h8rYulaMtW0mB65WeDwQh/7jPZNzA3A==
-    size: 44105368
-path: test-Setup-0.1.0.exe
-sha512: 7UYDRzgRkxe5K11HHAs4qH6OB1I3EQFNAzMm7MtdgMInCZfj7w/2Cv3h8rYulaMtW0mB65WeDwQh/7jPZNzA3A==
-releaseDate: '2023-10-05T15:54:28.033Z'
+  - url: seoulStation-Setup-0.1.0.exe
+    sha512: 2euQugNKACdsKAZZ8xvhbmMF4MK3cKVV7KSegryoPLxGsECosKCGbVz3rMRoTOlwItG3R12wI+Qt177HXze+sw==
+    size: 44209387
+path: seoulStation-Setup-0.1.0.exe
+sha512: 2euQugNKACdsKAZZ8xvhbmMF4MK3cKVV7KSegryoPLxGsECosKCGbVz3rMRoTOlwItG3R12wI+Qt177HXze+sw==
+releaseDate: '2023-10-11T00:41:21.736Z'

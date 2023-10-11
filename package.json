@@ -15,7 +15,7 @@
     "deploy": "electron-builder --windows nsis:ia32"
   },
   "build": {
-    "productName": "test",
+    "productName": "seoulStation",
     "appId": "com.electron.hello",
     "asar": true,
     "protocols": {
