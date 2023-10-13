@@ -122,7 +122,7 @@ function startGameInterval(roomName) {
 
         if(!isGameover) { //게임이 진행되는 경우
             emitGameState(roomName, state[roomName]);
-        } else {
+        } else { //게임 끝나는 경우
             emitGameOver(roomName, state[roomName]);
             state[roomName] = null;
             clearInterval(intervalId);

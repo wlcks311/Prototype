@@ -168,6 +168,11 @@ class MainCharacter extends Creature {
         this.attackTimer = 0;
         this.attackFrame = 0;
         this.damagedLoop = 0;
+
+        this.interactionLoop = 3;
+        this.interactionCut = 0;
+        this.interactionCount = 0;
+
         this.BlockBox = {
             x_right : this.x + this.canvasLength - 10,
             x_left : this.x + 10,
@@ -516,10 +521,10 @@ class NormalZombie extends Creature { //좀비 클래스
             if((this.x_detectLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_attackRight)) {
-                    if (this.x_attackLeft <= bigX && bigX <= this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
+                    if (this.x_attackLeft <= bigX && bigX <= this.x + 100) { // 왼쪽 방향으로 감지 했을 경우
                         this.lookingRight == false;
                     }
-                    else { //오른쪽으로 감지 했을 경우
+                    else if (this.x + 100 <= smallX && smallX <= this.x_attackRight){ //오른쪽으로 감지 했을 경우
                         this.lookingRight == true;
                     }
                     this.vel.attacking = true; //공격 활성화
@@ -754,16 +759,16 @@ class RunningZombie extends NormalZombie {
 
         if (this.grabbing == true) {
             this.checkGrabbingCancelled(p1, p2);
-            if (this.waitCount < 120) {
+            if (this.waitCount < 300) {
                 this.waitCount++;
             }
-            else if (this.waitCount == 120) { //2초가 지나면 데미지를 입힘
+            else if (this.waitCount == 300) { //5초가 지나면 데미지를 입힘
                 this.waitCount = 0;
                 if (p1.grabbed == true) {
                     p1.healthCount--;
                     p1.checkIsDead();
                 }
-                else {
+                else if (p2.grabbed == true) {
                     p2.healthCount--;
                     p2.checkIsDead();
                 }
@@ -1017,11 +1022,11 @@ class RunningZombie extends NormalZombie {
              // 플레이어가 탐지 범위 안에 들어온 경우
             if((this.x_detectLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_detectRight)) { 
                 //플레이어가 공격 범위 안에 들어온 경우
-                if ((this.x_attackLeft <= bigX && bigX <= this.x + 50) || (this.x + this.canvasLength - 50 <= smallX && smallX <= this.x_attackRight)) {
-                    if (this.x_attackLeft <= bigX && bigX <= this.x + 50) { // 왼쪽 방향으로 감지 했을 경우
+                if ((this.x_attackLeft <= bigX && bigX <= this.x + 100) || (this.x + 100 <= smallX && smallX <= this.x_attackRight)) {
+                    if (this.x_attackLeft <= bigX && bigX <= this.x + 100) { // 왼쪽 방향으로 감지 했을 경우
                         this.lookingRight == false;
                     }
-                    else { //오른쪽으로 감지 했을 경우
+                    else if (this.x + 100 <= smallX && smallX <= this.x_attackRight){ //오른쪽으로 감지 했을 경우
                         this.lookingRight == true;
                     }
                     this.vel.attacking = true; //공격 활성화
@@ -1223,7 +1228,7 @@ function createGameState() {
     p1.setLoops(4, 8, 6, 0);
     p2 = new MainCharacter(500, 664, 500, 500, 200);
     p2.setLoops(4, 8, 6, 0);
-    var currentStageNum = 0;
+    var currentStageNum = 1; //임시로 2번째 스테이지부터
     nz1 = new NormalZombie(1200, 664, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);
     nz1.setFixedRange(1000, 1400);
@@ -1300,7 +1305,7 @@ function gameLoop(state) {
         }
     }
 
-    else { //둘 다 죽은 경우
+    else { //둘 다 죽은 경우 -> 게임 종료
         bigX = -1;
         smallX = -1;
         for (var i = 0; i <= p1.canvasLength; i++) { //플레이어1이 서 있던 곳은 -1 으로 표시
@@ -1310,6 +1315,8 @@ function gameLoop(state) {
         for (var i = 0; i <= p2.canvasLength; i++) { //플레이어2가 서 있는 곳은 -1 으로 표시
             collisonCheckX[p2.x + i] = -1;
         }
+
+        return 1;
     }
 
     
@@ -1539,6 +1546,17 @@ function gameLoop(state) {
             }
         }
     }
+    //플레이어1이 잡힌 경우
+    if (p1.grabbed == true && p1.dead == false) {
+        if (p1.interactionCount == 20) {
+            p1.interactionCount = 0;
+            p1.interactionCut++;
+            p1.interactionCut = p1.interactionCut % p1.interactionLoop;
+        }
+        else {
+            p1.interactionCount++;
+        }
+    }
 
     //플래이어1 이 왼쪽으로 이동하는 경우 (플레이어2는 왼쪽으로 가지 않을 때)
     if ((p1.vel.movingLeft == true && collisonCheckX[p1.x + 38] != 1) && (p1.vel.attacking == false && p1.vel.blocking == false && p1.isDamaged == false)) {
@@ -1599,7 +1617,11 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p1.vel.lookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) { // 공격 범위 120 0.5초 -> 30frmae 1 frame당 4 증가
-                nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < state.zombies.length; i++) {
+                    if (state.zombies[i].stageNum == state.currentStageNum) {
+                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -1610,7 +1632,11 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p1.vel.lookingRight == false) {
             if (Math.abs(p1.attackTimer) >= p1.attackBox.width) {
-                nz1.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < state.zombies.length; i++) {
+                    if (state.zombies[i].stageNum == state.currentStageNum) {
+                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -1675,6 +1701,17 @@ function gameLoop(state) {
             }
         }
     }
+    //플레이어2가 잡힌 경우
+    if (p2.grabbed == true && p2.dead == false) {
+        if (p2.interactionCount == 20) {
+            p2.interactionCount = 0;
+            p2.interactionCut++;
+            p2.interactionCut = p2.interactionCut % p2.interactionLoop;
+        }
+        else {
+            p2.interactionCount++;
+        }
+    }
 
     //플래이어2 가 왼쪽으로 이동하는 경우 (플레이어1은 왼쪽으로 가지 않을 때)
     if ((p2.vel.movingLeft == true && collisonCheckX[p2.x + 38] != 1) && (p2.vel.attacking == false && p2.vel.blocking == false && p2.isDamaged == false)) {
@@ -1735,7 +1772,11 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p2.vel.lookingRight == true) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                nz1.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                for (let i = 0; i < state.zombies.length; i++) {
+                    if (state.zombies[i].stageNum == state.currentStageNum) {
+                        state.zombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
@@ -1746,7 +1787,11 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p2.vel.lookingRight == false) {
             if (Math.abs(p2.attackTimer) >= p2.attackBox.width) {
-                nz1.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                for (let i = 0; i < state.zombies.length; i++) {
+                    if (state.zombies[i].stageNum == state.currentStageNum) {
+                        state.zombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
@@ -1855,10 +1900,6 @@ function gameLoop(state) {
     // }
 
     
-    
-
-
-
     //스테이지 이동 로직 -> 오른쪽으로만 이동
     if (bg.bg_x == bg.bg_xMax && bigX + 40 == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
         p1.x = 100;

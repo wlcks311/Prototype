@@ -111,7 +111,10 @@ img_bg_test1.src = './img/Bg_test1.png'
 var img_bg_test2 = new Image();
 img_bg_test2.src = './img/Bg_test2.png'
 
-var bgArray = [ img_bg_test1, img_bg_test2 ];
+var img_bg_station = new Image();
+img_bg_station.src = './img/bg_station.png'
+
+var bgArray = [ img_bg_test1, img_bg_station ];
 
 //utils
 var img_Player_health = new Image();
@@ -122,6 +125,9 @@ img_Zombie_health.src = './img/Zombie_healthBar.png'
 
 var img_attack_warning = new Image();
 img_attack_warning.src = './img/Attack_warning.png'
+
+var img_interaction_instruction = new Image();
+img_interaction_instruction.src = './img/Interaction_instruction.png'
 
 //zombies
 var img_Zombie_idle = new Image();
@@ -264,7 +270,7 @@ function Player2Attack(player) {//player 2 그림
 }
 
 function drawPlayer(player) { //player 1 그림
-
+        ctx.drawImage(img_Player_health, player.width * (player.healthMax - player.healthCount), 0, player.width, player.height, player.x, player.y + player.canvasLength, player.canvasLength, player.canvasLength);
         if (player.vel.attacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
             PlayerAttack(player);
         }
@@ -301,6 +307,7 @@ function drawPlayer(player) { //player 1 그림
         }
 
         else if (player.grabbed == true) { //잡혀 있는 경우
+            ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, player.width, player.height, player.x + 70, player.y - 30, 60, 60);
             if (player.vel.lookingRight == true) {
                 ctx.drawImage(img_Player_grabbed, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -347,6 +354,7 @@ function drawPlayer(player) { //player 1 그림
 }
 
 function drawPlayer2(player) {
+    ctx.drawImage(img_Player_health, player.width * (player.healthMax - player.healthCount), 0, player.width, player.height, player.x, player.y + player.canvasLength, player.canvasLength, player.canvasLength);
     if (player.vel.attacking_motion == true) { //공격 하는 경우 -> 움직일 수 없음
         Player2Attack(player);
     }
@@ -383,6 +391,7 @@ function drawPlayer2(player) {
     }
 
     else if (player.grabbed == true) { //잡혀 있는 경우
+        ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, player.width, player.height, player.x + 70, player.y - 30, 60, 60);
         if (player.vel.lookingRight == true) {
             ctx.drawImage(img_Player_grabbed2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
         }
@@ -429,7 +438,7 @@ function drawPlayer2(player) {
 }
 
 function drawbg(BackGround, currentStageNum) {
-    ctx.drawImage(bgArray[currentStageNum], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bgArray[currentStageNum], BackGround.bg_x, 420, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
 }
 
 function drawNormalZombie(zombie, currentStageNum) {
@@ -610,11 +619,15 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     // ctx.fillRect(state.zombies[0].x_attackRight, 800, 5, 30);
     //////////////////////////
     drawbg(state.bg, state.currentStageNum);
-    drawPlayer(state.players[0]);
-    drawPlayer2(state.players[1]);
+    if(state.players[0].dead == false) {
+        drawPlayer(state.players[0]);
+    }
+    if(state.players[1].dead == false) {
+        drawPlayer2(state.players[1]);
+    }
     drawNormalZombie(state.zombies[0], state.currentStageNum);
     drawRunningZombie(state.zombies[1], state.currentStageNum);
-    console.log(state.collisonCheckX[1250]);
+    console.log(state.players[1].grabbed);
 }
 
 function handleInit(number) {
