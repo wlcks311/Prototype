@@ -322,12 +322,10 @@ function drawPlayer(player) { //player 1 그림
                 ctx.fillStyle = 'blue';
                 if(player.vel.lookingRight == true) { //오른쪽 보고있는 경우 -> 오른쪽 방어
                     ctx.drawImage(img_Block, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
-                    ctx.fillRect(player.BlockBox.x_right, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
                 }
 
                 else if (player.vel.lookingRight == false) { //왼쪽 보고있는 경우 -> 왼쪽 방어
                     ctx.drawImage(img_Block_left, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
-                    ctx.fillRect(player.BlockBox.x_left, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
                 }
             }
 
@@ -406,12 +404,10 @@ function drawPlayer2(player) {
             ctx.fillStyle = 'blue';
             if(player.vel.lookingRight == true) { //오른쪽 보고있는 경우 -> 오른쪽 방어
                 ctx.drawImage(img_Block2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
-                ctx.fillRect(player.BlockBox.x_right, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
             }
 
             else if (player.vel.lookingRight == false) { //왼쪽 보고있는 경우 -> 왼쪽 방어
                 ctx.drawImage(img_Block_left2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
-                ctx.fillRect(player.BlockBox.x_left, player.BlockBox.y, player.BlockBox.width, player.BlockBox.height);
             }
         }
 
@@ -444,14 +440,15 @@ function drawbg(BackGround, currentStageNum) {
 function drawNormalZombie(zombie, currentStageNum) {
     if (zombie.stageNum == currentStageNum) {
         //공격 경고 알림
-        if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
-            ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+        if (zombie.vel.attacking == true) {
+            if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
+                ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+            }
+    
+            else if (zombie.attackRandomNum >= 0) {// 가드 불가 공격
+                ctx.drawImage(img_attack_warning, 250, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+            }
         }
-
-        else if (zombie.attackRandomNum >= 0) {// 가드 불가 공격
-            ctx.drawImage(img_attack_warning, 250, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
-        }
-
         //zombie 체력바
         ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
         if (zombie.dead == false) {
@@ -510,12 +507,14 @@ function drawRunningZombie (zombie, currentStageNum) {
 
     if (zombie.stageNum == currentStageNum) {
         //공격 경고 알림
-        if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
-            ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
-        }
-
-        else if (zombie.attackRandomNum >= 0) {// 잡기 공격
-            ctx.drawImage(img_attack_warning, 500, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+        if (zombie.vel.attacking == true) {
+            if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
+                ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+            }
+    
+            else if (zombie.attackRandomNum >= 0) {// 잡기 공격
+                ctx.drawImage(img_attack_warning, 500, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
+            }
         }
 
         //zombie 체력바

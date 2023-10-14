@@ -179,6 +179,35 @@
             margin-top: -22px;
             border: none;
         }
+        input.deleteAccount-button {
+            background: url("lobbyImg/DeleteAccount.png") no-repeat;
+            width: 453px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 70%;
+            left: 50%;
+
+            margin-top: -18px;
+            margin-left: -225px;
+            border: none;
+        }
+
+        input.deleteAccount-button:hover {
+            background: url("lobbyImg/DeleteAccount_onMouse.png") no-repeat;
+            width: 453px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 70%;
+            left: 50%;
+
+            margin-top: -18px;
+            margin-left: -225px;
+            border: none;
+        }
 
         #gameCodeDisplay {
             position: absolute;
@@ -198,6 +227,8 @@
         <div id="singlePlay">
             <input type="button" class="single-button" onclick="alert('single play button')">
         </div>
+
+        <input type="button" class="deleteAccount-button" onclick="alert('delete account button')">
 
         <div id="multiPlay">
             <input type="button" class="createRoom-button" id="newGameButton">
