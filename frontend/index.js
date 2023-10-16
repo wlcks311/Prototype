@@ -129,6 +129,12 @@ img_attack_warning.src = './img/Attack_warning.png'
 var img_interaction_instruction = new Image();
 img_interaction_instruction.src = './img/Interaction_instruction.png'
 
+var img_RangedAttack_warning = new Image();
+img_RangedAttack_warning.src = './img/RangedAttack_warning.png'
+
+var img_RangedAttack_falling = new Image();
+img_RangedAttack_falling.src = './img/RangedAttack_falling.png'
+
 //zombies
 var img_Zombie_idle = new Image();
 img_Zombie_idle.src = './img/Zombie_idle.png'
@@ -202,6 +208,43 @@ img_RunningZombie_grabbing.src = './img/RunningZombie_grabbing.png'
 
 var img_RunningZombie_grabbing_left = new Image();
 img_RunningZombie_grabbing_left.src = './img/RunningZombie_grabbing_left.png'
+
+//CrawlingZombie
+var img_CrawlingZombie_idle = new Image();
+img_CrawlingZombie_idle.src = './img/CrawlingZombie_idle.png'
+
+var img_CrawlingZombie_idle_left = new Image();
+img_CrawlingZombie_idle_left.src = './img/CrawlingZombie_idle_left.png'
+
+var img_CrawlingZombie_attack = new Image();
+img_CrawlingZombie_attack.src = './img/CrawlingZombie_attack.png'
+
+var img_CrawlingZombie_attack_left = new Image();
+img_CrawlingZombie_attack_left.src = './img/CrawlingZombie_attack_left.png'
+
+var img_CrawlingZombie_rangedAttack = new Image();
+img_CrawlingZombie_rangedAttack.src = './img/CrawlingZombie_rangedAttack.png'
+
+var img_CrawlingZombie_rangedAttack_left = new Image();
+img_CrawlingZombie_rangedAttack_left.src = './img/CrawlingZombie_rangedAttack_left.png'
+
+var img_CrawlingZombie_walking = new Image();
+img_CrawlingZombie_walking.src = './img/CrawlingZombie_walking.png'
+
+var img_CrawlingZombie_walking_left = new Image();
+img_CrawlingZombie_walking_left.src = './img/CrawlingZombie_walking_left.png'
+
+var img_CrawlingZombie_stunned = new Image();
+img_CrawlingZombie_stunned.src = './img/CrawlingZombie_stunned.png'
+
+var img_CrawlingZombie_stunned_left = new Image();
+img_CrawlingZombie_stunned_left.src = './img/CrawlingZombie_stunned_left.png'
+
+var img_CrawlingZombie_death = new Image();
+img_CrawlingZombie_death.src = './img/CrawlingZombie_death.png'
+
+var img_CrawlingZombie_death_left = new Image();
+img_CrawlingZombie_death_left.src = './img/CrawlingZombie_death_left.png'
 
 
 //////////////////////////////////////
@@ -589,33 +632,73 @@ function drawRunningZombie (zombie, currentStageNum) {
 
 }
 
+function drawCrawlingZombie(zombie, currentStageNum) {
+    if (zombie.stageNum == currentStageNum) { //해당 스테이지일 경우 그리기
+        //체력바
+        ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
+        if (zombie.dead == false) {
+            ////////////좀비 애니메이션
+            if (zombie.spitting == true && zombie.waitCount >= 60 && zombie.waitCount <= 90) {//발사모션
+                if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
+                    ctx.drawImage(img_CrawlingZombie_rangedAttack, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+                else {//왼쪽
+                    ctx.drawImage(img_CrawlingZombie_rangedAttack_left, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+            }
+
+            else if (zombie.spitting == false && zombie.vel.attacking == true && zombie.waitCount == 30) { // 근거리 공격
+                if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
+                    ctx.drawImage(img_CrawlingZombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+                else {//왼쪽
+                    ctx.drawImage(img_CrawlingZombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+            }
+
+            else if (zombie.vel.moving == false) {// 가만히 서있는 경우
+                if (zombie.vel.lookingRight == true) { // 오른쪽
+                    ctx.drawImage(img_CrawlingZombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+                else { //왼쪽
+                    ctx.drawImage(img_CrawlingZombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+            }
+
+            else {//움직이는 경우
+                if (zombie.vel.lookingRight == true) {//오른쪽 걷기
+                    ctx.drawImage(img_CrawlingZombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+                else {
+                    ctx.drawImage(img_CrawlingZombie_walking_left, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+            }
+            //////////// 발사체 애니메이션
+            if (zombie.waitCount > 90 && zombie.waitCount < 110) {//경고 표시
+                ctx.drawImage(img_RangedAttack_warning, 0, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y, zombie.canvasLength, zombie.canvasLength);
+            }
+            else if (zombie.waitCount >= 110 && zombie.waitCount < 120) {//투사체 떨어지는 첫번째 컷
+                ctx.drawImage(img_RangedAttack_falling, 0, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y - 100, zombie.canvasLength, zombie.canvasLength);
+            }
+            else if (zombie.waitCount == 120) {//그 이후의 투사체 떨어지는 컷들
+                ctx.drawImage(img_RangedAttack_falling, zombie.width * zombie.poisonFallingCut, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y - 100, zombie.canvasLength, zombie.canvasLength);
+            }
+        }
+        else {//죽는 경우
+            if (zombie.lookingRight == true) {
+                ctx.drawImage(img_CrawlingZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+            }
+            else {
+                ctx.drawImage(img_CrawlingZombie_death_left, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+            }
+        }
+    }
+}
+
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     gameCodeScreen.style.display = "none";
     ctx.clearRect(0,0, canvas.width, canvas.height);
-    //console.log(state.players[0]); // 속성은 넘어오지만 메소드는 넘어오지 않는다.
-    //draw함수가 안먹히는 상황 -> 그렇다면 여기다가 함수를 구현하자.
 
-    //////////// 범위 확인 용 fillRect
-    // //플레이어 -> 파란색
-    // ctx.fillStyle = 'blue';
-    // ctx.fillRect(state.players[0].x + 40, 800, 5, 30);
-    // ctx.fillRect(state.players[0].x + state.players[0].canvasLength - 40, 800, 5, 30);
-    
-    // ctx.fillRect(state.players[1].x + 40, 800, 5, 30);
-    // ctx.fillRect(state.players[1].x + state.players[1].canvasLength - 40, 800, 5, 30);
-
-    // //몬스터 -> 빨간색
-    // ctx.fillStyle = 'red';
-    // ctx.fillRect(state.zombies[0].x + 40, 800, 5, 30);
-    // ctx.fillRect(state.zombies[0].x + state.zombies[0].canvasLength - 40, 800, 5, 30);
-
-    // //몬스터 감지 범위, 공격 범위 -> 노란색
-    // ctx.fillStyle = 'yellow';
-    // ctx.fillRect(state.zombies[0].x_detectLeft, 800, 5, 30);
-    // ctx.fillRect(state.zombies[0].x_detectRight, 800, 5, 30);
-
-    // ctx.fillRect(state.zombies[0].x_attackLeft, 800, 5, 30);
-    // ctx.fillRect(state.zombies[0].x_attackRight, 800, 5, 30);
     //////////////////////////
     drawbg(state.bg, state.currentStageNum);
     if(state.players[0].dead == false) {
@@ -626,7 +709,6 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     }
     drawNormalZombie(state.zombies[0], state.currentStageNum);
     drawRunningZombie(state.zombies[1], state.currentStageNum);
-    console.log(state.players[1].grabbed);
 }
 
 function handleInit(number) {

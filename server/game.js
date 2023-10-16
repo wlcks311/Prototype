@@ -1024,10 +1024,10 @@ class RunningZombie extends NormalZombie {
                 //플레이어가 공격 범위 안에 들어온 경우
                 if ((this.x_attackLeft <= bigX && bigX <= this.x + 100) || (this.x + 100 <= smallX && smallX <= this.x_attackRight)) {
                     if (this.x_attackLeft <= bigX && bigX <= this.x + 100) { // 왼쪽 방향으로 감지 했을 경우
-                        this.lookingRight == false;
+                        this.lookingRight = false;
                     }
                     else if (this.x + 100 <= smallX && smallX <= this.x_attackRight){ //오른쪽으로 감지 했을 경우
-                        this.lookingRight == true;
+                        this.lookingRight = true;
                     }
                     this.vel.attacking = true; //공격 활성화
                     this.running = false;
@@ -1249,6 +1249,32 @@ class CrawlingZombie extends NormalZombie {
         this.spittingCount = 0;
         this.deathCount = 0;
         this.poisonFallingCount = 0;
+
+        //타겟 확인용 bigX, smallX
+        this.bigX = 0;
+        this.smallX = 0;
+    }
+
+    checkBigXSmallX(p1, p2) {
+        if (p1.dead == false && p2.dead == false) {// 둘 다 살아 있는 경우
+            this.bigX = biggerX(p1.x + p1.canvasLength - 40, p2.x + p2.canvasLength - 40);
+            this.smallX = smallerX(p1.x + 40, p2.x + 40);
+        }
+    
+        else if (p1.dead == true && p2.dead == false) { // p2만 살아있는 경우
+            this.bigX = p2.x + p2.canvasLength - 40;
+            this.smallX = p2.x + 40;
+        }
+    
+        else if (p1.dead == false && p2.dead == true) { //p1만 살아있는 경우
+            this.bigX = p1.x + p1.canvasLength - 40;
+            this.smallX = p1.x + 40;
+        }
+    
+        else { //둘 다 죽은 경우 -> 게임 종료
+            this.bigX = -1;
+            this.smallX = -1;
+        }
     }
     checkRangedAttack(p1, p2) {
         //p1이 맞은 경우
@@ -1260,16 +1286,18 @@ class CrawlingZombie extends NormalZombie {
         }
     }
 
-    zombieAttack(p1, p2, bigX, smallX) {
-        if (bigX >= this.rangedAttack_left && bigX <= this.x + 100) { //왼쪽으로 공격 하는 경우
+    zombieAttack(p1, p2) {
+        this.checkBigXSmallX(p1, p2);
+        if (this.bigX >= this.rangedAttack_left && this.bigX <= this.x + 100) { //왼쪽으로 공격 하는 경우
             //원거리 공격
-            if (bigX >= this.rangedAttack_left && bigX < this.x_attackLeft) {
+            if (this.bigX >= this.rangedAttack_left && this.bigX < this.x_attackLeft) {
                 this.spitting = true;
                 if (this.waitCount < 120 && this.waitCount != 60) {
                     this.waitCount++;
                 }
                 else if (this.waitCount == 60) {
                     this.rangedAttackTarget = bigX - 60;// 대상 플레이어 가운데 지점
+                    this.waitCount++;
                 }
                 else if (this.waitCount == 120) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
@@ -1281,6 +1309,7 @@ class CrawlingZombie extends NormalZombie {
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
+                        this.rangedAttackTarget = 0;
                         if (p1.damaged == true) {
                             p1.healthCount--;
                             p1.checkIsDead
@@ -1293,7 +1322,8 @@ class CrawlingZombie extends NormalZombie {
                 }
             }
             //근거리 공격
-            else if (this.x_attackLeft <= bigX && bigX <= this.x + 100) {
+            else if (this.x_attackLeft <= this.bigX && this.bigX <= this.x + 100) {
+                this.spitting = false;
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
@@ -1356,13 +1386,14 @@ class CrawlingZombie extends NormalZombie {
         }
         else { // 오른쪽 공격
             //원거리 공격
-            if (this.x_attackRight < smallX && smallX <= this.rangedAttack_right) {
+            if (this.x_attackRight < this.smallX && this.smallX <= this.rangedAttack_right) {
                 this.spitting = true;
                 if (this.waitCount < 120 && this.waitCount != 60) {
                     this.waitCount++;
                 }
                 else if (this.waitCount == 60) {
                     this.rangedAttackTarget = smallX + 60;// 대상 플레이어 가운데 지점
+                    this.waitCount++;
                 }
                 else if (this.waitCount == 120) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
@@ -1374,6 +1405,7 @@ class CrawlingZombie extends NormalZombie {
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
+                        this.rangedAttackTarget = 0;
                         if (p1.damaged == true) {
                             p1.healthCount--;
                             p1.checkIsDead
@@ -1386,7 +1418,8 @@ class CrawlingZombie extends NormalZombie {
                 }
             }
             //근거리 공격
-            else if (this.x + 100 <= smallX && smallX <= this.x_attackRight) {
+            else if (this.x + 100 <= this.smallX && this.smallX <= this.x_attackRight) {
+                this.spitting = false;
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
@@ -1452,6 +1485,7 @@ class CrawlingZombie extends NormalZombie {
     }
 
     move(bigX, smallX, collisonCheckX, currentStageNum) {
+        this.checkBigXSmallX(p1, p2);
         this.rangedAttack_left = this.x - 400;
         this.rangedAttack_right = this.x + this.canvasLength + 400;
 
@@ -1470,7 +1504,8 @@ class CrawlingZombie extends NormalZombie {
             }
 
             if ((bigX >= this.rangedAttack_left && bigX <= this.x + 100) || (smallX <= this.rangedAttack_right && smallX >= this.x + 100)) { //(원거리)공격 범위 내 플레이어가 들어온 경우
-                this.vel.attacking == true;
+                this.vel.attacking = true;
+                this.vel.moving = false;
             }
 
             else { // 이 좀비는 플레이어를 따라가지 않음. 공격 이외에는 그냥 무작위 움직임
@@ -1635,11 +1670,14 @@ function initGame() {
 function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
+    //setLoops(idle, walking, attacking, death)
     p1 = new MainCharacter(200, 664, 500, 500, 200);
     p1.setLoops(4, 8, 6, 0);
     p2 = new MainCharacter(500, 664, 500, 500, 200);
     p2.setLoops(4, 8, 6, 0);
-    var currentStageNum = 1; //임시로 2번째 스테이지부터
+    var currentStageNum = 2; //임시로 3번째 스테이지부터
+
+    //zombies
     nz1 = new NormalZombie(1200, 664, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);
     nz1.setFixedRange(1000, 1400);
@@ -1649,11 +1687,17 @@ function createGameState() {
     rz1.setLoops(4, 4, 5, 6);
     rz1.setFixedRange(1000, 1400);
     rz1.setStunLoop(3);
+
+    cz1 = new CrawlingZombie(1500, 664, 500, 500, 200);
+    cz1.setLoops(4, 4, 4, 7);
+    cz1.setFixedRange(1400, 1700);
+    cz1.setStunLoop(3);
+
     return {
         currentStageNum,
         bg,
         players: [p1, p2],
-        zombies: [nz1, rz1],
+        zombies: [nz1, rz1, cz1],
         collisonCheckX,
         activate: true,
     }
