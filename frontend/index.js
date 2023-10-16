@@ -276,7 +276,7 @@ function drawPlayer(player) { //player 1 그림
         }
 
         //플레이어가 몬스터에게 맞은 경우 -> 맞은 모션
-        else if(player.isDamaged == true) {
+        else if(player.damaged == true) {
             if (player.vel.lookingRight == true) { //오른쪽을 보고있다가 맞은 경우
                 if (player.damagedCount < 60) {
                     if (player.damagedCount <= 30) {
@@ -358,7 +358,7 @@ function drawPlayer2(player) {
     }
 
     //플레이어가 몬스터에게 맞은 경우 -> 맞은 모션
-    else if(player.isDamaged == true) {
+    else if(player.damaged == true) {
         if (player.vel.lookingRight == true) { //오른쪽을 보고있다가 맞은 경우
             if (player.damagedCount < 60) {
                 if (player.damagedCount <= 30) {
