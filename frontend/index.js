@@ -25,6 +25,58 @@ let canvas, ctx;
 let playerNumber;
 let gameActive = false;
 
+function audioStop(audio) { // 오디오 멈춤 함수 -> stop역할
+    audio.pause();
+    audio.currentTime = 0;
+}
+
+/////////////////////////////audio files - 소리는 중복 실행 할 수 없기 때문에, 배열로 여러 객체를 생성해줘야 함.
+
+
+//players
+var arr_playerWalking = [];
+
+for (let i = 0; i < 2; i++) {//플레이어가 2명이므로 2개 생성
+    var playerWalking = new Audio('./sfx/player/WalkingTest.mp3');
+    playerWalking.loop = true; //걷는 소리는 걷는동안 계속 반복 되어야 함
+    arr_playerWalking.push(playerWalking);
+}
+
+var arr_playerAttack = [];
+
+for (let i = 0; i < 2; i++) {//플레이어가 2명이므로 2개 생성
+    var playerAttack = new Audio('./sfx/player/playerAttack.mp3');
+    arr_playerAttack.push(playerAttack);
+}
+
+//NormalZombie
+var normalZombieTotalNum = 5;
+
+var arr_normalZombieMoving1 = [];//왼쪽으로 움직일때 내는 소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var normalZombieMoving1 = new Audio('./sfx/NormalZombie/NormalZombie_moving1.mp3');
+    arr_normalZombieMoving1.push(normalZombieMoving1);
+}
+
+var arr_normalZombieMoving2 = [];//오른쪽으로 움직일때 내는 소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var normalZombieMoving2 = new Audio('./sfx/NormalZombie/NormalZombie_moving2.mp3');
+    arr_normalZombieMoving2.push(normalZombieMoving2);
+}
+
+var arr_normalZombieAttack = []; // 공격소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var normalZombieAttack = new Audio('./sfx/NormalZombie/NormalZombie_attack.mp3');
+    arr_normalZombieAttack.push(normalZombieAttack);
+}
+
+//CrawlingZombie
+
+
+
 /////////////////////////////img files
 
 //player 1
@@ -102,19 +154,13 @@ var img_Player_grabbed_left2 = new Image();
 img_Player_grabbed_left2.src = './img/Player2_grabbed_left.png'
 
 //BackGrounds
-var img_bg_test = new Image();
-img_bg_test.src = './img/BG_test.png'
+var img_bg_station_1 = new Image();
+img_bg_station_1.src = './img/BackGrounds/bg_station_1.png'
 
-var img_bg_test1 = new Image();
-img_bg_test1.src = './img/Bg_test1.png'
+var img_bg_rail = new Image();
+img_bg_rail.src = './img/BackGrounds/bg_rail.png'
 
-var img_bg_test2 = new Image();
-img_bg_test2.src = './img/Bg_test2.png'
-
-var img_bg_station = new Image();
-img_bg_station.src = './img/bg_station.png'
-
-var bgArray = [ img_bg_test1, img_bg_station ];
+var bgArray = [ img_bg_rail, img_bg_station_1 ];
 
 //utils
 var img_Player_health = new Image();
@@ -293,6 +339,9 @@ function updateBlockBox(x_right, x_left, y, player) {
 }
 
 function PlayerAttack(player) {//player 1 그림
+    if (player.attackCount == 3) {//3번째 컷에서 공격 소리 재생
+        arr_playerAttack[0].play();
+    }
     if (player.vel.lookingRight == true) {
         ctx.drawImage(img_Middle_Attack_full, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
     }
@@ -303,6 +352,9 @@ function PlayerAttack(player) {//player 1 그림
 }
 
 function Player2Attack(player) {//player 2 그림
+    if (player.attackCount == 3) {//3번째 컷에서 공격 소리 재생
+        arr_playerAttack[1].play();
+    }
     if (player.vel.lookingRight == true) {
         ctx.drawImage(img_Middle_Attack_full2, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
     }
@@ -373,6 +425,7 @@ function drawPlayer(player) { //player 1 그림
             }
 
             else if (player.vel.moving == true) { //걷는 경우
+                arr_playerWalking[0].play();
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                     ctx.drawImage(img_Walking_full, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
@@ -383,6 +436,7 @@ function drawPlayer(player) { //player 1 그림
             }
     
             else { // 가만히 서 있는 경우
+                audioStop(arr_playerWalking[0]);
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                     ctx.drawImage(img_Idle_full, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
@@ -455,6 +509,7 @@ function drawPlayer2(player) {
         }
 
         else if (player.vel.moving == true) { //걷는 경우
+            arr_playerWalking[1].play();
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                 ctx.drawImage(img_Walking_full2, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -465,6 +520,7 @@ function drawPlayer2(player) {
         }
 
         else { // 가만히 서 있는 경우
+            audioStop(arr_playerWalking[1]);
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                 ctx.drawImage(img_Idle_full2, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -475,9 +531,9 @@ function drawPlayer2(player) {
         }
     }
 }
-
-function drawbg(BackGround, currentStageNum) {
-    ctx.drawImage(bgArray[currentStageNum], BackGround.bg_x, 420, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
+//임시로 1만
+function drawbg(BackGround) {
+    ctx.drawImage(bgArray[1], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 210, canvas.width, canvas.height);
 }
 
 function drawNormalZombie(zombie, currentStageNum) {
@@ -665,6 +721,15 @@ function drawCrawlingZombie(zombie, currentStageNum) {
                 }
             }
 
+            if (zombie.stunned == true) {//기절한 경우
+                if (zombie.vel.lookingRight == true) {//오른쪽 기절
+                    ctx.drawImage(img_CrawlingZombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+                else {
+                    ctx.drawImage(img_CrawlingZombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                }
+            }
+
             else {//움직이는 경우
                 if (zombie.vel.lookingRight == true) {//오른쪽 걷기
                     ctx.drawImage(img_CrawlingZombie_walking, zombie.width * zombie.walkingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
@@ -681,7 +746,7 @@ function drawCrawlingZombie(zombie, currentStageNum) {
                 ctx.drawImage(img_RangedAttack_falling, 0, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y - 100, zombie.canvasLength, zombie.canvasLength);
             }
             else if (zombie.waitCount == 120) {//그 이후의 투사체 떨어지는 컷들
-                ctx.drawImage(img_RangedAttack_falling, zombie.width * zombie.poisonFallingCut, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y - 100, zombie.canvasLength, zombie.canvasLength);
+                ctx.drawImage(img_RangedAttack_falling, zombie.width * zombie.poisonFallingCut, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
         }
         else {//죽는 경우
@@ -695,12 +760,15 @@ function drawCrawlingZombie(zombie, currentStageNum) {
     }
 }
 
+///////////////////////////
+
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     gameCodeScreen.style.display = "none";
     ctx.clearRect(0,0, canvas.width, canvas.height);
 
     //////////////////////////
-    drawbg(state.bg, state.currentStageNum);
+    //drawbg(state.bg, state.currentStageNum);
+    drawbg(state.bg);
     if(state.players[0].dead == false) {
         drawPlayer(state.players[0]);
     }
@@ -709,6 +777,13 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     }
     drawNormalZombie(state.zombies[0], state.currentStageNum);
     drawRunningZombie(state.zombies[1], state.currentStageNum);
+    drawCrawlingZombie(state.zombies[2], state.currentStageNum);
+
+
+    //for test
+    console.log(state.zombies[2].testVariable);
+    console.log('waitCount is ' + state.zombies[2].waitCount);
+    console.log('attackCount is ' + state.zombies[2].attackCount);
 }
 
 function handleInit(number) {
@@ -757,3 +832,30 @@ function reset() {
     initialScreen.style.display = "block";
     gameScreen.style.display = "none";
 }
+
+
+// document.addEventListener('keydown', function(e) {
+//     if (e.key ==='a') {
+//         playerWalking.play();
+//     }
+// })
+
+
+// document.addEventListener('keyup', function(e) {
+//     if (e.key ==='a') {
+//         audioStop(playerWalking);
+//     }
+// })
+
+// document.addEventListener('keydown', function(e) {
+//     if (e.key ==='d') {
+//         playerWalking.play();
+//     }
+// })
+
+
+// document.addEventListener('keyup', function(e) {
+//     if (e.key ==='d') {
+//         audioStop(playerWalking);
+//     }
+// })
