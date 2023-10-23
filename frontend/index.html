@@ -8,12 +8,41 @@
             display: none;
         }
 
+        @font-face {
+            font-family: 'neodgm';
+            src: url(./font/neodgm.woff) format('woff');
+        }
+
         html {
             overflow: hidden !important;
         }
         body {
             background-color: black;
             overflow: hidden !important;
+            font-family: 'neodgm';
+        }
+        #dialogueWindow {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            top: 50%;
+            left: 50%;
+            margin-top:-540px;
+            margin-left:-960px;
+
+            background-color: rgba( 0, 0, 0, 0.5 );
+            color:whitesmoke;
+
+            display: none;
+        }
+        #dialogueText {
+            position: absolute;
+            width:1250px;
+            height:300px;
+            top: 60%;
+            left: 50%;
+
+            margin-left: -400px;
         }
 
         #initialScreen {
@@ -44,6 +73,12 @@
             top: 50%;
             left: 75%;
 	        margin-top: -240px;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 50%;
+            margin-top: -480px;
         }
         
         #gameScreen {
@@ -250,6 +285,15 @@
             <span id="gameCodeDisplay"></span>
         </div>
         <canvas id="canvas"></canvas>
+        <div id="dialogueWindow">
+            <div style="width: 1624px; height:336px; position:absolute; top:57%; left: 50%; margin-left: -812px;">
+                <img src="img/dialogue/dialogueBox.png" alt="" width="1624" height="336">
+            </div>
+            <div id="portrait"style="width: 330px; height:330px; position:absolute; top:60%; left:10%;">
+                <img src="img/dialogue/TestPortrait.png">
+            </div>
+            <div id="dialogueText"></div>
+        </div>
     </div>
 
     <script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>

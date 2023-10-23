@@ -24,6 +24,28 @@ function biggerX(p1_x, p2_x) {
     }
 }
 
+function moveObjectRight(collisonCheckX, obj) {
+    if (obj.dead == false) {
+        collisonCheckX[obj.x + 50] = -1;
+        collisonCheckX[obj.x + 51] = -1;
+        collisonCheckX[obj.x + obj.canvasLength - 49] = 1;
+        collisonCheckX[obj.x + obj.canvasLength - 48] = 1;
+        obj.x+=2;
+    }
+    
+}
+
+function moveObjectLeft(collisonCheckX, obj) {
+    if (obj.dead == false) {
+        collisonCheckX[obj.x + 48] = 1;
+        collisonCheckX[obj.x + 49] = 1;
+        collisonCheckX[obj.x + obj.canvasLength - 50] = -1;
+        collisonCheckX[obj.x + obj.canvasLength - 51] = -1;
+        obj.x-=2;
+    }
+    
+}
+
 function smallerX(p1_x, p2_x){
     if (p1_x <= p2_x) {
         return p1_x;
@@ -58,6 +80,108 @@ class BackGround {
         ctx.drawImage(img_bg_test, this.bg_x, 0, this.bg_length * (canvas_width / canvas_height), this.bg_length, 0, 0, canvas_width, canvas_height);
     }
 }
+
+//튜토리얼 용
+class StuckedZombie {
+    constructor(x, y, width, height, canvasLength) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.canvasLength = canvasLength;
+
+        this.attackLoop = 3;
+        this.attackCount = 0;
+        this.attackCut = 0;
+
+        this.stageNum = 0;
+
+        this.stunned = false;
+        this.stunCount = 0;
+        this.stunCut = 0;
+        this.dead = false;
+
+        this.waitCount = 0;
+
+        this.deathCount = 0;
+        this.deathCut = 0;
+
+        this.healthCount = 1;
+    }
+    attack(collisonCheckX, p1, p2) {
+        
+        for (var i = 0; i <= this.canvasLength - 100; i++) {
+            collisonCheckX[this.x + 50 + i] = 1;
+        }
+        if (this.stunned == false && this.dead == false) {
+            this.checkStunned(p1, p2);
+            if (this.attackCount < 20 && this.attackCut < 2) {
+                this.attackCount++;
+            }
+            else if(this.attackCount == 20) {
+                this.attackCount = 0;
+                this.attackCut++;
+            }
+            if (this.attackCut == 2) {
+                if (this.waitCount < 30) {
+                    this.waitCount++;
+                }
+                else if (this.waitCount == 30) {
+                    this.waitCount = 0;
+                    this.attackCut = 0;
+                }
+            }
+        }
+        else if (this.stunned == true && this.dead == false) {
+            this.stun(p1, p2);
+        }
+        else if (this.dead == true) {
+            for (var i = 0; i <= this.canvasLength - 100; i++) {
+                collisonCheckX[this.x + 50 + i] = -1;
+            }
+            if (this.deathCount < 20 && this.deathCut < 4) {
+                this.deathCount++;
+            }
+            else if (this.deathCount == 20) {
+                this.deathCount = 0;
+                this.deathCut++;
+            }
+        }
+    }
+
+    stun(p1, p2) {
+        this.checkAttacked(p1, p2);
+        if (this.stunCount < 30 && this.stunCut < 2) {
+            this.stunCount++;
+        }
+        else if (this.stunCount == 30) {
+            this.stunCount = 0;
+            this.stunCut++;
+        }
+    }
+
+    checkStunned(p1, p2) {
+        if (this.x - p1.x < 170 && p1.blocking == true) {
+            this.stunned = true;
+        }
+
+        else if (this.x - p2.x < 170 && p2.blocking == true) {
+            this.stunned = true;
+        }
+    }
+
+    checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
+        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength) && this.dead == false) {
+            this.healthCount--;
+            if (this.healthCount == 0) {
+                //console.log('nz1 dead');
+                this.dead = true;
+            }
+        }
+    }
+}
+
+
 
 // 몹 기본 상위 클래스
 class Creature {
@@ -218,7 +342,7 @@ class NormalZombie extends Creature { //좀비 클래스
         this.waitCount = 0;
         this.deathFrame = 0;
         this.deathCount = 0;
-        this.stageNum = 0; //stage 정보
+        this.stageNum = 1; //stage 정보
         this.attackRandomNum = 0; //공격 종류를 결정하는 난수
         //공격 행위 끝날때까지 유지
         this.attackDone = true;
@@ -715,7 +839,7 @@ class NormalZombie extends Creature { //좀비 클래스
 class RunningZombie extends NormalZombie {
     constructor(x, y, width, height, canvasLength) {
         super(x, y, width, height, canvasLength);
-        this.stageNum = 1;
+        this.stageNum = 2;
         this.running = false;
         this.grabbing = false;
 
@@ -1245,7 +1369,7 @@ class RunningZombie extends NormalZombie {
 class CrawlingZombie extends NormalZombie {
     constructor(x, y, width, height, canvasLength) {
         super(x, y, width, height, canvasLength);
-        this.stageNum = 2;
+        this.stageNum = 3;
 
         this.rangedAttack_left = this.x - 400;
         this.rangedAttack_right = this.x + this.canvasLength + 400;
@@ -1726,24 +1850,26 @@ function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
     //setLoops(idle, walking, attacking, death)
-    p1 = new MainCharacter(200, 510, 500, 500, 200);
+    p1 = new MainCharacter(200, 620, 500, 500, 200);
     p1.setLoops(4, 8, 6, 0);
-    p2 = new MainCharacter(500, 510, 500, 500, 200);
+    p2 = new MainCharacter(500, 620, 500, 500, 200);
     p2.setLoops(4, 8, 6, 0);
-    var currentStageNum = 2; //임시로 3번째 스테이지부터
+    var currentStageNum = 0; //임시로 3번째 스테이지부터
 
     //zombies
-    nz1 = new NormalZombie(1200, 510, 500, 500, 200);
+    sz = new StuckedZombie(1900, 630, 500, 500, 200);
+
+    nz1 = new NormalZombie(1200, 620, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);
     nz1.setFixedRange(1000, 1400);
     nz1.setStunLoop(3);
 
-    rz1 = new RunningZombie(1200, 510, 500, 500, 200);
+    rz1 = new RunningZombie(1200, 620, 500, 500, 200);
     rz1.setLoops(4, 4, 5, 6);
     rz1.setFixedRange(1000, 1400);
     rz1.setStunLoop(3);
 
-    cz1 = new CrawlingZombie(1500, 510, 500, 500, 200);
+    cz1 = new CrawlingZombie(1500, 620, 500, 500, 200);
     cz1.setLoops(4, 4, 4, 7);
     cz1.setFixedRange(1400, 1700);
     cz1.setStunLoop(3);
@@ -1753,6 +1879,7 @@ function createGameState() {
         bg,
         players: [p1, p2],
         zombies: [nz1, rz1, cz1],
+        sz,
         collisonCheckX,
         activate: true,
     }
@@ -1772,6 +1899,7 @@ function gameLoop(state) {
     const p1 = state.players[0];
     const p2 = state.players[1];
     const nz1 = state.zombies[0];
+    const sz = state.sz;
     const collisonCheckX = state.collisonCheckX;
     var bigX = 0;
     var smallX = 0;
@@ -1842,6 +1970,8 @@ function gameLoop(state) {
     // else if (nz1.vel.attacking == false && nz1.stageNum == state.currentStageNum) {
     //     nz1.move(bigX, smallX, collisonCheckX, state.currentStageNum);
     // }
+
+    sz.attack(collisonCheckX, p1, p2);
     
 
     for (let i = 0; i < state.zombies.length; i++) {
@@ -1867,6 +1997,8 @@ function gameLoop(state) {
 
                 // 플레이어 이외의 물체나 몬스터들
                 nz1.x+=2;
+                moveObjectRight(collisonCheckX, sz);
+
 
                 //플레이어 애니메이션 변수
                 // 애니메이션 변수
@@ -1950,13 +2082,13 @@ function gameLoop(state) {
     //둘 다 오른쪽으로 움직일 때
     if ((p1.vel.movingRight == true && collisonCheckX[p1.x + p1.canvasLength - 38] != 1) && (p1.vel.attacking == false && p1.vel.blocking == false && p1.damaged == false)) {
         if ((p2.vel.movingRight == true && collisonCheckX[p2.x + p2.canvasLength - 38] != 1) && (p2.vel.attacking == false && p2.vel.blocking == false && p2.damaged == false)) {
-            if ((smallX >= (canvas_width - 700)) && bg.bg_x < bg.bg_xMax) { //배경화면 오른쪽으로 이동
+            if ((smallX >= (canvas_width - 700)) && bg.bg_x < bg.bg_xMax) { //배경화면 왼쪽으로 이동
                 bg.bgmovingLeft = true;
                 bg.bg_x += bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
                 nz1.x-=2;
-
+                moveObjectLeft(collisonCheckX, sz);
                 // 플레이어 애니메이션 변수
                 if (p1.frameCount < p1.refreshRate) {
                     p1.frameCount++;

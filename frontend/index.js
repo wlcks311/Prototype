@@ -30,51 +30,103 @@ function audioStop(audio) { // 오디오 멈춤 함수 -> stop역할
     audio.currentTime = 0;
 }
 
+//////////////////////////////text dialogue 
+
+var dialogueWindow = document.getElementById('dialogueWindow');
+var dialogueText = document.getElementById('dialogueText');
+
+const arr_testText = ["1번째 문장입니다.", "2번째 문장입니다.", "3번째 마지막 문장입니다."];
+
+var textIndex = 0;
+
+function textAnimation(tag, text) {
+    tag.innerHTML='';
+    for(let i=0; i < text.length; i++) {
+        setTimeout(function(){
+            tag.innerHTML += text[i];
+        }, (i+1)*100);
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key ==='x') {
+        if (textIndex > arr_testText.length - 1) {
+            dialogueWindow.style.display = "none";
+        }
+        else {
+            textIndex++;
+            textAnimation(dialogueText, arr_testText[textIndex]);
+        }
+        
+    }
+})
+
 /////////////////////////////audio files - 소리는 중복 실행 할 수 없기 때문에, 배열로 여러 객체를 생성해줘야 함.
 
 
 //players
-var arr_playerWalking = [];
+var arr_playerWalkingSfx = [];
 
 for (let i = 0; i < 2; i++) {//플레이어가 2명이므로 2개 생성
     var playerWalking = new Audio('./sfx/player/WalkingTest.mp3');
     playerWalking.loop = true; //걷는 소리는 걷는동안 계속 반복 되어야 함
-    arr_playerWalking.push(playerWalking);
+    arr_playerWalkingSfx.push(playerWalking);
 }
 
-var arr_playerAttack = [];
+var arr_playerAttackSfx = [];
 
 for (let i = 0; i < 2; i++) {//플레이어가 2명이므로 2개 생성
     var playerAttack = new Audio('./sfx/player/playerAttack.mp3');
-    arr_playerAttack.push(playerAttack);
+    arr_playerAttackSfx.push(playerAttack);
 }
 
 //NormalZombie
 var normalZombieTotalNum = 5;
 
-var arr_normalZombieMoving1 = [];//왼쪽으로 움직일때 내는 소리
+var arr_normalZombieMoving1Sfx = [];//왼쪽으로 움직일때 내는 소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieMoving1 = new Audio('./sfx/NormalZombie/NormalZombie_moving1.mp3');
-    arr_normalZombieMoving1.push(normalZombieMoving1);
+    arr_normalZombieMoving1Sfx.push(normalZombieMoving1);
 }
 
-var arr_normalZombieMoving2 = [];//오른쪽으로 움직일때 내는 소리
+var arr_normalZombieMoving2Sfx = [];//오른쪽으로 움직일때 내는 소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieMoving2 = new Audio('./sfx/NormalZombie/NormalZombie_moving2.mp3');
-    arr_normalZombieMoving2.push(normalZombieMoving2);
+    arr_normalZombieMoving2Sfx.push(normalZombieMoving2);
 }
 
-var arr_normalZombieAttack = []; // 공격소리
+var arr_normalZombieAttackSfx = []; // 공격소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieAttack = new Audio('./sfx/NormalZombie/NormalZombie_attack.mp3');
-    arr_normalZombieAttack.push(normalZombieAttack);
+    arr_normalZombieAttackSfx.push(normalZombieAttack);
 }
 
 //CrawlingZombie
+var crawlingZombieTotalNum = 5;
 
+var arr_crawlingZombieMoving1Sfx = [];//왼쪽으로 움직일때 내는 소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var crawlingZombieMoving1 = new Audio('./sfx/CrawlingZombie/CrawlingZombie_moving1.mp3');
+    arr_crawlingZombieMoving1Sfx.push(normalZombieMoving1);
+}
+
+var arr_crawlingZombieMoving2Sfx = [];//오른쪽으로 움직일때 내는 소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var crawlingZombieMoving2 = new Audio('./sfx/CrawlingZombie/CrawlingZombie_moving2.mp3');
+    arr_crawlingZombieMoving2Sfx.push(normalZombieMoving1);
+}
+
+var arr_crawlingZombieAttackSfx = []; // 공격소리
+
+for (let i = 0; i < normalZombieTotalNum; i++) { 
+    var crawlingZombieAttack = new Audio('./sfx/CrawlingZombie/CrawlingZombie_attack.mp3');
+    arr_crawlingZombieAttackSfx.push(normalZombieAttack);
+}
 
 
 /////////////////////////////img files
@@ -154,13 +206,16 @@ var img_Player_grabbed_left2 = new Image();
 img_Player_grabbed_left2.src = './img/Player2_grabbed_left.png'
 
 //BackGrounds
+var img_bg_tutorial = new Image();
+img_bg_tutorial.src = './img/BackGrounds/bg_tutorial.png'
+
 var img_bg_station_1 = new Image();
 img_bg_station_1.src = './img/BackGrounds/bg_station_1.png'
 
 var img_bg_rail = new Image();
 img_bg_rail.src = './img/BackGrounds/bg_rail.png'
 
-var bgArray = [ img_bg_rail, img_bg_station_1 ];
+var bgArray = [img_bg_tutorial, img_bg_rail, img_bg_station_1, img_bg_rail];
 
 //utils
 var img_Player_health = new Image();
@@ -211,6 +266,17 @@ img_Zombie_death.src = './img/Zombie_death.png'
 
 var img_Zombie_death_left = new Image();
 img_Zombie_death_left.src = './img/Zombie_death_left.png'
+
+//StuckedZombie
+
+var img_StuckedZombie_attack = new Image();
+img_StuckedZombie_attack.src = './img/StuckedZombieAttack.png'
+
+var img_StuckedZombie_stunned = new Image();
+img_StuckedZombie_stunned.src = './img/StuckedZombieStunned.png'
+
+var img_StuckedZombie_death = new Image();
+img_StuckedZombie_death.src = './img/StuckedZombieDeath.png'
 
 //runningZombie
 var img_RunningZombie_idle = new Image();
@@ -425,7 +491,7 @@ function drawPlayer(player) { //player 1 그림
             }
 
             else if (player.vel.moving == true) { //걷는 경우
-                arr_playerWalking[0].play();
+                arr_playerWalkingSfx[0].play();
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                     ctx.drawImage(img_Walking_full, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
@@ -436,7 +502,7 @@ function drawPlayer(player) { //player 1 그림
             }
     
             else { // 가만히 서 있는 경우
-                audioStop(arr_playerWalking[0]);
+                audioStop(arr_playerWalkingSfx[0]);
                 if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                     ctx.drawImage(img_Idle_full, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
                 }
@@ -509,7 +575,7 @@ function drawPlayer2(player) {
         }
 
         else if (player.vel.moving == true) { //걷는 경우
-            arr_playerWalking[1].play();
+            arr_playerWalkingSfx[1].play();
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                 ctx.drawImage(img_Walking_full2, player.width * player.walkingCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -520,7 +586,7 @@ function drawPlayer2(player) {
         }
 
         else { // 가만히 서 있는 경우
-            audioStop(arr_playerWalking[1]);
+            audioStop(arr_playerWalkingSfx[1]);
             if (player.vel.lookingRight == true) { //오른쪽을 보고있는 경우
                 ctx.drawImage(img_Idle_full2, player.width * player.idleCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -533,7 +599,21 @@ function drawPlayer2(player) {
 }
 //임시로 1만
 function drawbg(BackGround) {
-    ctx.drawImage(bgArray[1], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 210, canvas.width, canvas.height);
+    ctx.drawImage(bgArray[0], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
+}
+
+function drawStuckedZombie(zombie, currentStageNum) {
+    if (zombie.stageNum == currentStageNum) {
+        if (this.stunned == false && this.dead == false) {
+            ctx.drawImage(img_StuckedZombie_attack, zombie.width * zombie.attackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+        }
+        else if (this.stunned == true && this.dead == false) {
+            ctx.drawImage(img_StuckedZombie_stunned, zombie.width * zombie.stunCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+        }
+        else if (this.dead == true) {
+            ctx.drawImage(img_StuckedZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+        }
+    }
 }
 
 function drawNormalZombie(zombie, currentStageNum) {
@@ -765,7 +845,6 @@ function drawCrawlingZombie(zombie, currentStageNum) {
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     gameCodeScreen.style.display = "none";
     ctx.clearRect(0,0, canvas.width, canvas.height);
-
     //////////////////////////
     //drawbg(state.bg, state.currentStageNum);
     drawbg(state.bg);
@@ -775,15 +854,15 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     if(state.players[1].dead == false) {
         drawPlayer2(state.players[1]);
     }
+
+    drawStuckedZombie(state.sz, state.currentStageNum);
     drawNormalZombie(state.zombies[0], state.currentStageNum);
     drawRunningZombie(state.zombies[1], state.currentStageNum);
     drawCrawlingZombie(state.zombies[2], state.currentStageNum);
 
 
     //for test
-    console.log(state.zombies[2].testVariable);
-    console.log('waitCount is ' + state.zombies[2].waitCount);
-    console.log('attackCount is ' + state.zombies[2].attackCount);
+    console.log(state.currentStageNum);
 }
 
 function handleInit(number) {
@@ -796,6 +875,8 @@ function handleGameState(gameState) {
     }
 
     gameState = JSON.parse(gameState);
+    // dialogueWindow.style.display = "block";
+    // textAnimation(dialogueText, arr_testText[textIndex]); // 게임 시작시 대화창 발동
     requestAnimationFrame(() => paintGame(gameState));
 }
 
@@ -809,6 +890,8 @@ function handleGameOver(data) {
     gameActive = false;
 
     alert("game over");
+
+    reset();
 }
 
 function handleGameCode(gameCode) {
@@ -832,30 +915,3 @@ function reset() {
     initialScreen.style.display = "block";
     gameScreen.style.display = "none";
 }
-
-
-// document.addEventListener('keydown', function(e) {
-//     if (e.key ==='a') {
-//         playerWalking.play();
-//     }
-// })
-
-
-// document.addEventListener('keyup', function(e) {
-//     if (e.key ==='a') {
-//         audioStop(playerWalking);
-//     }
-// })
-
-// document.addEventListener('keydown', function(e) {
-//     if (e.key ==='d') {
-//         playerWalking.play();
-//     }
-// })
-
-
-// document.addEventListener('keyup', function(e) {
-//     if (e.key ==='d') {
-//         audioStop(playerWalking);
-//     }
-// })
