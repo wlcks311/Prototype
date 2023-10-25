@@ -39,8 +39,10 @@
             position: absolute;
             width:1250px;
             height:300px;
-            top: 60%;
+            top: 62%;
             left: 50%;
+
+            font-size: 40px;
 
             margin-left: -400px;
         }
@@ -90,6 +92,34 @@
             left: 50%;
             margin-top:-540px;
             margin-left:-960px;
+        }
+
+        input.logOut-button {
+            background: url("lobbyImg/Log_out.png") no-repeat;
+            width: 220px;
+            height: 58px;
+            background-size: cover;
+
+            position: absolute;
+            top: 10%;
+            left: 1%;
+
+            border: none;
+            margin-left: -10px;
+        }
+
+        input.logOut-button:hover {
+            background: url("lobbyImg/Log_out_onMouse.png") no-repeat;
+            width: 220px;
+            height: 58px;
+            background-size: cover;
+
+            position: absolute;
+            top: 10%;
+            left: 1%;
+
+            border: none;
+            margin-left: -10px;
         }
 
         input.single-button {
@@ -197,8 +227,12 @@
             top: 50%;
             left: 10%;
 
+            display: inline;
+
             margin-top: -22px;
             border: none;
+
+            z-index: 10;
         }
 
         input.backSpace-button:hover {
@@ -210,6 +244,8 @@
             position: absolute;
             top: 50%;
             left: 10%;
+
+            display: inline;
 
             margin-top: -22px;
             border: none;
@@ -244,12 +280,43 @@
             border: none;
         }
 
+        input.changePW-button {
+            background: url("lobbyImg/ChangePW.png") no-repeat;
+            width: 380px;
+            height: 80px;
+            background-size: cover;
+
+            position: absolute;
+            top: 80%;
+            left: 50%;
+
+            margin-top: -18px;
+            margin-left: -190px;
+            border: none;
+        }
+
+        input.changePW-button:hover {
+            background: url("lobbyImg/ChangePW_onMouse.png") no-repeat;
+            width: 380px;
+            height: 80px;
+            background-size: cover;
+
+            position: absolute;
+            top: 80%;
+            left: 50%;
+
+            margin-top: -18px;
+            margin-left: -190px;
+            border: none;
+        }
+
         #gameCodeDisplay {
             position: absolute;
             top: 48%;
             left: 70%;
             font-size:30pt;
             font-weight: bold;
+            display:inline;
         }
     </style>
 </head>
@@ -259,11 +326,16 @@
         <div style="width:1920px; height:960px; position:absolute; top: 50%; margin-top: -480px;">
             <img src="lobbyImg/Lobby.png" alt="" width="1920" height="960">
         </div>
+
+        <input type="button" class="logOut-button" onclick="location.href='login.html'">
+
         <div id="singlePlay">
             <input type="button" class="single-button" onclick="alert('single play button')">
         </div>
 
-        <input type="button" class="deleteAccount-button" onclick="alert('delete account button')">
+        <input type="button" class="deleteAccount-button" onclick="location.href='deleteAccount.html'">
+
+        <input type="button" class="changePW-button" onclick="location.href='changePW.html'">
 
         <div id="multiPlay">
             <input type="button" class="createRoom-button" id="newGameButton">

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+<head>
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        @font-face {
+            font-family: 'neodgm';
+            src: url(./font/neodgm.woff) format('woff');
+        }
+        html {
+            overflow: hidden !important;
+        }
+        body {
+            background-color: black;
+            overflow: hidden !important;
+            font-family: 'neodgm';
+        }
+
+        #wrap {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top:-540px;
+            margin-left:-960px;
+        }
+
+        #changePW {
+            width: 960px;
+            height: 540px;
+            position: absolute;
+	        top: 50%;
+            left: 50%;
+            margin-top: -220px;
+            margin-left: -480px;
+
+            text-align: center;
+            font-size: 50px;
+        }
+
+        #id-blank {
+            position:absolute;
+
+            width: 270px;
+            height: 50px;
+
+            top: 27%;
+            left: 50%;
+
+            margin-top: -20px;
+            margin-left: -135px;
+        }
+        #nn-blank {
+            position:absolute;
+
+            width: 270px;
+            height: 50px;
+
+            top: 30%;
+            left: 50%;
+
+            margin-top: -20px;
+            margin-left: -135px;
+        }
+
+        #pw-blank {
+            position:absolute;
+
+            width: 270px;
+            height: 50px;
+
+            top: 48%;
+            left: 50%;
+
+            margin-top: -20px;
+            margin-left: -135px;
+        }
+
+        #SubmitButton {
+            background: url("lobbyImg/Submit.png") no-repeat;
+            width: 230px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 73%;
+            left: 50%;
+
+            margin-top: -30px;
+            margin-left: -115px;
+
+            border: none;
+        }
+
+        #SubmitButton:hover {
+            background: url("lobbyImg/Submit_onMouse.png") no-repeat;
+            width: 230px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 73%;
+            left: 50%;
+
+            margin-top: -30px;
+            margin-left: -115px;
+
+            border: none;
+        }
+
+        input.backSpace-button {
+            background: url("lobbyImg/Backspace.png") no-repeat;
+            width: 210px;
+            height: 45px;
+            background-size: cover;
+
+            position: absolute;
+            top: 50%;
+            left: 10%;
+
+            margin-top: -22px;
+            border: none;
+        }
+
+        input.backSpace-button:hover {
+            background: url("lobbyImg/Backspace_onMouse.png") no-repeat;
+            width: 210px;
+            height: 45px;
+            background-size: cover;
+
+            position: absolute;
+            top: 50%;
+            left: 10%;
+
+            margin-top: -22px;
+            border: none;
+        }
+    </style>
+<script src="changePW.js"></script>
+<meta charset="UTF-8">
+<title>Prototype</title>
+</head>
+<body style="height:100%">
+    <div id="wrap">
+        <div style="width:1920px; height:960px; position:absolute; top: 50%; margin-top: -480px;">
+            <img src="lobbyImg/RegisterPage.png" alt="" width="1920" height="960">
+        </div>
+
+
+        <form id="changePW">
+            Change PW
+            <input type="password" id="id-blank" name="currentPW" placeholder="Enter current PW" style='font-size:25pt; font-family: neodgm' > <br>
+            <input type="password" id="pw-blank" name="newPW" placeholder="Enter new PW" style='font-size:25pt; font-family: neodgm'> <br>
+            <input type="button"  id="SubmitButton" onclick="myFunction()">
+        </form>
+
+        <input type="button" class="backSpace-button" onclick="location.href='index.html'">
+
+        
+    </div>
+</body>
+
+</html>

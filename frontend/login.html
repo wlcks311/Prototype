@@ -5,12 +5,17 @@
         ::-webkit-scrollbar {
             display: none;
         }
+        @font-face {
+            font-family: 'neodgm';
+            src: url(./font/neodgm.woff) format('woff');
+        }
         html {
             overflow: hidden !important;
         }
         body {
             background-color: black;
             overflow: hidden !important;
+            font-family: 'neodgm';
         }
 
         #wrap {
@@ -135,8 +140,8 @@
 
 
         <form id="login">
-            <input type="text" id="id-blank" name="userId" placeholder="Enter ID" style='font-size:20pt' > <br>
-            <input type="password" id="pw-blank" name="userPassword" placeholder="Enter PW" style='font-size:20pt'> <br>
+            <input type="text" id="id-blank" name="userId" placeholder="Enter ID" style='font-size:25pt; font-family: neodgm' > <br>
+            <input type="password" id="pw-blank" name="userPassword" placeholder="Enter PW" style='font-size:25pt; font-family: neodgm'> <br>
         </form>
 
         <input type="button"  id="loginButton" onclick="myFunction()">

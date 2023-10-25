@@ -161,11 +161,11 @@ class StuckedZombie {
     }
 
     checkStunned(p1, p2) {
-        if (this.x - p1.x < 170 && p1.blocking == true) {
+        if (this.x - p1.x < 170 && p1.vel.blocking == true) {
             this.stunned = true;
         }
 
-        else if (this.x - p2.x < 170 && p2.blocking == true) {
+        else if (this.x - p2.x < 170 && p2.vel.blocking == true) {
             this.stunned = true;
         }
     }
@@ -1857,7 +1857,7 @@ function createGameState() {
     var currentStageNum = 0; //임시로 3번째 스테이지부터
 
     //zombies
-    sz = new StuckedZombie(1900, 630, 500, 500, 200);
+    sz = new StuckedZombie(1830, 560, 500, 500, 200);
 
     nz1 = new NormalZombie(1200, 620, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);

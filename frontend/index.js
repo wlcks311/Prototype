@@ -25,6 +25,8 @@ let canvas, ctx;
 let playerNumber;
 let gameActive = false;
 
+let gameMatched = false;
+
 function audioStop(audio) { // 오디오 멈춤 함수 -> stop역할
     audio.pause();
     audio.currentTime = 0;
@@ -38,9 +40,11 @@ var dialogueText = document.getElementById('dialogueText');
 const arr_testText = ["1번째 문장입니다.", "2번째 문장입니다.", "3번째 마지막 문장입니다."];
 
 var textIndex = 0;
+var dialogueOnGoing = false;
 
 function textAnimation(tag, text) {
     tag.innerHTML='';
+    dialogueOnGoing = true;
     for(let i=0; i < text.length; i++) {
         setTimeout(function(){
             tag.innerHTML += text[i];
@@ -48,14 +52,17 @@ function textAnimation(tag, text) {
     }
 }
 
+
 document.addEventListener('keydown', function(e) {
-    if (e.key ==='x') {
-        if (textIndex > arr_testText.length - 1) {
-            dialogueWindow.style.display = "none";
-        }
-        else {
+    if (e.key ==='x' && dialogueOnGoing == true) {
+        if (textIndex < arr_testText.length - 1) {
             textIndex++;
             textAnimation(dialogueText, arr_testText[textIndex]);
+            
+        }
+        else {
+            dialogueOnGoing = false;
+            dialogueWindow.style.display = "none";
         }
         
     }
@@ -375,7 +382,7 @@ function joinGame() {
 
 function init() {
     initialScreen.style.display = "none"; // 초기화면 가리기
-    gameScreen.style.display = "block";   // display: block => 요소를 앞 뒤로 줄바꿈 함
+    gameScreen.style.display = "inline";   // display: block => 요소를 앞 뒤로 줄바꿈 함
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -406,7 +413,7 @@ function updateBlockBox(x_right, x_left, y, player) {
 
 function PlayerAttack(player) {//player 1 그림
     if (player.attackCount == 3) {//3번째 컷에서 공격 소리 재생
-        arr_playerAttack[0].play();
+        arr_playerAttackSfx[0].play();
     }
     if (player.vel.lookingRight == true) {
         ctx.drawImage(img_Middle_Attack_full, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
@@ -419,7 +426,7 @@ function PlayerAttack(player) {//player 1 그림
 
 function Player2Attack(player) {//player 2 그림
     if (player.attackCount == 3) {//3번째 컷에서 공격 소리 재생
-        arr_playerAttack[1].play();
+        arr_playerAttackSfx[1].play();
     }
     if (player.vel.lookingRight == true) {
         ctx.drawImage(img_Middle_Attack_full2, player.width * player.attackCount, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
@@ -604,13 +611,13 @@ function drawbg(BackGround) {
 
 function drawStuckedZombie(zombie, currentStageNum) {
     if (zombie.stageNum == currentStageNum) {
-        if (this.stunned == false && this.dead == false) {
+        if (zombie.stunned == false && zombie.dead == false) {
             ctx.drawImage(img_StuckedZombie_attack, zombie.width * zombie.attackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
-        else if (this.stunned == true && this.dead == false) {
+        else if (zombie.stunned == true && zombie.dead == false) {
             ctx.drawImage(img_StuckedZombie_stunned, zombie.width * zombie.stunCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
-        else if (this.dead == true) {
+        else if (zombie.dead == true) {
             ctx.drawImage(img_StuckedZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
     }
@@ -840,10 +847,15 @@ function drawCrawlingZombie(zombie, currentStageNum) {
     }
 }
 
-///////////////////////////
+///////////////////////////////////painting Game
 
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     gameCodeScreen.style.display = "none";
+
+    if (dialogueOnGoing == false && textIndex == 0) {
+        dialogueWindow.style.display = "block";
+        textAnimation(dialogueText, arr_testText[textIndex]);
+    }
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //////////////////////////
     //drawbg(state.bg, state.currentStageNum);
@@ -855,6 +867,7 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
         drawPlayer2(state.players[1]);
     }
 
+
     drawStuckedZombie(state.sz, state.currentStageNum);
     drawNormalZombie(state.zombies[0], state.currentStageNum);
     drawRunningZombie(state.zombies[1], state.currentStageNum);
@@ -862,8 +875,12 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
 
 
     //for test
-    console.log(state.currentStageNum);
 }
+
+
+
+
+//////////////////////////////////////////////
 
 function handleInit(number) {
     playerNumber = number;
@@ -875,8 +892,6 @@ function handleGameState(gameState) {
     }
 
     gameState = JSON.parse(gameState);
-    // dialogueWindow.style.display = "block";
-    // textAnimation(dialogueText, arr_testText[textIndex]); // 게임 시작시 대화창 발동
     requestAnimationFrame(() => paintGame(gameState));
 }
 
@@ -888,6 +903,7 @@ function handleGameOver(data) {
     data = JSON.parse(data);
 
     gameActive = false;
+    gameMatched = false;
 
     alert("game over");
 
