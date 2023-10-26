@@ -11,9 +11,15 @@ createFillArray = function(len, n) {
     return new Array(len).fill(n);
 }
 
-collisonCheckX = createFillArray(2000, -1); //캔버스의 가로 길이만큼의 x좌표계 생성. 기본 원소값은 전부 -1 -> 물체가 없는 상태
+collisonCheckX = createFillArray(8000, -1); //캔버스의 가로 길이만큼의 x좌표계 생성. 기본 원소값은 전부 -1 -> 물체가 없는 상태
 // 플레이어가 서 있는 곳 -> 0
 // 몬스터가 서 있는 곳 -> 1
+//// 스테이지 변경 로직
+
+// 0->왼쪽에서 시작 오른쪽 끝, 1-> 오른쪽에서 시작 왼쪽 끝
+var arr_stageChangePoint = [0, 0, 0, 1, 0];
+
+////
 
 function biggerX(p1_x, p2_x) {
     if (p1_x >= p2_x) {
@@ -75,9 +81,6 @@ class BackGround {
         this.bgmovingLeft = false;
          //주인공이 화면 끝까지 이동할 수 있는 경우는 오른쪽으로 가면서 bg_x == bg_xMax이거나, 왼쪽으로 가면서 bg_x == 0 인 경우. 그 이외에는 화면이 움직여야 함
         this.stageNum = 0;// 스테이지는 0부터 시작, 맵이 바뀔 때 마다 1씩 증가함
-    }
-    draw() {
-        ctx.drawImage(img_bg_test, this.bg_x, 0, this.bg_length * (canvas_width / canvas_height), this.bg_length, 0, 0, canvas_width, canvas_height);
     }
 }
 
@@ -361,6 +364,10 @@ class NormalZombie extends Creature { //좀비 클래스
 
     setStunLoop(stunLoop) {
         this.stunLoop = stunLoop;
+    }
+
+    setStageNum(stageNum) {
+        this.stageNum = stageNum;
     }
 
     comeBackToPosition(collisonCheckX) {
@@ -1854,7 +1861,7 @@ function createGameState() {
     p1.setLoops(4, 8, 6, 0);
     p2 = new MainCharacter(500, 620, 500, 500, 200);
     p2.setLoops(4, 8, 6, 0);
-    var currentStageNum = 0; //임시로 3번째 스테이지부터
+    var currentStageNum = 3; //임시로 3번째 스테이지부터
 
     //zombies
     sz = new StuckedZombie(1830, 560, 500, 500, 200);
@@ -2483,72 +2490,58 @@ function gameLoop(state) {
     }
     
 
-    // //NormalZombie 애니메이션 변수
-    // if (nz1.dead == false && nz1.stageNum == state.currentStageNum) {
-    //     if (nz1.vel.moving == false) {
-    //         //플레이어가 해당 몬스터의 공격을 막았을 경우
-    //        if (nz1.stunned == true) {
-    //            if (nz1.stunCount % 40 == 39) {
-    //                nz1.stunAnimaitonCount++;
-    //                nz1.stunAnimaitonCount = nz1.stunAnimaitonCount % nz1.stunLoop;
-    //            }
-    //        }
-    //        //텀이 지나고 다시 공격하는 경우
-    //        else if (nz1.vel.attacking == true && nz1.waitCount == 30) {
-    //            if (nz1.attackFrame < 10) {
-    //                 nz1.attackFrame++;
-    //            }
-    //            else if (nz1.attackFrame == 10) {
-    //                 nz1.attackFrame = 0;
-    //                 if (nz1.attackCount < nz1.attackLoop - 1) {
-    //                     nz1.attackCount++;
-    //                 }
-    //                 else {
-    //                     nz1.attackCount = 0;
-    //                 }
-    //            }
-    //        }
-    //        //가만히 서 있는 경우
-    //        else {
-    //            if(nz1.idleCount == 30) {
-    //                nz1.idleCount = 0;
-    //                nz1.idleCut++;
-    //                nz1.idleCut = nz1.idleCut % nz1.idleLoop;
-    //            }
-    //            nz1.idleCount++;
-    //        }
-    //    }
-   
-    //    else if (nz1.vel.moving == true) {
-    //        if (nz1.walkingCount == 30) {
-    //            nz1.walkingCount = 0;
-    //            nz1.walkingCut++;
-    //            nz1.walkingCut = nz1.walkingCut % nz1.walkingLoop;
-    //        }
-    //        nz1.walkingCount++;
-    //    }
-    // }
-    // else if (nz1.dead == true) {
-    //     if (nz1.deathFrame < 30 && nz1.deathCount < 7) {
-    //         nz1.deathFrame++;
-    //     }
-    //     else if (nz1.deathFrame == 30 && nz1.deathCount < 7) {
-    //         nz1.deathFrame = 0;
-    //         nz1.deathCount++;
-    //     }
-    //     else {
-    //         nz1.deathCount = 7;
-    //     }
-    // }
 
     
-    //스테이지 이동 로직 -> 오른쪽으로만 이동
-    if (bg.bg_x == bg.bg_xMax && bigX + 40 == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
-        p1.x = 100;
-        p2.x = 300;
-        state.currentStageNum++;
-        bg.bg_x = 0;
+    //스테이지 이동 로직 -> 0-오른쪽으로 이동
+    if (arr_stageChangePoint[state.currentStageNum] == 0) { // 현재 맵이 오른쪽에서 끝나는 맵인 경우
+        if (bg.bg_x == bg.bg_xMax && bigX + 40 == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
+            state.currentStageNum++;
+
+            if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
+                p1.x = 100;
+                p2.x = 300;
+                bg.bg_x = 0;
+
+                p1.vel.lookingRight = true;
+                p2.vel.lookingRight = true;
+            }
+            else {//오른쪽 시작인 경우
+                p1.x = 1500;
+                p2.x = 1800;
+                bg.bg_x = bg.bg_xMax;
+
+                p1.vel.lookingRight = false;
+                p2.vel.lookingRight = false;
+            }
+            
+            
+            
+        }
     }
+    else if (arr_stageChangePoint[currentStageNum] == 1) {// 현재 맵이 왼쪽에서 끝나는 맵인 경우
+        if (bg.bg_x == 0 && smallX == 50) { //둘 중 한명이 맵 왼쪽 끝까지 가는 경우
+            state.currentStageNum++;
+            if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
+                p1.x = 100;
+                p2.x = 300;
+                bg.bg_x = 0;
+
+                p1.vel.lookingRight = true;
+                p2.vel.lookingRight = true;
+            }
+            else {//오른쪽 시작인 경우
+                p1.x = 1500;
+                p2.x = 1800;
+                bg.bg_x = bg.bg_xMax;
+
+                p1.vel.lookingRight = false;
+                p2.vel.lookingRight = false;
+            }
+            
+        }
+    }
+
+    
     
 }
 

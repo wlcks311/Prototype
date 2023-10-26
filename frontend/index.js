@@ -36,16 +36,41 @@ function audioStop(audio) { // 오디오 멈춤 함수 -> stop역할
 
 var dialogueWindow = document.getElementById('dialogueWindow');
 var dialogueText = document.getElementById('dialogueText');
+var portrait = document.getElementById('portrait');
 
-const arr_testText = ["1번째 문장입니다.", "2번째 문장입니다.", "3번째 마지막 문장입니다."];
+//대화가 있는 스테이지인지 확인하는 정보 -> 1이면 대화 있음
+var checkStageNum = 0; // 0부터 시작
+
+
+
+const arr_dialogueCheck = [1, 0, 0, 1, 0, 1, 0];
+const arr_textIndex = [0, 0, 0, 0, 0, 0, 0];
+const arr_dialogues = [["원재: 녀석이 공격하는 틈에 맞춰 R키를 누르면 방어할 수 있어.", "두혁: 보통은 잠깐 기절한다고 하던데.", "원재: 맞아. 그때 공격하면 더 수월하지."], [], [], [], [], []];
 
 var textIndex = 0;
 var dialogueOnGoing = false;
+var dialogueFinished = false;
+
+function checkStageChanged(checkStageNum, stageNum) {
+    if (stageNum > checkStageNum) {
+        dialogueFinished = false;
+        checkStageNum++;
+    }
+}
 
 function textAnimation(tag, text) {
     tag.innerHTML='';
     dialogueOnGoing = true;
     for(let i=0; i < text.length; i++) {
+
+        if (i == 0) { // 초상화 확인
+            if (text[i] == '원') {
+                portrait.src = "img/dialogue/TestPortrait.png";
+            }
+            else if (text[i] == '두') {
+                portrait.src = "img/dialogue/TestPortrait2.png";
+            }
+        }
         setTimeout(function(){
             tag.innerHTML += text[i];
         }, (i+1)*100);
@@ -55,12 +80,13 @@ function textAnimation(tag, text) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key ==='x' && dialogueOnGoing == true) {
-        if (textIndex < arr_testText.length - 1) {
+        if (textIndex < arr_dialogues[checkStageNum].length - 1) {
             textIndex++;
-            textAnimation(dialogueText, arr_testText[textIndex]);
-            
+            textAnimation(dialogueText, arr_dialogues[checkStageNum][textIndex]);
         }
         else {
+            textIndex = 0;
+            dialogueFinished = true;
             dialogueOnGoing = false;
             dialogueWindow.style.display = "none";
         }
@@ -605,8 +631,8 @@ function drawPlayer2(player) {
     }
 }
 //임시로 1만
-function drawbg(BackGround) {
-    ctx.drawImage(bgArray[0], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
+function drawbg(BackGround, currentStageNum) {
+    ctx.drawImage(bgArray[currentStageNum], BackGround.bg_x, 0, BackGround.bg_length * (canvas.width / canvas.height), BackGround.bg_length, 0, 0, canvas.width, canvas.height);
 }
 
 function drawStuckedZombie(zombie, currentStageNum) {
@@ -852,14 +878,16 @@ function drawCrawlingZombie(zombie, currentStageNum) {
 function paintGame(state) { //draw 함수를 이용해야 할 듯
     gameCodeScreen.style.display = "none";
 
-    if (dialogueOnGoing == false && textIndex == 0) {
+    checkStageChanged(checkStageNum, state.currentStageNum);
+
+    if (dialogueOnGoing == false && dialogueFinished == false && arr_dialogueCheck[state.currentStageNum] == 1) { // 대화 시작
         dialogueWindow.style.display = "block";
-        textAnimation(dialogueText, arr_testText[textIndex]);
+        textAnimation(dialogueText, arr_dialogues[state.currentStageNum][textIndex]);
     }
     ctx.clearRect(0,0, canvas.width, canvas.height);
     //////////////////////////
-    //drawbg(state.bg, state.currentStageNum);
-    drawbg(state.bg);
+    drawbg(state.bg, state.currentStageNum);
+    //drawbg(state.bg);
     if(state.players[0].dead == false) {
         drawPlayer(state.players[0]);
     }
