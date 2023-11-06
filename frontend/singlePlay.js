@@ -8,31 +8,34 @@ ctx = canvas.getContext('2d');
 canvas.width = 1920;
 canvas.height = 960;
 
+createFillArray = function(len, n) {
+    return new Array(len).fill(n);
+}
 //처음부터 진행할지 저장된 부분부터 진행할지 결정
 var currentStageNum = 0;
 
+var gameScreen = document.getElementById('gameScreen');
 var newGameButton = document.getElementById('newGameButton');
 var loadGameButton = document.getElementById('loadGameButton');
 var chooseSavePoint = document.getElementById('chooseSavePoint');
 
-const state = {};
 
-newGameButton.addEventListener('onclick', function(e) {
+newGameButton.addEventListener('click', ()=>{
     //선택 화면 가리기
     chooseSavePoint.style.display = 'none';
     currentStageNum = 0; //맨 처음 스테이지로
 
-    state = createGameState();
     //게임 화면 띄우기
     gameScreen.style.display = "inline";
     gameActivated = true;
+    console.log('button clicked')
+    animate();
 })
 
-loadGameButton.addEventListener('onclick', function(e) {
+loadGameButton.addEventListener('click', ()=>{
     //선택 화면 가리기
     chooseSavePoint.style.display = 'none';
     currentStageNum = 0; //저장 되어있던 스테이지로
-    state = createGameState();
     //게임 화면 띄우기
     gameScreen.style.display = "inline";
     gameActivated = true;
@@ -78,6 +81,19 @@ const arr_dialogues = [
  [], //stage5 대화 없음
  []];
 
+var textIndex = 0;
+var dialogueOnGoing = false;
+var dialogueFinished = false;
+
+var talking = false;
+
+function checkStageChanged(checkStageNum, stageNum) {
+    if (stageNum > checkStageNum) {
+        dialogueFinished = false;
+        checkStageNum++;
+    }
+}
+
  function textAnimation(tag, text) {
     tag.innerHTML='';
     dialogueOnGoing = true;
@@ -87,9 +103,6 @@ const arr_dialogues = [
         if (i == 0) { // 초상화 확인
             if (text[i] == '원') {
                 portrait.src = "img/dialogue/player1.png";
-            }
-            else if (text[i] == '두') {
-                portrait.src = "img/dialogue/player2.png";
             }
             else if (text[i] == '-') {
                 portrait.src = "img/dialogue/instructionPortrait.png";
@@ -1046,12 +1059,12 @@ function drawBossZombie(zombie, currentStageNum) {
 /////////////////////   Classes  /////////////////////////////
 class BackGround {
     constructor() {
-        this.bg_length = canvas_width;
-        this.bg_canvasLength = canvas_height;
+        this.bg_length = canvas.width;
+        this.bg_canvasLength = canvas.height;
         this.bg_x = 0;
         this.bg_count = 3;
-        this.bg_xMax = (this.bg_length * this.bg_count) - this.bg_length * (canvas_width / canvas_height);
-        this.ratio = this.bg_length / canvas_height;
+        this.bg_xMax = (this.bg_length * this.bg_count) - this.bg_length * (canvas.width / canvas.height);
+        this.ratio = this.bg_length / canvas.height;
         this.bgmovingRight = false;
         this.bgmovingLeft = false;
          //주인공이 화면 끝까지 이동할 수 있는 경우는 오른쪽으로 가면서 bg_x == bg_xMax이거나, 왼쪽으로 가면서 bg_x == 0 인 경우. 그 이외에는 화면이 움직여야 함
@@ -3153,7 +3166,7 @@ class BossZombie extends NormalZombie {
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-collisonCheckX = createFillArray(12000, -1); //캔버스의 가로 길이만큼의 x좌표계 생성. 기본 원소값은 전부 -1 -> 물체가 없는 상태
+var collisonCheckX = createFillArray(12000, -1); //캔버스의 가로 길이만큼의 x좌표계 생성. 기본 원소값은 전부 -1 -> 물체가 없는 상태
 // 플레이어가 서 있는 곳 -> 0
 // 몬스터가 서 있는 곳 -> 1
 //// 스테이지 변경 로직
@@ -3188,43 +3201,41 @@ function moveObjectLeft(collisonCheckX, obj, currentStageNum) {
     
 }
 
-function createGameState() {
-    bg = new BackGround();
+    var bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
     //setLoops(idle, walking, attacking, death)
-    p1 = new MainCharacter(200, 620, 500, 500, 200);
+    var p1 = new MainCharacter(200, 620, 500, 500, 200);
     p1.setLoops(4, 8, 6, 0);
-    var currentStageNum = 0; //임시로 3번째 스테이지부터
 
     //zombies
     //stage0
-    sz = new StuckedZombie(1830, 560, 500, 500, 200);
+    var sz = new StuckedZombie(1830, 560, 500, 500, 200);
 
     
     //stage1 일반 좀비 4마리. 1500, 3000, 4500, 7000
 
-    nz1 = new NormalZombie(1500, 620, 500, 500, 200);
+    var nz1 = new NormalZombie(1500, 620, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);
     nz1.setFixedRange(1200, 1800);
     nz1.setStunLoop(3);
     nz1.setSfxIndex(0); //일반 좀비 중 첫 번째
     nz1.setStageNum(1);
 
-    nz2 = new NormalZombie(3000, 620, 500, 500, 200);
+    var nz2 = new NormalZombie(3000, 620, 500, 500, 200);
     nz2.setLoops(6, 7, 4, 8);
     nz2.setFixedRange(2700, 3300);
     nz2.setStunLoop(3);
     nz2.setSfxIndex(1);
     nz2.setStageNum(1);
 
-    nz3 = new NormalZombie(4500, 620, 500, 500, 200);
+    var nz3 = new NormalZombie(4500, 620, 500, 500, 200);
     nz3.setLoops(6, 7, 4, 8);
     nz3.setFixedRange(4200, 4800);
     nz3.setStunLoop(3);
     nz3.setSfxIndex(2);
     nz3.setStageNum(1);
 
-    nz4 = new NormalZombie(7000, 620, 500, 500, 200);
+    var nz4 = new NormalZombie(7000, 620, 500, 500, 200);
     nz4.setLoops(6, 7, 4, 8);
     nz4.setFixedRange(6700, 7300);
     nz4.setStunLoop(3);
@@ -3234,35 +3245,35 @@ function createGameState() {
     
     //stage2 일반 좀비 5마리
 
-    nz5 = new NormalZombie(1000, 620, 500, 500, 200);
+    var nz5 = new NormalZombie(1000, 620, 500, 500, 200);
     nz5.setLoops(6, 7, 4, 8);
     nz5.setFixedRange(700, 1300);
     nz5.setStunLoop(3);
     nz5.setSfxIndex(4);
     nz5.setStageNum(2);
 
-    nz6 = new NormalZombie(2500, 620, 500, 500, 200);
+    var nz6 = new NormalZombie(2500, 620, 500, 500, 200);
     nz6.setLoops(6, 7, 4, 8);
     nz6.setFixedRange(2200, 2800);
     nz6.setStunLoop(3);
     nz6.setSfxIndex(5);
     nz6.setStageNum(2);
 
-    nz7 = new NormalZombie(4000, 620, 500, 500, 200);
+    var nz7 = new NormalZombie(4000, 620, 500, 500, 200);
     nz7.setLoops(6, 7, 4, 8);
     nz7.setFixedRange(3700, 4300);
     nz7.setStunLoop(3);
     nz7.setSfxIndex(6);
     nz7.setStageNum(2);
 
-    nz8 = new NormalZombie(5500, 620, 500, 500, 200);
+    var nz8 = new NormalZombie(5500, 620, 500, 500, 200);
     nz8.setLoops(6, 7, 4, 8);
     nz8.setFixedRange(5200, 5800);
     nz8.setStunLoop(3);
     nz8.setSfxIndex(7);
     nz8.setStageNum(2);
 
-    nz9 = new NormalZombie(7000, 620, 500, 500, 200);
+    var nz9 = new NormalZombie(7000, 620, 500, 500, 200);
     nz9.setLoops(6, 7, 4, 8);
     nz9.setFixedRange(6700, 7300);
     nz9.setStunLoop(3);
@@ -3271,21 +3282,21 @@ function createGameState() {
 
 
     //stage3 원거리 좀비 3마리
-    cz1 = new CrawlingZombie(400, 620, 500, 500, 200);
+    var cz1 = new CrawlingZombie(400, 620, 500, 500, 200);
     cz1.setLoops(4, 4, 4, 7);
     cz1.setFixedRange(300, 500);
     cz1.setStunLoop(3);
     cz1.setSfxIndex(0);
     cz1.setStageNum(3);
 
-    cz2 = new CrawlingZombie(-3000, 620, 500, 500, 200);
+    var cz2 = new CrawlingZombie(-3000, 620, 500, 500, 200);
     cz2.setLoops(4, 4, 4, 7);
     cz2.setFixedRange(-3100, -2900);
     cz2.setStunLoop(3);
     cz2.setSfxIndex(1);
     cz2.setStageNum(3);
 
-    cz3 = new CrawlingZombie(-5000, 620, 500, 500, 200);
+    var cz3 = new CrawlingZombie(-5000, 620, 500, 500, 200);
     cz2.setLoops(4, 4, 4, 7);
     cz2.setFixedRange(-5100, -4900);
     cz2.setStunLoop(3);
@@ -3296,21 +3307,21 @@ function createGameState() {
 
 
     //stage5
-    rz1 = new RunningZombie(1500, 620, 500, 500, 200);
+    var rz1 = new RunningZombie(1500, 620, 500, 500, 200);
     rz1.setLoops(4, 4, 5, 6);
     rz1.setFixedRange(1200, 1800);
     rz1.setStunLoop(3);
     rz1.setSfxIndex(0);
     rz1.setStageNum(5);
 
-    rz2 = new RunningZombie(3500, 620, 500, 500, 200);
+    var rz2 = new RunningZombie(3500, 620, 500, 500, 200);
     rz2.setLoops(4, 4, 5, 6);
     rz2.setFixedRange(3200, 3800);
     rz2.setStunLoop(3);
     rz2.setSfxIndex(1);
     rz2.setStageNum(5);
 
-    rz3 = new RunningZombie(5000, 620, 500, 500, 200);
+    var rz3 = new RunningZombie(5000, 620, 500, 500, 200);
     rz3.setLoops(4, 4, 5, 6);
     rz3.setFixedRange(4700, 5300);
     rz3.setStunLoop(3);
@@ -3318,26 +3329,12 @@ function createGameState() {
     rz3.setStageNum(5);
 
     //stage6 final
-    bz = new BossZombie(1700, 520, 750, 750, 300);
+    var bz = new BossZombie(1700, 520, 750, 750, 300);
     bz.setStageNum(6);
+    var normalZombies = [nz1, nz2, nz3, nz4, nz5, nz6, nz7, nz8, nz9];
+    var runningZombies = [rz1, rz2, rz3];
+    var crawlingZombies = [cz1, cz2, cz3];
 
-
-    
-
-
-    return {
-        currentStageNum,
-        bg,
-        players: [p1],
-        normalZombies: [nz1, nz2, nz3, nz4, nz5, nz6, nz7, nz8, nz9],
-        runningZombies: [rz1, rz2, rz3],
-        crawlingZombies: [cz1, cz2, cz3],
-        bz,
-        sz,
-        collisonCheckX,
-        activate: true,
-    }
-}
 
 //플레이어 방어 상자 갱신
 function updateBlockBox(player, x, y) {
@@ -3349,18 +3346,8 @@ function updateBlockBox(player, x, y) {
 
 // gameLoop
 
-function gameLoop(state) {
-    if (!state) {
-        return;
-    }
-    const bg = state.bg;
-    const p1 = state.players[0];
-    const normalZombies = state.normalZombies;
-    const runningZombies = state.runningZombies;
-    const crawlingZombies = state.crawlingZombies;
-    const bz = state.bz;
-    const sz = state.sz;
-    const collisonCheckX = state.collisonCheckX;
+function gameLoop() {
+    
     bigX = p1.x + p1.canvasLength - 40;
     smallX = p1.x + 40;
 
@@ -3375,7 +3362,7 @@ function gameLoop(state) {
 
     
 
-    if (state.currentStageNum == 4) { // 편의점 도달 했을 시, 4스테이지로 저장
+    if (currentStageNum == 4) { // 편의점 도달 했을 시, 4스테이지로 저장
         //저장 로직 필요
     }
 
@@ -3386,52 +3373,52 @@ function gameLoop(state) {
 
     //activate normal Zombies 
     for (let i = 0; i < normalZombies.length; i++) {
-        normalZombies[i].updateAnimation(state.currentStageNum);
+        normalZombies[i].updateAnimation(currentStageNum);
 
-        if ((normalZombies[i].vel.attacking == true || normalZombies[i].attackDone == false) && normalZombies[i].stageNum == state.currentStageNum) {
+        if ((normalZombies[i].vel.attacking == true || normalZombies[i].attackDone == false) && normalZombies[i].stageNum == currentStageNum) {
             normalZombies[i].zombieAttack(p1);
         }
 
-        else if (normalZombies[i].attackDone == true && normalZombies[i].stageNum == state.currentStageNum) {
-            normalZombies[i].move(bigX, smallX, collisonCheckX, state.currentStageNum);
+        else if (normalZombies[i].attackDone == true && normalZombies[i].stageNum == currentStageNum) {
+            normalZombies[i].move(bigX, smallX, collisonCheckX, currentStageNum);
         }
     }
 
     //activate running Zombies
     for (let i = 0; i < runningZombies.length; i++) {
-        runningZombies[i].updateAnimation(state.currentStageNum);
+        runningZombies[i].updateAnimation(currentStageNum);
 
-        if ((runningZombies[i].vel.attacking == true || runningZombies[i].attackDone == false) && runningZombies[i].stageNum == state.currentStageNum) {
+        if ((runningZombies[i].vel.attacking == true || runningZombies[i].attackDone == false) && runningZombies[i].stageNum == currentStageNum) {
             runningZombies[i].zombieAttack(p1);
         }
 
-        else if (runningZombies[i].attackDone == true && runningZombies[i].stageNum == state.currentStageNum) {
-            runningZombies[i].move(bigX, smallX, collisonCheckX, state.currentStageNum);
+        else if (runningZombies[i].attackDone == true && runningZombies[i].stageNum == currentStageNum) {
+            runningZombies[i].move(bigX, smallX, collisonCheckX, currentStageNum);
         }
     }
 
     //activate crawling Zombies
     for (let i = 0; i < crawlingZombies.length; i++) {
-        crawlingZombies[i].updateAnimation(state.currentStageNum);
+        crawlingZombies[i].updateAnimation(currentStageNum);
 
-        if ((crawlingZombies[i].vel.attacking == true || crawlingZombies[i].attackDone == false) && crawlingZombies[i].stageNum == state.currentStageNum) {
+        if ((crawlingZombies[i].vel.attacking == true || crawlingZombies[i].attackDone == false) && crawlingZombies[i].stageNum == currentStageNum) {
             crawlingZombies[i].zombieAttack(p1);
         }
 
-        else if (crawlingZombies[i].attackDone == true && crawlingZombies[i].stageNum == state.currentStageNum) {
-            crawlingZombies[i].move(bigX, smallX, collisonCheckX, state.currentStageNum);
+        else if (crawlingZombies[i].attackDone == true && crawlingZombies[i].stageNum == currentStageNum) {
+            crawlingZombies[i].move(bigX, smallX, collisonCheckX, currentStageNum);
         }
     }
 
     //boss Zombie activate
-    bz.updateAnimation(state.currentStageNum);
+    bz.updateAnimation(currentStageNum);
 
-    if ((bz.vel.attacking == true || bz.attackDone == false) && bz.stageNum == state.currentStageNum) {
+    if ((bz.vel.attacking == true || bz.attackDone == false) && bz.stageNum == currentStageNum) {
         bz.zombieAttack(p1);
     }
 
-    else if (crawlingZombies[i].attackDone == true && crawlingZombies[i].stageNum == state.currentStageNum) {
-        bz.move(bigX, smallX, collisonCheckX, state.currentStageNum);
+    else if (bz.attackDone == true && bz.stageNum == currentStageNum) {
+        bz.move(bigX, smallX, collisonCheckX, currentStageNum);
     }
 
 
@@ -3443,19 +3430,19 @@ function gameLoop(state) {
                 bg.bg_x -= bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                moveObjectRight(collisonCheckX, sz, state.currentStageNum);
+                moveObjectRight(collisonCheckX, sz, currentStageNum);
                 for (let i = 0; i < normalZombies.length; i++) {
-                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectRight(collisonCheckX, normalZombies[i], currentStageNum);
                 } 
 
                 for (let i = 0; i < runningZombies.length; i++) {
-                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectRight(collisonCheckX, normalZombies[i], currentStageNum);
                 }
 
                 for (let i = 0; i < crawlingZombies.length; i++) {
-                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectRight(collisonCheckX, normalZombies[i], currentStageNum);
                 }
-                moveObjectRight(collisonCheckX, bz, state.currentStageNum);
+                moveObjectRight(collisonCheckX, bz, currentStageNum);
 
                 //플레이어 애니메이션 변수
                 // 애니메이션 변수
@@ -3480,19 +3467,19 @@ function gameLoop(state) {
                 bg.bg_x += bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                moveObjectLeft(collisonCheckX, sz, state.currentStageNum);
+                moveObjectLeft(collisonCheckX, sz, currentStageNum);
                 for (let i = 0; i < normalZombies.length; i++) {
-                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectLeft(collisonCheckX, normalZombies[i], currentStageNum);
                 } 
 
                 for (let i = 0; i < runningZombies.length; i++) {
-                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectLeft(collisonCheckX, normalZombies[i], currentStageNum);
                 }
 
                 for (let i = 0; i < crawlingZombies.length; i++) {
-                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                    moveObjectLeft(collisonCheckX, normalZombies[i], currentStageNum);
                 }
-                moveObjectLeft(collisonCheckX, bz, state.currentStageNum);
+                moveObjectLeft(collisonCheckX, bz, currentStageNum);
 
                 // 플레이어 애니메이션 변수
                 if (p1.frameCount < p1.refreshRate) {
@@ -3604,12 +3591,31 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p1.vel.lookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) { // 공격 범위 120 0.5초 -> 30frmae 1 frame당 4 증가
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == currentStageNum) {
+                        normalZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == currentStageNum) {
+                        runningZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == currentStageNum) {
+                    bz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == currentStageNum) {
+                    sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -3620,12 +3626,30 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p1.vel.lookingRight == false) {
             if (Math.abs(p1.attackTimer) >= p1.attackBox.width) {
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == currentStageNum) {
+                        normalZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == currentStageNum) {
+                        runningZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == currentStageNum) {
+                    bz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == currentStageNum) {
+                    sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -3677,11 +3701,11 @@ function gameLoop(state) {
 
     
     //스테이지 이동 로직 -> 0-오른쪽으로 이동
-    if (arr_stageChangePoint[state.currentStageNum] == 0) { // 현재 맵이 오른쪽에서 끝나는 맵인 경우
+    if (arr_stageChangePoint[currentStageNum] == 0) { // 현재 맵이 오른쪽에서 끝나는 맵인 경우
         if (bg.bg_x == bg.bg_xMax && bigX + 40 == canvas_width - 10) { //둘 중 한명이 맵 오른쪽 끝까지 가는 경우
-            state.currentStageNum++;
+            currentStageNum++;
 
-            if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
+            if (arr_stageChangePoint[currentStageNum] == 0) { //왼쪽 시작인 경우
                 p1.x = 100;
                 bg.bg_x = 0;
 
@@ -3698,10 +3722,10 @@ function gameLoop(state) {
             
         }
     }
-    else if (arr_stageChangePoint[state.currentStageNum] == 1) {// 현재 맵이 왼쪽에서 끝나는 맵인 경우
+    else if (arr_stageChangePoint[currentStageNum] == 1) {// 현재 맵이 왼쪽에서 끝나는 맵인 경우
         if (bg.bg_x == 0 && smallX == 50) { //둘 중 한명이 맵 왼쪽 끝까지 가는 경우
-            state.currentStageNum++;
-            if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
+            currentStageNum++;
+            if (arr_stageChangePoint[currentStageNum] == 0) { //왼쪽 시작인 경우
                 p1.x = 100;
                 bg.bg_x = 0;
 
@@ -3724,57 +3748,57 @@ function gameLoop(state) {
 ///// 키 입력 로직
 document.addEventListener('keydown', function(e) {
     if (e.key ==='a') {
-        if (state.p1.damaged == false && state.p1.vel.attacking == false && state.p1.vel.blocking == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = false;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = true;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = true;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+        if (p1.damaged == false && p1.vel.attacking == false && p1.vel.blocking == false && p1.dead == false) {
+            p1.vel.lookingRight = false;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = true;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = true;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
     }
 })
 
 document.addEventListener('keydown', function(e) {
     if (e.key ==='d') {
-        if (state.p1.damaged == false && state.p1.vel.attacking == false && state.p1.vel.blocking == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = true;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = true;
-            state.p1.vel.movingRight = true;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+        if (p1.damaged == false && p1.vel.attacking == false && p1.vel.blocking == false && p1.dead == false) {
+            p1.vel.lookingRight = true;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = true;
+            p1.vel.movingRight = true;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
     }
 })
 
 document.addEventListener('keydown', function(e) {
     if (e.key ==='f') {
-        if (state.p1.damaged == false && state.p1.dead == false) {
-            if (state.p1.vel.lookingRight == true) {//오른쪽 공격
-                state.p1.vel.lookingRight = true;
-                state.p1.vel.attacking = true;
-                state.p1.vel.attacking_motion = true;
-                state.p1.vel.moving = false;
-                state.p1.vel.movingRight = false;
-                state.p1.vel.movingLeft = false;
-                state.p1.vel.blocking = false;
-                state.p1.vel.interaction = false;
+        if (p1.damaged == false && p1.dead == false) {
+            if (p1.vel.lookingRight == true) {//오른쪽 공격
+                p1.vel.lookingRight = true;
+                p1.vel.attacking = true;
+                p1.vel.attacking_motion = true;
+                p1.vel.moving = false;
+                p1.vel.movingRight = false;
+                p1.vel.movingLeft = false;
+                p1.vel.blocking = false;
+                p1.vel.interaction = false;
             }
 
             else {
-                state.p1.vel.lookingRight = false;
-                state.p1.vel.attacking = true;
-                state.p1.vel.attacking_motion = true;
-                state.p1.vel.moving = false;
-                state.p1.vel.movingRight = false;
-                state.p1.vel.movingLeft = false;
-                state.p1.vel.blocking = false;
-                state.p1.vel.interaction = false;
+                p1.vel.lookingRight = false;
+                p1.vel.attacking = true;
+                p1.vel.attacking_motion = true;
+                p1.vel.moving = false;
+                p1.vel.movingRight = false;
+                p1.vel.movingLeft = false;
+                p1.vel.blocking = false;
+                p1.vel.interaction = false;
             }
             
         }
@@ -3783,50 +3807,50 @@ document.addEventListener('keydown', function(e) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key ==='r') {
-        if (state.p1.vel.lookingRight == true && state.p1.damaged == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = true;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = true;
-            state.p1.vel.interaction = false;
+        if (p1.vel.lookingRight == true && p1.damaged == false && p1.dead == false) {
+            p1.vel.lookingRight = true;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = true;
+            p1.vel.interaction = false;
         }
-        else if (state.p1.vel.lookingRight == false && state.p1.damaged == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = false;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = true;
-            state.p1.vel.interaction = false;
+        else if (p1.vel.lookingRight == false && p1.damaged == false && p1.dead == false) {
+            p1.vel.lookingRight = false;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = true;
+            p1.vel.interaction = false;
         }
     }
 })
 
 document.addEventListener('keydown', function(e) {
     if (e.key ==='e') {
-        if (state.p1.vel.lookingRight == true && state.p1.damaged == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = true;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = true;
+        if (p1.vel.lookingRight == true && p1.damaged == false && p1.dead == false) {
+            p1.vel.lookingRight = true;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = true;
         }
-        else if (state.p1.vel.lookingRight == false && state.p1.damaged == false && state.p1.dead == false) {
-            state.p1.vel.lookingRight = false;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = true;
-            state.p1.vel.interaction = true;
+        else if (p1.vel.lookingRight == false && p1.damaged == false && p1.dead == false) {
+            p1.vel.lookingRight = false;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = true;
+            p1.vel.interaction = true;
         }
     }
 })
@@ -3834,112 +3858,106 @@ document.addEventListener('keydown', function(e) {
 
 document.addEventListener('keyup', function(e) {
     if (e.key ==='a') {
-        state.p1.vel.lookingRight = false;
-        state.p1.vel.attacking = false;
-        state.p1.vel.attacking_motion = false;
-        state.p1.vel.moving = false;
-        state.p1.vel.movingRight = false;
-        state.p1.vel.movingLeft = false;
-        state.p1.vel.blocking = false;
-        state.p1.vel.interaction = false;
+        p1.vel.lookingRight = false;
+        p1.vel.attacking = false;
+        p1.vel.attacking_motion = false;
+        p1.vel.moving = false;
+        p1.vel.movingRight = false;
+        p1.vel.movingLeft = false;
+        p1.vel.blocking = false;
+        p1.vel.interaction = false;
     }
 })
 
 document.addEventListener('keyup', function(e) {
     if (e.key ==='d') {
-        state.p1.vel.lookingRight = true;
-        state.p1.vel.attacking = false;
-        state.p1.vel.attacking_motion = false;
-        state.p1.vel.moving = false;
-        state.p1.vel.movingRight = false;
-        state.p1.vel.movingLeft = false;
-        state.p1.vel.blocking = false;
-        state.p1.vel.interaction = false;
+        p1.vel.lookingRight = true;
+        p1.vel.attacking = false;
+        p1.vel.attacking_motion = false;
+        p1.vel.moving = false;
+        p1.vel.movingRight = false;
+        p1.vel.movingLeft = false;
+        p1.vel.blocking = false;
+        p1.vel.interaction = false;
     }
 })
 
 document.addEventListener('keyup', function(e) {
     if (e.key ==='r') {
-        if (state.p1.vel.lookingRight == true) {
-            state.p1.vel.lookingRight = true;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+        if (p1.vel.lookingRight == true) {
+            p1.vel.lookingRight = true;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
         else {
-            state.p1.vel.lookingRight = false;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+            p1.vel.lookingRight = false;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
     }
 })
 
 document.addEventListener('keyup', function(e) {
     if (e.key ==='e') {
-        if (state.p1.vel.lookingRight == true) {
-            state.p1.vel.lookingRight = true;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+        if (p1.vel.lookingRight == true) {
+            p1.vel.lookingRight = true;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
         else {
-            state.p1.vel.lookingRight = false;
-            state.p1.vel.attacking = false;
-            state.p1.vel.attacking_motion = false;
-            state.p1.vel.moving = false;
-            state.p1.vel.movingRight = false;
-            state.p1.vel.movingLeft = false;
-            state.p1.vel.blocking = false;
-            state.p1.vel.interaction = false;
+            p1.vel.lookingRight = false;
+            p1.vel.attacking = false;
+            p1.vel.attacking_motion = false;
+            p1.vel.moving = false;
+            p1.vel.movingRight = false;
+            p1.vel.movingLeft = false;
+            p1.vel.blocking = false;
+            p1.vel.interaction = false;
         }
     }
 })
 
 //////////////////////////////////////////////////////////////////////
-function animate(state) {
-    if (gameLoop(state) == 1) {
-        //gameOver   
-    }
-    gameLoop(state);
+function animate() {
+    
+    gameLoop();
 
-    if (dialogueOnGoing == false && dialogueFinished == false && arr_dialogueCheck[state.currentStageNum] == 1) { // 대화 시작
+    if (dialogueOnGoing == false && dialogueFinished == false && arr_dialogueCheck[currentStageNum] == 1) { // 대화 시작
         dialogueWindow.style.display = "block";
-        textAnimation(dialogueText, arr_dialogues[state.currentStageNum][textIndex]);
+        textAnimation(dialogueText, arr_dialogues[currentStageNum][textIndex]);
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //draw functions
-    drawbg(state.bg, state.currentStageNum);
+    drawbg(bg, currentStageNum);
 
-    if(state.players[0].dead == false) {
-        drawPlayer(state.players[0]);
+    if(players[0].dead == false) {
+        drawPlayer(players[0]);
     }
 
-    drawStuckedZombie(state.sz, state.currentStageNum);
-    drawNormalZombie(state.zombies[0], state.currentStageNum);
-    drawRunningZombie(state.zombies[1], state.currentStageNum);
-    drawCrawlingZombie(state.zombies[2], state.currentStageNum);
+    drawStuckedZombie(sz, currentStageNum);
+    drawNormalZombie(zombies[0], currentStageNum);
+    drawRunningZombie(zombies[1], currentStageNum);
+    drawCrawlingZombie(zombies[2], currentStageNum);
 
     stageInfo.style.display = "block";
-    stageInfo.style.innerHTML = arr_stageName[state.currentStageNum];
+    stageInfo.style.innerHTML = arr_stageName[currentStageNum];
     setTimeout(() => {
         requestAnimationFrame(animate);
     }, 1000 / fps);
-}
-
-if (gameActivated == true) {
-    animate(state);
 }

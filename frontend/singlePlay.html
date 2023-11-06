@@ -56,6 +56,16 @@
             font-size: 20px;
         }
 
+        #dialogueInstruction{
+            position: absolute;
+            width: 150px;
+
+            top: 95%;
+            left: 90%;
+
+            font-size: 10px;
+        }
+
         #canvas {
             position: absolute;
             top: 50%;
@@ -96,6 +106,7 @@
             margin-left: -265px;
 
             border: none;
+            z-index: 10;
         }
 
         input.newGame-button:hover {
@@ -127,6 +138,7 @@
             margin-left: -300px;
 
             border: none;
+            z-index: 10;
         }
 
         input.loadGame-button:hover {
@@ -157,6 +169,7 @@
 
             margin-top: -22px;
             border: none;
+            z-index: 10;
         }
 
         input.backSpace-button:hover {
@@ -179,8 +192,8 @@
                 <div style="width:1920px; height:960px; position:absolute; top: 50%; margin-top: -480px;">
                     <img src="lobbyImg/RegisterPage.png" alt="" width="1920" height="960">
                 </div>
-                <input type="button" id="newGameButton" class="newGame-button" onclick="alert('new Game');">
-                <input type="button" id="loadGameButton" class="loadGame-button" onclick="alert('load Game');">
+                <input type="button" id="newGameButton" class="newGame-button">
+                <input type="button" id="loadGameButton" class="loadGame-button">
                 <input type="button" class="backSpace-button" onclick="location.href='index.html'">
             </div>
         </div>
