@@ -49,7 +49,7 @@ var checkStageNum = 0; // 0부터 시작
 
 
 
-const arr_dialogueCheck = [1, 0, 0, 1, 0, 1, 0];
+const arr_dialogueCheck = [1, 0, 0, 0, 0, 0, 0];
 const arr_textIndex = [0, 0, 0, 0, 0, 0, 0];
 const arr_dialogues = [
     ["원재: 서울역 까지 앞으로 2개 남았군...",
@@ -173,7 +173,7 @@ for (let i = 0; i < normalZombieTotalNum; i++) {
 }
 
 //RunningZombie
-var runningZombieTotalNum = 2;
+var runningZombieTotalNum = 3;
 
 var arr_runningZombieWalking1Sfx = [];
 
@@ -629,7 +629,7 @@ function drawPlayer(player) { //player 1 그림
         }
 
         else if (player.grabbed == true) { //잡혀 있는 경우
-            ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, player.width, player.height, player.x + 70, player.y - 30, 60, 60);
+            ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, 250, 250, player.x + 70, player.y - 30, 60, 60);
             if (player.vel.lookingRight == true) {
                 ctx.drawImage(img_Player_grabbed, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
             }
@@ -713,7 +713,7 @@ function drawPlayer2(player) {
     }
 
     else if (player.grabbed == true) { //잡혀 있는 경우
-        ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, player.width, player.height, player.x + 70, player.y - 30, 60, 60);
+        ctx.drawImage(img_interaction_instruction, player.interactionCut * 250, 0, 250, 250, player.x + 70, player.y - 30, 60, 60);
         if (player.vel.lookingRight == true) {
             ctx.drawImage(img_Player_grabbed2, 0, 0, player.width, player.height, player.x, player.y, player.canvasLength, player.canvasLength);
         }
