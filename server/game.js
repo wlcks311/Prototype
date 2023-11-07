@@ -30,8 +30,8 @@ function biggerX(p1_x, p2_x) {
     }
 }
 
-function moveObjectRight(collisonCheckX, obj) {
-    if (obj.dead == false) {
+function moveObjectRight(collisonCheckX, obj, currentStageNum) {
+    if (obj.stageNum == currentStageNum) {
         collisonCheckX[obj.x + 50] = -1;
         collisonCheckX[obj.x + 51] = -1;
         collisonCheckX[obj.x + obj.canvasLength - 49] = 1;
@@ -43,8 +43,8 @@ function moveObjectRight(collisonCheckX, obj) {
     
 }
 
-function moveObjectLeft(collisonCheckX, obj) {
-    if (obj.dead == false) {
+function moveObjectLeft(collisonCheckX, obj, currentStageNum) {
+    if (obj.stageNum == currentStageNum) {
         collisonCheckX[obj.x + 48] = 1;
         collisonCheckX[obj.x + 49] = 1;
         collisonCheckX[obj.x + obj.canvasLength - 50] = -1;
@@ -140,7 +140,7 @@ class StuckedZombie {
             }
         }
         else if (this.stunned == true && this.dead == false) {
-            this.stun(p1, p2);
+            this.stun();
         }
         else if (this.dead == true) {
             for (var i = 0; i <= this.canvasLength - 100; i++) {
@@ -156,8 +156,7 @@ class StuckedZombie {
         }
     }
 
-    stun(p1, p2) {
-        this.checkAttacked(p1, p2);
+    stun() {
         if (this.stunCount < 30 && this.stunCut < 2) {
             this.stunCount++;
         }
@@ -416,7 +415,7 @@ class NormalZombie extends Creature { //좀비 클래스
     zombieAttack(p1, p2) { //매개변수가 너무 많이 들어가니까 오류가 뜸-> 매개변수의 수를 줄이니 오류 안뜸
         this.vel.moving = false;
         
-        if (this.attackRandomNum >= 6) {// 9, 8, 7, 6 -> 일반 공격
+        if (this.attackRandomNum >= 2) {// 9, 8, 7, 6, 5, 4, 3, 2 -> 일반 공격
             if (this.vel.lookingRight == true) { // 몬스터가 오른쪽 보고있는 경우
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                     this.attackDone = false;
@@ -437,11 +436,11 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 2) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -503,11 +502,11 @@ class NormalZombie extends Creature { //좀비 클래스
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 2) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -554,11 +553,11 @@ class NormalZombie extends Creature { //좀비 클래스
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                     this.attackDone = false;
                     //방어 확인 X
-                    if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                    if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
 
-                    else if (this.waitCount == 30) {
+                    else if (this.waitCount == 60) {
                         if (this.attackCount >= 2) {
                             this.attackBox.atkTimer += 6;
                         }
@@ -603,11 +602,11 @@ class NormalZombie extends Creature { //좀비 클래스
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                     this.attackDone = false;
                     //방어 확인 X
-                    if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                    if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
 
-                    else if (this.waitCount == 30) {
+                    else if (this.waitCount == 60) {
                         if (this.attackCount >= 2) {
                             this.attackBox.atkTimer += 6;
                         }
@@ -809,7 +808,7 @@ class NormalZombie extends Creature { //좀비 클래스
                    }
                }
                //텀이 지나고 다시 공격하는 경우
-               else if (this.vel.attacking == true && this.waitCount == 30) {
+               else if (this.vel.attacking == true && this.waitCount == 60) {
                    if (this.attackFrame < 10) {
                         this.attackFrame++;
                    }
@@ -958,11 +957,11 @@ class RunningZombie extends NormalZombie {
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 3) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -1024,11 +1023,11 @@ class RunningZombie extends NormalZombie {
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 3) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -1075,11 +1074,11 @@ class RunningZombie extends NormalZombie {
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                     this.attackDone = false;
                     //방어 확인 X
-                    if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                    if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
 
-                    else if (this.waitCount == 30) {
+                    else if (this.waitCount == 60) {
                         if (this.attackCount >= 3) {
                             this.attackBox.atkTimer += 6;
                         }
@@ -1122,11 +1121,11 @@ class RunningZombie extends NormalZombie {
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중
                     this.attackDone = false;
                     //방어 확인 X
-                    if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                    if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                         this.waitCount++;
                     }
 
-                    else if (this.waitCount == 30) {
+                    else if (this.waitCount == 60) {
                         if (this.attackCount >= 3) {
                             this.attackBox.atkTimer += 6;
                         }
@@ -1331,7 +1330,7 @@ class RunningZombie extends NormalZombie {
                    }
                }
                //텀이 지나고 다시 공격하는 경우
-               else if (this.vel.attacking == true && this.waitCount == 30) {
+               else if (this.vel.attacking == true && this.waitCount == 60) {
                    if (this.attackFrame < 10) {
                         this.attackFrame++;
                    }
@@ -1527,11 +1526,11 @@ class CrawlingZombie extends NormalZombie {
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 2) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -1632,11 +1631,11 @@ class CrawlingZombie extends NormalZombie {
                         this.attackDone = true;
                     }
                     else {
-                        if (this.waitCount < 30) { //몬스터가 공격 하기 전 잠깐 주는 텀
+                        if (this.waitCount < 60) { //몬스터가 공격 하기 전 잠깐 주는 텀
                             this.waitCount++;
                         }
     
-                        else if (this.waitCount == 30) {
+                        else if (this.waitCount == 60) {
                             if (this.attackCount >= 2) {
                                 this.attackBox.atkTimer += 6;
                             }
@@ -1817,7 +1816,7 @@ class CrawlingZombie extends NormalZombie {
                     }
                }
 
-               else if (this.vel.attacking == true && this.waitCount == 30 && this.spitting == false) { // 근거리 공격
+               else if (this.vel.attacking == true && this.waitCount == 60 && this.spitting == false) { // 근거리 공격
                    if (this.attackFrame < 10) {
                         this.attackFrame++;
                    }
@@ -2811,8 +2810,19 @@ function gameLoop(state) {
                 bg.bg_x -= bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x+=2;
-                moveObjectRight(collisonCheckX, sz);
+                moveObjectRight(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectRight(collisonCheckX, bz, state.currentStageNum);
 
 
                 //플레이어 애니메이션 변수
@@ -2838,8 +2848,19 @@ function gameLoop(state) {
                 bg.bg_x += bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x-=2;
-                moveObjectLeft(collisonCheckX, sz);
+                moveObjectLeft(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectLeft(collisonCheckX, bz, state.currentStageNum);
 
                 // 플레이어 애니메이션 변수
                 if (p1.frameCount < p1.refreshRate) {
@@ -2866,8 +2887,19 @@ function gameLoop(state) {
                 bg.bg_x -= bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x+=2;
-                moveObjectRight(collisonCheckX, sz);
+                moveObjectRight(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectRight(collisonCheckX, bz, state.currentStageNum);
 
 
                 //플레이어 애니메이션 변수
@@ -2893,8 +2925,19 @@ function gameLoop(state) {
                 bg.bg_x += bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x-=2;
-                moveObjectLeft(collisonCheckX, sz);
+                moveObjectLeft(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectLeft(collisonCheckX, bz, state.currentStageNum);
 
                 // 플레이어 애니메이션 변수
                 if (p2.frameCount < p2.refreshRate) {
@@ -2925,8 +2968,19 @@ function gameLoop(state) {
                 bg.bg_x -= bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x+=2;
-                moveObjectRight(collisonCheckX, sz);
+                moveObjectRight(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectRight(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectRight(collisonCheckX, bz, state.currentStageNum);
 
 
                 //플레이어 애니메이션 변수
@@ -3016,8 +3070,19 @@ function gameLoop(state) {
                 bg.bg_x += bg.ratio * 2;
 
                 // 플레이어 이외의 물체나 몬스터들
-                nz1.x-=2;
-                moveObjectLeft(collisonCheckX, sz);
+                moveObjectLeft(collisonCheckX, sz, state.currentStageNum);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, normalZombies[i], state.currentStageNum);
+                } 
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, runningZombies[i], state.currentStageNum);
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    moveObjectLeft(collisonCheckX, crawlingZombies[i], state.currentStageNum);
+                }
+                moveObjectLeft(collisonCheckX, bz, state.currentStageNum);
                 // 플레이어 애니메이션 변수
                 if (p1.frameCount < p1.refreshRate) {
                     p1.frameCount++;
@@ -3188,12 +3253,31 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p1.vel.lookingRight == true) {
             if (p1.attackTimer >= p1.attackBox.width) { // 공격 범위 120 0.5초 -> 30frmae 1 frame당 4 증가
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == state.currentStageNum) {
+                        normalZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == state.currentStageNum) {
+                        runningZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == state.currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == state.currentStageNum) {
+                    bz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == state.currentStageNum) {
+                    sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -3204,12 +3288,30 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p1.vel.lookingRight == false) {
             if (Math.abs(p1.attackTimer) >= p1.attackBox.width) {
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == state.currentStageNum) {
+                        normalZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == state.currentStageNum) {
+                        runningZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == state.currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == state.currentStageNum) {
+                    bz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == state.currentStageNum) {
+                    sz.checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                }
                 p1.vel.attacking = false;
                 p1.attackTimer = 0;
             }
@@ -3345,12 +3447,30 @@ function gameLoop(state) {
         //오른쪽 공격
         if(p2.vel.lookingRight == true) {
             if (p2.attackTimer >= p2.attackBox.width) {
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == state.currentStageNum) {
+                        normalZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == state.currentStageNum) {
+                        runningZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == state.currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == state.currentStageNum) {
+                    bz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == state.currentStageNum) {
+                    sz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                }
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }
@@ -3361,12 +3481,30 @@ function gameLoop(state) {
         //왼쪽 공격
         else if(p2.vel.lookingRight == false) {
             if (Math.abs(p2.attackTimer) >= p2.attackBox.width) {
-                for (let i = 0; i < state.zombies.length; i++) {
-                    if (state.zombies[i].stageNum == state.currentStageNum) {
-                        state.zombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                for (let i = 0; i < normalZombies.length; i++) {
+                    if (normalZombies[i].stageNum == state.currentStageNum) {
+                        normalZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
                     }
                 }
-                sz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+
+                for (let i = 0; i < runningZombies.length; i++) {
+                    if (runningZombies[i].stageNum == state.currentStageNum) {
+                        runningZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
+
+                for (let i = 0; i < crawlingZombies.length; i++) {
+                    if (crawlingZombies[i].stageNum == state.currentStageNum) {
+                        crawlingZombies[i].checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                    }
+                }
+                if (bz.stageNum == state.currentStageNum) {
+                    bz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                }
+                
+                if (sz.stageNum == state.currentStageNum) {
+                    sz.checkAttacked(p2.attackBox.position_x + p2.attackTimer, collisonCheckX);
+                }
                 p2.vel.attacking = false;
                 p2.attackTimer = 0;
             }

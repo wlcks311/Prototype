@@ -125,6 +125,31 @@
             margin-top: -22px;
             border: none;
         }
+
+        input.exit-button {
+            background: url("lobbyImg/Exit.png") no-repeat;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 0%;
+            left: 90%;
+            border: none;
+            z-index: 10;
+        }
+
+        input.exit-button:hover {
+            background: url("lobbyImg/Exit_onMouse.png") no-repeat;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+
+            position: absolute;
+            top: 0%;
+            left: 90%;
+            border: none;
+        }
     </style>
 <script src="deleteAccount.js"></script>
 <meta charset="UTF-8">
@@ -132,6 +157,7 @@
 </head>
 <body style="height:100%">
     <div id="wrap">
+        <input type="button" class="exit-button" onclick="window.close();">
         <div style="width:1920px; height:960px; position:absolute; top: 50%; margin-top: -480px;">
             <img src="lobbyImg/RegisterPage.png" alt="" width="1920" height="960">
         </div>

@@ -18,6 +18,8 @@ const gameCodeDisplay = document.getElementById('gameCodeDisplay');
 
 const gameCodeScreen = document.getElementById('gameCode');
 
+var gameOver = document.getElementById('gameOver');
+
 newGameBtn.addEventListener('click', newGame); //create room 누를시 -> newGame함수 실행
 joinGameBtn.addEventListener('click', joinGame);
 
@@ -89,28 +91,41 @@ function checkStageChanged(checkStageNum, stageNum) {
     }
 }
 
+var player1_talking = new Audio('./sfx/dialogue/player1_talking.mp3');
+player1_talking.volume = 0.5;
+var player2_talking = new Audio('./sfx/dialogue/player2_talking.mp3');
+player2_talking.volume = 0.5;
+var instruction_talking = new Audio('./sfx/dialogue/instruction_talking.mp3');
+instruction_talking.volume = 0.5;
+
+
 function textAnimation(tag, text) {
     tag.innerHTML='';
     dialogueOnGoing = true;
-    talking = true;
     for(let i=0; i < text.length; i++) {
 
         if (i == 0) { // 초상화 확인
             if (text[i] == '원') {
                 portrait.src = "img/dialogue/player1.png";
+                player1_talking.play();
             }
             else if (text[i] == '두') {
                 portrait.src = "img/dialogue/player2.png";
+                player2_talking.play();
             }
             else if (text[i] == '-') {
                 portrait.src = "img/dialogue/instructionPortrait.png";
+                instruction_talking.play();
             }
         }
         setTimeout(function(){
+            talking = true;
+            if (i == text.length - 1) {
+                talking = false;
+            }
             tag.innerHTML += text[i];
         } , (i+1)*100);
     }
-    talking = false;
 }
 
 document.addEventListener('keydown', function(e) {
@@ -155,6 +170,7 @@ var arr_normalZombieMoving1Sfx = [];//왼쪽으로 움직일때 내는 소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieMoving1 = new Audio('./sfx/NormalZombie/NormalZombie_moving1.mp3');
+    normalZombieMoving1.volume = 0.5;
     arr_normalZombieMoving1Sfx.push(normalZombieMoving1);
 }
 
@@ -162,6 +178,7 @@ var arr_normalZombieMoving2Sfx = [];//오른쪽으로 움직일때 내는 소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieMoving2 = new Audio('./sfx/NormalZombie/NormalZombie_moving2.mp3');
+    normalZombieMoving2.volume = 0.5;
     arr_normalZombieMoving2Sfx.push(normalZombieMoving2);
 }
 
@@ -169,6 +186,7 @@ var arr_normalZombieAttackSfx = []; // 공격소리
 
 for (let i = 0; i < normalZombieTotalNum; i++) { 
     var normalZombieAttack = new Audio('./sfx/NormalZombie/NormalZombie_attack.mp3');
+    normalZombieAttack.volume = 0.5;
     arr_normalZombieAttackSfx.push(normalZombieAttack);
 }
 
@@ -193,13 +211,15 @@ var arr_runningZombieAttackSfx = []; // 공격소리
 
 for (let i = 0; i < runningZombieTotalNum; i++) { 
     var runningZombieAttack = new Audio('./sfx/RunningZombie/RunningZombie_attack.mp3');
+    runningZombieAttack.volume = 0.5;
     arr_runningZombieAttackSfx.push(normalZombieAttack);
 }
 
-var arr_runningZombieRunningSfx = []; // 공격소리
+var arr_runningZombieRunningSfx = []; // 뛰는소리
 
 for (let i = 0; i < runningZombieTotalNum; i++) { 
     var runningZombieRunning = new Audio('./sfx/RunningZombie/RunningZombie_running.mp3');
+    runningZombieRunning.volume = 0.5;
     arr_runningZombieRunningSfx.push(runningZombieRunning);
 }
 
@@ -224,6 +244,7 @@ var arr_crawlingZombieAttackSfx = []; // 공격소리
 
 for (let i = 0; i < crawlingZombieTotalNum; i++) { 
     var crawlingZombieAttack = new Audio('./sfx/CrawlingZombie/CrawlingZombie_attack.mp3');
+    crawlingZombieAttack.volume = 0.5;
     arr_crawlingZombieAttackSfx.push(crawlingZombieAttack);
 }
 
@@ -231,6 +252,7 @@ var arr_crawlingZombieSpitSfx = []; // 원거리 공격 소리
 
 for (let i = 0; i < crawlingZombieTotalNum; i++) { 
     var crawlingZombieSpit = new Audio('./sfx/CrawlingZombie/CrawlingZombie_spit.mp3');
+    crawlingZombieSpit.volume = 0.5;
     arr_crawlingZombieSpitSfx.push(crawlingZombieSpit);
 }
 
@@ -772,7 +794,9 @@ function drawStuckedZombie(zombie, currentStageNum) {
             ctx.drawImage(img_StuckedZombie_stunned, zombie.width * zombie.stunCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
         else if (zombie.dead == true) {
-            hitSfx.play();
+            if (zombie.deathCut == 0) {
+                hitSfx.play();
+            }
             ctx.drawImage(img_StuckedZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
         }
     }
@@ -785,7 +809,7 @@ function drawNormalZombie(zombie, currentStageNum) {
         }
         //공격 경고 알림
         if (zombie.vel.attacking == true) {
-            if (zombie.attackRandomNum >= 6 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
+            if (zombie.attackRandomNum >= 2 || zombie.dead == true) {// 일반 공격 혹은 사망한 상태
                 ctx.drawImage(img_attack_warning, 0, 0, 250, 250, zombie.x + 70, zombie.y - 50, 60, 60);
             }
     
@@ -843,7 +867,9 @@ function drawNormalZombie(zombie, currentStageNum) {
             }
         }
         else { //죽는 경우
-            hitSfx.play();
+            if (zombie.deathCut == 0) {
+                hitSfx.play();
+            }
             if (zombie.lookingRight == true) {
                 ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
@@ -947,7 +973,9 @@ function drawRunningZombie (zombie, currentStageNum) {
             }
         }
         else { //죽는 경우
-            hitSfx.play();
+            if (zombie.deathCut == 0) {
+                hitSfx.play();
+            }
             if (zombie.lookingRight == true) {
                 ctx.drawImage(img_RunningZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
@@ -1036,7 +1064,9 @@ function drawCrawlingZombie(zombie, currentStageNum) {
             }
         }
         else {//죽는 경우
-            hitSfx.play();
+            if (zombie.deathCut == 0) {
+                hitSfx.play();
+            }
             if (zombie.lookingRight == true) {
                 ctx.drawImage(img_CrawlingZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
@@ -1195,7 +1225,9 @@ function drawBossZombie(zombie, currentStageNum) {
             }
         }
         else { //죽는 경우
-            hitSfx.play();
+            if (zombie.deathCut == 0) {
+                hitSfx.play();
+            }
             if (zombie.lookingRight == true) {
                 ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
@@ -1229,11 +1261,26 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
         drawPlayer2(state.players[1]);
     }
 
+    if (state.players[0].dead == true && state.players[1].dead == true) {//game over
+        gameOver.style.display = "block";
+    }
 
     drawStuckedZombie(state.sz, state.currentStageNum);
-    drawNormalZombie(state.zombies[0], state.currentStageNum);
-    drawRunningZombie(state.zombies[1], state.currentStageNum);
-    drawCrawlingZombie(state.zombies[2], state.currentStageNum);
+    
+    for (let i =0; i < state.normalZombies.length; i++) {
+        drawNormalZombie(state.normalZombies[i], state.currentStageNum);
+    }
+
+    for (let i =0; i < state.runningZombies.length; i++) {
+        drawRunningZombie(state.runningZombies[i], state.currentStageNum);
+    }
+
+    for (let i =0; i < state.crawlingZombies.length; i++) {
+        drawCrawlingZombie(state.crawlingZombies[i], state.currentStageNum);
+    }
+
+    drawBossZombie(state.bz, state.currentStageNum);
+
 
     stageInfo.style.display = "block";
     stageInfo.style.innerHTML = arr_stageName[state.currentStageNum];
