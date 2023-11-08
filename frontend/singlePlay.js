@@ -13,6 +13,7 @@ createFillArray = function(len, n) {
 }
 
 var gameOver = document.getElementById('gameOver');
+var gameClear = document.getElementById('gameClear');
 
 //처음부터 진행할지 저장된 부분부터 진행할지 결정
 var gameScreen = document.getElementById('gameScreen');
@@ -24,7 +25,7 @@ var chooseSavePoint = document.getElementById('chooseSavePoint');
 newGameButton.addEventListener('click', ()=>{
     //선택 화면 가리기
     chooseSavePoint.style.display = 'none';
-    currentStageNum = 1; //맨 처음 스테이지로
+    currentStageNum = 6; //맨 처음 스테이지로
 
     //게임 화면 띄우기
     gameScreen.style.display = "inline";
@@ -519,6 +520,9 @@ img_BossZombie_death.src = './img/BossZombie_death.png';
 var img_BossZombie_death_left = new Image();
 img_BossZombie_death_left.src = './img/BossZombie_death_left.png';
 
+var img_BossZombie_healthBar = new Image();
+img_BossZombie_healthBar.src = './img/BossHealthBar.png';
+
 //draw functions
 
 function PlayerAttack(player) {//player 1 그림
@@ -843,47 +847,51 @@ function drawCrawlingZombie(zombie, currentStageNum) {
         ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
         if (zombie.dead == false) {
             ////////////좀비 애니메이션
-            if (zombie.spitting == true && zombie.waitCount >= 60 && zombie.waitCount <= 90) {//발사모션
-                if (zombie.spittingCut == 1) {
-                    arr_crawlingZombieSpitSfx[zombie.sfxIndex].play();
+            if (zombie.vel.moving == false) {
+                if (zombie.spitting == true && zombie.rangedAttackWaitCount >= 60 && zombie.rangedAttackWaitCount <= 90) {//발사모션
+                    if (zombie.spittingCut == 1) {
+                        arr_crawlingZombieSpitSfx[zombie.sfxIndex].play();
+                    }
+                    if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
+                        ctx.drawImage(img_CrawlingZombie_rangedAttack, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
+                    else {//왼쪽
+                        ctx.drawImage(img_CrawlingZombie_rangedAttack_left, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
                 }
-                if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
-                    ctx.drawImage(img_CrawlingZombie_rangedAttack, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+    
+                else if (zombie.spitting == false && zombie.vel.attacking == true && zombie.waitCount == 60) { // 근거리 공격
+                    if (zombie.attackCount == 1) {
+                        arr_crawlingZombieAttackSfx[zombie.sfxIndex].play();
+                    }
+                    if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
+                        ctx.drawImage(img_CrawlingZombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
+                    else {//왼쪽
+                        ctx.drawImage(img_CrawlingZombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
                 }
-                else {//왼쪽
-                    ctx.drawImage(img_CrawlingZombie_rangedAttack_left, zombie.width * zombie.spittingCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+
+                else if (zombie.stunned == true) {//기절한 경우
+                    if (zombie.vel.lookingRight == true) {//오른쪽 기절
+                        ctx.drawImage(img_CrawlingZombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
+                    else {
+                        ctx.drawImage(img_CrawlingZombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
+                }
+
+                else {// 그냥 서 있는 경우
+                    if (zombie.vel.lookingRight == true) { // 오른쪽
+                        ctx.drawImage(img_CrawlingZombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
+                    else { //왼쪽
+                        ctx.drawImage(img_CrawlingZombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                    }
                 }
             }
 
-            else if (zombie.spitting == false && zombie.vel.attacking == true && zombie.waitCount == 60) { // 근거리 공격
-                if (zombie.attackCount == 1) {
-                    arr_crawlingZombieAttackSfx[zombie.sfxIndex].play();
-                }
-                if (zombie.vel.lookingRight == true) {//오른쪽 보고있는 경우
-                    ctx.drawImage(img_CrawlingZombie_attack, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-                else {//왼쪽
-                    ctx.drawImage(img_CrawlingZombie_attack_left, zombie.width * zombie.attackCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-            }
-
-            else if (zombie.vel.moving == false) {// 가만히 서있는 경우
-                if (zombie.vel.lookingRight == true) { // 오른쪽
-                    ctx.drawImage(img_CrawlingZombie_idle, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-                else { //왼쪽
-                    ctx.drawImage(img_CrawlingZombie_idle_left, zombie.width * zombie.idleCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-            }
-
-            else if (zombie.stunned == true) {//기절한 경우
-                if (zombie.vel.lookingRight == true) {//오른쪽 기절
-                    ctx.drawImage(img_CrawlingZombie_stunned, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-                else {
-                    ctx.drawImage(img_CrawlingZombie_stunned_left, zombie.width * zombie.stunAnimaitonCount, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                }
-            }
+            
 
             else if (zombie.vel.moving == true){//움직이는 경우
                 if (zombie.vel.lookingRight == true) {//오른쪽 걷기
@@ -900,13 +908,13 @@ function drawCrawlingZombie(zombie, currentStageNum) {
                 }
             }
             //////////// 발사체 애니메이션
-            if (zombie.waitCount > 90 && zombie.waitCount < 110) {//경고 표시
+            if (zombie.rangedAttackWaitCount > 90 && zombie.rangedAttackWaitCount < 140) {//경고 표시
                 ctx.drawImage(img_RangedAttack_warning, 0, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
-            else if (zombie.waitCount >= 110 && zombie.waitCount < 120) {//투사체 떨어지는 첫번째 컷
+            else if (zombie.rangedAttackWaitCount >= 140 && zombie.rangedAttackWaitCount < 150) {//투사체 떨어지는 첫번째 컷
                 ctx.drawImage(img_RangedAttack_falling, 0, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y - 100, zombie.canvasLength, zombie.canvasLength);
             }
-            else if (zombie.waitCount == 120) {//그 이후의 투사체 떨어지는 컷들
+            else if (zombie.rangedAttackWaitCount == 150) {//그 이후의 투사체 떨어지는 컷들
                 ctx.drawImage(img_RangedAttack_falling, zombie.width * zombie.poisonFallingCut, 0, zombie.width, zombie.height, zombie.rangedAttackTarget - 100, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
         }
@@ -926,6 +934,7 @@ function drawCrawlingZombie(zombie, currentStageNum) {
 
 function drawBossZombie(zombie, currentStageNum) {
     if (zombie.stageNum == currentStageNum) {
+
         if (zombie.hitCheck == true && zombie.dead == false) {
             hitSfx.play();
         }
@@ -940,7 +949,7 @@ function drawBossZombie(zombie, currentStageNum) {
             }
         }
         //zombie 체력바
-        ctx.drawImage(img_Zombie_health, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
+        ctx.drawImage(img_BossZombie_healthBar, zombie.width * (zombie.healthMax - zombie.healthCount), 0, zombie.width, zombie.height, zombie.x, zombie.y + zombie.canvasLength, zombie.canvasLength, zombie.canvasLength);
         if (zombie.dead == false) {
             if (zombie.vel.moving == false) { //움직이지 않는 경우
                 //텀이 끝나고 공격하고 있는 중인 경우
@@ -956,7 +965,7 @@ function drawBossZombie(zombie, currentStageNum) {
                             ctx.drawImage(img_BossZombie_attack_left, zombie.width * zombie.attackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                         }
                     }
-                    else { // 연속 공격
+                    else if (zombie.attackRandomNum > 6) { // 연속 공격
                         if (zombie.comboAttackCut == 0 && zombie.waitCount == 120) {
                             BossZombieCombo1Sfx.play();
                         }
@@ -968,10 +977,10 @@ function drawBossZombie(zombie, currentStageNum) {
                         }
 
                         if (zombie.vel.lookingRight == true) {//오른쪽 공격
-                            ctx.drawImage(img_BossZombie_comboAttack, zombie.width * zombie.attackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                            ctx.drawImage(img_BossZombie_comboAttack, zombie.width * zombie.comboAttackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                         }
                         else {//왼쪽 공격
-                            ctx.drawImage(img_BossZombie_comboAttack_left, zombie.width * zombie.attackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                            ctx.drawImage(img_BossZombie_comboAttack_left, zombie.width * zombie.comboAttackCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                         }
                     }
                     
@@ -1005,9 +1014,7 @@ function drawBossZombie(zombie, currentStageNum) {
                             }
                         }
                         else if (zombie.jumpCount == 60 && zombie.delayCount == 60 && zombie.fallingWarningCount < 150) { // 경고 표시
-                            if ((zombie.fallingWarningCount / 30) % 2 == 0) {
-                                ctx.drawImage(img_Boss_fallingWarning, 0, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
-                            }
+                            ctx.drawImage(img_Boss_fallingWarning, 0, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
                         }
                         else if (zombie.fallingCount < 90 && zombie.fallingWarningCount == 150) { //착지
                             if (zombie.fallingCount < 10) {
@@ -1076,10 +1083,10 @@ function drawBossZombie(zombie, currentStageNum) {
                 hitSfx.play();
             }
             if (zombie.lookingRight == true) {
-                ctx.drawImage(img_Zombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                ctx.drawImage(img_BossZombie_death, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
             else {
-                ctx.drawImage(img_Zombie_death_left, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
+                ctx.drawImage(img_BossZombie_death_left, zombie.width * zombie.deathCut, 0, zombie.width, zombie.height, zombie.x, zombie.y, zombie.canvasLength, zombie.canvasLength);
             }
         }
     }
@@ -1744,7 +1751,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
         }
 
-        else if (this.dead == true || (this.stageNum != currentStageNum)) { //몹이 죽었거나, 현재 스테이지에 해당하지 않는 경우
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -1769,6 +1776,8 @@ class NormalZombie extends Creature { //좀비 클래스
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -2211,7 +2220,7 @@ class RunningZombie extends NormalZombie {
             }
         }
 
-        else if (this.dead == true || (this.stageNum != currentStageNum)) { //몹이 죽었거나, 현재 스테이지에 해당하지 않는 경우
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -2225,6 +2234,8 @@ class RunningZombie extends NormalZombie {
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -2298,6 +2309,8 @@ class CrawlingZombie extends NormalZombie {
         this.spitting = false;
 
 
+
+        this.rangedAttackWaitCount = 0;
         this.rangedAttackDelay = 0;// 원거리 공격이 유효해지는 시간 -> 0.5초
         this.rangedAttackTarget = 0; //목표 지점
 
@@ -2355,14 +2368,14 @@ class CrawlingZombie extends NormalZombie {
             if ((this.bigX >= this.rangedAttack_left && this.bigX < this.x_attackLeft) || this.rangedAttackDone == false) {
                 this.rangedAttackDone = false;
                 this.spitting = true;
-                if (this.waitCount < 120 && this.waitCount != 60) {
-                    this.waitCount++;
+                if (this.rangedAttackWaitCount < 150 && this.rangedAttackWaitCount != 60) {
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 60) {
+                else if (this.rangedAttackWaitCount == 60) {
                     this.rangedAttackTarget = this.bigX - 60;// 대상 플레이어 가운데 지점
-                    this.waitCount++;
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 120) { //원거리 공격 활성화
+                else if (this.rangedAttackWaitCount == 150) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
                         this.rangedAttackDelay++;
                         this.checkRangedAttack(p1);
@@ -2370,7 +2383,7 @@ class CrawlingZombie extends NormalZombie {
                     else if (this.rangedAttackDelay == 30) {// 원거리 공격 종료
                         this.attackDone = true;
                         this.rangedAttackDone = true;
-                        this.waitCount = 0;
+                        this.rangedAttackWaitCount = 0;
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
@@ -2440,21 +2453,21 @@ class CrawlingZombie extends NormalZombie {
             //원거리 공격
             if (this.x_attackRight < this.smallX && this.smallX <= this.rangedAttack_right) {
                 this.spitting = true;
-                if (this.waitCount < 120 && this.waitCount != 60) {
-                    this.waitCount++;
+                if (this.rangedAttackWaitCount < 150 && this.rangedAttackWaitCount != 60) {
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 60) {
+                else if (this.rangedAttackWaitCount == 60) {
                     this.rangedAttackTarget = this.smallX + 60;// 대상 플레이어 가운데 지점
-                    this.waitCount++;
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 120) { //원거리 공격 활성화
+                else if (this.rangedAttackWaitCount == 150) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
                         this.rangedAttackDelay++;
                         this.checkRangedAttack(p1);
                     }
                     else if (this.rangedAttackDelay == 30) {// 원거리 공격 종료
                         this.rangedAttackDone = true;
-                        this.waitCount = 0;
+                        this.rangedAttackWaitCount = 0;
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
@@ -2607,7 +2620,7 @@ class CrawlingZombie extends NormalZombie {
                 }
             }
         }
-        else if (this.dead == true || this.stageNum != currentStageNum) { // 죽었거나 해당 스테이지가 아닐때
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -2617,7 +2630,7 @@ class CrawlingZombie extends NormalZombie {
         this.hitCheck = false;
         //crawlingZombie 애니메이션 변수
         if (this.dead == false && this.stageNum == currentStageNum) {
-            if (this.waitCount >= 110) {// 투사체 떨어지는 부분. 실질적으로 데미지 입는 시간은 waitCount 120부터
+            if (this.rangedAttackWaitCount >= 140) {// 투사체 떨어지는 부분. 실질적으로 데미지 입는 시간은 rangedAttackWaitCount 150부터
                 if (this.poisonFallingCount == 10) {
                     this.poisonFallingCut++;
                     this.poisonFallingCount = 0;
@@ -2632,6 +2645,8 @@ class CrawlingZombie extends NormalZombie {
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -2639,7 +2654,7 @@ class CrawlingZombie extends NormalZombie {
                }
                //텀이 지나고 다시 공격하는 경우
                else if (this.spitting == true) { // 원거리 공격
-                    if (this.waitCount >= 60 && this.waitCount <= 90) {
+                    if (this.rangedAttackWaitCount >= 60 && this.rangedAttackWaitCount <= 90) {
                         if (this.spittingCount == 10) {
                             this.spittingCount = 0;
                             this.spittingCut++;
@@ -2756,8 +2771,9 @@ class BossZombie extends NormalZombie {
         //점프와 착지는 위 Count사용
 
 
-
-
+        this.attackBox.width = 160;
+        this.healthMax = 7;
+        this.healthCount = 7;
         this.stageNum = 6;
     }
 
@@ -2767,6 +2783,11 @@ class BossZombie extends NormalZombie {
     }
 
     flyToTarget(p1) {
+        if (this.jumpCount == 0) {
+            for (var i = 0; i <= this.canvasLength - 100; i++) { // 점프 하는 자리 없는 걸로 취급
+                collisonCheckX[this.x + 50 + i] = -1;
+            }
+        }
         if (this.jumpCount < 60) {//1초동안 점프
             this.jumpCount++;
         }
@@ -2782,17 +2803,22 @@ class BossZombie extends NormalZombie {
                 if (this.fallingWarningCount == 0) {
                     this.fallingWarningCount++;
                     this.fallingTargetPoint = p1.x + p1.canvasLength / 2; //p1에게 타겟 지정
+                    this.x = this.fallingTargetPoint - (this.canvasLength / 2); //위치 갱신
                 }
 
                 else if (this.fallingWarningCount > 0 && this.fallingWarningCount < 150) { //2.5초동안 경고 표시
                     this.fallingWarningCount++;
                 }
                 else if (this.fallingWarningCount == 150) {
-                    this.x = this.fallingTargetPoint - this.canvasLength / 2;//떨어지는 지점으로 위치 이동
                     if (this.fallingCount < 30) {
                         this.fallingCount++;
                     }
                     else if (this.fallingCount == 30) {//착륙 완료. 플레이어가 데미지 입었는지 확인 해야함.
+                        
+                        for (var i = 0; i <= this.canvasLength - 100; i++) { // 착지하는 자리에 좌표 갱신
+                            collisonCheckX[this.x + 50 + i] = 1;
+                        }
+                    
                         if (p1.x + 50 <= this.fallingTargetPoint && this.fallingTargetPoint <= p1.x + p1.canvasLength - 50) { // p1이 착륙지점에 있었을 때
                             p1.damaged = true;
                             p1.healthCount--;
@@ -2828,6 +2854,7 @@ class BossZombie extends NormalZombie {
                         this.delayCount = 0;
                         this.fallingWarningCount = 0;
                         this.fallingCount = 0;
+                        this.moveRandNum = Math.floor(Math.random() * 10); //0~9 사이 난수 발생
                     }
 
                 }
@@ -2850,7 +2877,7 @@ class BossZombie extends NormalZombie {
         this.vel.moving = false;
         if (this.attackRandomNum <= 6) {// 0, 1, 2, 3, 4, 5, 6 -> 일반 공격
             if (this.vel.lookingRight == true) { //오른쪽 보고 있는 경우
-                if (this.attackBox.atkTimer < this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                     this.attackDone = false;
                     if (this.waitCount < 120) {
                         this.waitCount++;
@@ -2890,7 +2917,7 @@ class BossZombie extends NormalZombie {
                 }
             }
             else {//왼쪽 보고 있는 경우
-                if (this.attackBox.atkTimer < this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                     this.attackDone = false;
                     if (this.waitCount < 120) {
                         this.waitCount++;
@@ -2938,9 +2965,9 @@ class BossZombie extends NormalZombie {
             else if (this.waitCount == 120) {
                 if (this.vel.lookingRight == true) {//오른쪽 공격
                     if (this.comboAttackTime < this.comboAttackMax) {//3번발동
-                        if (this.attackBox.atkTimer < this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                        if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                             this.attackDone = false;
-                            if (this.attackCut >= 2) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
+                            if ((1 < this.comboAttackCut && this.comboAttackCut < 4) || (5 < this.comboAttackCut && this.comboAttackCut < 8) || (9 < this.comboAttackCut)) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
                                 this.attackBox.atkTimer += 8;
     
                                 if (p1.vel.blocking == true && p1.vel.lookingRight == false ) {
@@ -2968,6 +2995,7 @@ class BossZombie extends NormalZombie {
                             //몬스터 공격 정보 초기화
                             this.attackBox.atkTimer = 0;
                             if (this.comboAttackTime == this.comboAttackMax) { // 마지막 공격 끝났을 시 완전 종료
+                                this.comboAttackTime = 0;
                                 this.attackDone = true;
                                 this.waitCount = 0;
                                 this.vel.attacking = false;
@@ -2979,9 +3007,9 @@ class BossZombie extends NormalZombie {
 
                 else {//왼쪽 공격
                     if (this.comboAttackTime < this.comboAttackMax) {//3번발동
-                        if (this.attackBox.atkTimer < this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                        if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                             this.attackDone = false;
-                            if (this.attackCut >= 2) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
+                            if ((1 < this.comboAttackCut && this.comboAttackCut < 4) || (5 < this.comboAttackCut && this.comboAttackCut < 8) || (9 < this.comboAttackCut)) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
                                 this.attackBox.atkTimer += 8;
     
                                 if (p1.vel.blocking == true && p1.vel.lookingRight == true) {
@@ -3009,6 +3037,7 @@ class BossZombie extends NormalZombie {
                             //몬스터 공격 정보 초기화
                             this.attackBox.atkTimer = 0;
                             if (this.comboAttackTime == this.comboAttackMax) { // 마지막 공격 끝났을 시 완전 종료
+                                this.comboAttackTime = 0;
                                 this.attackDone = true;
                                 this.waitCount = 0;
                                 this.vel.attacking = false;
@@ -3038,11 +3067,14 @@ class BossZombie extends NormalZombie {
         //살아있고, 공격중이 아니고, 현재 스테이지에 해당되면 움직임
         if (this.dead == false && this.vel.attacking == false && this.stageNum == currentStageNum) {
             this.vel.moving = true;
-            for (var i = 0; i <= this.canvasLength - 100; i++) { // 위치 정보 갱신
-                collisonCheckX[this.x + 50 + i] = 1;
+            if (this.flying == false) {
+                for (var i = 0; i <= this.canvasLength - 100; i++) { // 위치 정보 갱신
+                    collisonCheckX[this.x + 50 + i] = 1;
+                }
             }
 
             if (this.moveRandNum >= 8) { //공중 이동중
+                this.flying = true;
                 this.flyToTarget(p1);
             }
 
@@ -3085,7 +3117,11 @@ class BossZombie extends NormalZombie {
             }
 
         }
-
+        else if (this.dead == true) { //몹이 죽은 경우
+            for (i = 0; i <= this.width; i++) {
+                collisonCheckX[this.x + i] = -1;
+            }
+        }
 
     }
     checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
@@ -3166,16 +3202,20 @@ class BossZombie extends NormalZombie {
 
                 else if (this.waitCount == 120) {
                     if (this.attackRandomNum <= 6) {//일반 공격 
-                        if (this.attackCount == 10) {
-                            this.attackCount = 0;
-                            this.attackCut++;
-                            this.attackCut = this.attackCut % this.attackLoop;
-                        }
-                        else {
+                        if (this.attackCount < 10) {
                             this.attackCount++;
                         }
+                        else if (this.attackCount == 10) {
+                            this.attackCount = 0;
+                            if (this.attackCut < this.attackLoop - 1) {
+                                this.attackCut++;
+                            }
+                            else {
+                                this.attackCut = 0;
+                            }
+                        }
                     }
-                    else {//연속 공격
+                    else if (this.attackRandomNum > 6) {//연속 공격
                         if (this.comboAttackCount == 10) {
                             this.comboAttackCount = 0;
                             this.comboAttackCut++;
@@ -3319,9 +3359,9 @@ function moveObjectLeft(collisonCheckX, obj, currentStageNum) {
 
 
     //stage3 원거리 좀비 3마리
-    var cz1 = new CrawlingZombie(400, 620, 500, 500, 200);
+    var cz1 = new CrawlingZombie(600, 620, 500, 500, 200);
     cz1.setLoops(4, 4, 4, 7);
-    cz1.setFixedRange(300, 500);
+    cz1.setFixedRange(500, 700);
     cz1.setStunLoop(3);
     cz1.setSfxIndex(0);
     cz1.setStageNum(3);
@@ -3385,6 +3425,8 @@ function updateBlockBox(player, x, y) {
 
 function gameLoop() {
     //test
+
+    console.log(bz.attackBox.width);
     //
     
     bigX = p1.x + p1.canvasLength - 40;
@@ -3457,7 +3499,7 @@ function gameLoop() {
     }
 
     else if (bz.attackDone == true && bz.stageNum == currentStageNum) {
-        bz.move(bigX, smallX, collisonCheckX, currentStageNum);
+        bz.move(p1, bigX, smallX, collisonCheckX, currentStageNum);
     }
 
 
@@ -3980,9 +4022,16 @@ document.addEventListener('keyup', function(e) {
 //////////////////////////////////////////////////////////////////////
 function animate() {
     
+
+
     if (gameLoop() == 1) {
         gameOver.style.display = "block";
-        console.log(p1.dead);
+        return 0;
+    }
+
+    if (bz.dead == true && bz.deathCut == 8) {
+        gameClear.style.display = "block";
+        return 0;
     }
     //gameLoop();
 
@@ -4016,7 +4065,6 @@ function animate() {
     }
 
     drawBossZombie(bz, currentStageNum);
-
     
     setTimeout(() => {
         requestAnimationFrame(animate);

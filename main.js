@@ -12,6 +12,9 @@ function createWindow () {
   })
 
   win.loadFile('./frontend/login.html')
+
+  //상단바 안보이게
+  win.setMenu(null);
 }
 
 app.whenReady().then(() => {

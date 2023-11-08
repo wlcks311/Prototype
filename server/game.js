@@ -777,7 +777,7 @@ class NormalZombie extends Creature { //좀비 클래스
             }
         }
 
-        else if (this.dead == true || (this.stageNum != currentStageNum)) { //몹이 죽었거나, 현재 스테이지에 해당하지 않는 경우
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -802,6 +802,8 @@ class NormalZombie extends Creature { //좀비 클래스
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -1310,7 +1312,7 @@ class RunningZombie extends NormalZombie {
             }
         }
 
-        else if (this.dead == true || (this.stageNum != currentStageNum)) { //몹이 죽었거나, 현재 스테이지에 해당하지 않는 경우
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -1324,6 +1326,8 @@ class RunningZombie extends NormalZombie {
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -1400,7 +1404,7 @@ class CrawlingZombie extends NormalZombie {
         this.rangedAttackDelay = 0;// 원거리 공격이 유효해지는 시간 -> 0.5초
         this.rangedAttackTarget = 0; //목표 지점
 
-        this.rangedWaitCount = 0; // 원거리 공격에서 쓰는 waitCount
+        this.rangedAttackWaitCount = 0; // 원거리 공격에서 쓰는 waitCount
         this.rangedAttackDone = true;
 
         //각 동작의 총 컷 수
@@ -1473,14 +1477,14 @@ class CrawlingZombie extends NormalZombie {
             if ((this.bigX >= this.rangedAttack_left && this.bigX < this.x_attackLeft) || this.rangedAttackDone == false) {
                 this.rangedAttackDone = false;
                 this.spitting = true;
-                if (this.waitCount < 120 && this.waitCount != 60) {
-                    this.waitCount++;
+                if (this.rangedAttackWaitCount < 150 && this.rangedAttackWaitCount != 60) {
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 60) {
+                else if (this.rangedAttackWaitCount == 60) {
                     this.rangedAttackTarget = this.bigX - 60;// 대상 플레이어 가운데 지점
-                    this.waitCount++;
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 120) { //원거리 공격 활성화
+                else if (this.rangedAttackWaitCount == 150) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
                         this.rangedAttackDelay++;
                         this.checkRangedAttack(p1, p2);
@@ -1488,7 +1492,7 @@ class CrawlingZombie extends NormalZombie {
                     else if (this.rangedAttackDelay == 30) {// 원거리 공격 종료
                         this.attackDone = true;
                         this.rangedAttackDone = true;
-                        this.waitCount = 0;
+                        this.rangedAttackWaitCount = 0;
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
@@ -1579,21 +1583,21 @@ class CrawlingZombie extends NormalZombie {
             //원거리 공격
             if (this.x_attackRight < this.smallX && this.smallX <= this.rangedAttack_right) {
                 this.spitting = true;
-                if (this.waitCount < 120 && this.waitCount != 60) {
-                    this.waitCount++;
+                if (this.rangedAttackWaitCount < 150 && this.waitCount != 60) {
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 60) {
+                else if (this.rangedAttackWaitCount == 60) {
                     this.rangedAttackTarget = this.smallX + 60;// 대상 플레이어 가운데 지점
-                    this.waitCount++;
+                    this.rangedAttackWaitCount++;
                 }
-                else if (this.waitCount == 120) { //원거리 공격 활성화
+                else if (this.waitCount == 150) { //원거리 공격 활성화
                     if (this.rangedAttackDelay < 30) {
                         this.rangedAttackDelay++;
                         this.checkRangedAttack(p1, p2);
                     }
                     else if (this.rangedAttackDelay == 30) {// 원거리 공격 종료
                         this.rangedAttackDone = true;
-                        this.waitCount = 0;
+                        this.rangedAttackWaitCount = 0;
                         this.rangedAttackDelay = 0;
                         this.vel.attacking = false;
                         this.spitting = false;
@@ -1769,7 +1773,7 @@ class CrawlingZombie extends NormalZombie {
                 }
             }
         }
-        else if (this.dead == true || this.stageNum != currentStageNum) { // 죽었거나 해당 스테이지가 아닐때
+        else if (this.dead == true) { //몹이 죽은 경우
             for (i = 0; i <= this.width; i++) {
                 collisonCheckX[this.x + i] = -1;
             }
@@ -1779,7 +1783,7 @@ class CrawlingZombie extends NormalZombie {
         this.hitCheck = false;
         //crawlingZombie 애니메이션 변수
         if (this.dead == false && this.stageNum == currentStageNum) {
-            if (this.waitCount >= 110) {// 투사체 떨어지는 부분. 실질적으로 데미지 입는 시간은 waitCount 120부터
+            if (this.rangedAttackWaitCount >= 140) {// 투사체 떨어지는 부분. 실질적으로 데미지 입는 시간은 waitCount 120부터
                 if (this.poisonFallingCount == 10) {
                     this.poisonFallingCut++;
                     this.poisonFallingCount = 0;
@@ -1794,6 +1798,8 @@ class CrawlingZombie extends NormalZombie {
             if (this.vel.moving == false) {
                 //플레이어가 해당 몬스터의 공격을 막았을 경우
                if (this.stunned == true) {
+                    this.attackFrame = 0;
+                    this.attackCount = 0;
                    if (this.stunCount % 40 == 39) {
                        this.stunAnimaitonCount++;
                        this.stunAnimaitonCount = this.stunAnimaitonCount % this.stunLoop;
@@ -1801,7 +1807,7 @@ class CrawlingZombie extends NormalZombie {
                }
                //텀이 지나고 다시 공격하는 경우
                else if (this.spitting == true) { // 원거리 공격
-                    if (this.waitCount >= 60 && this.waitCount <= 90) {
+                    if (this.rangedAttackWaitCount >= 60 && this.rangedAttackWaitCount <= 90) {
                         if (this.spittingCount == 10) {
                             this.spittingCount = 0;
                             this.spittingCut++;
@@ -1918,8 +1924,9 @@ class BossZombie extends NormalZombie {
         this.comboAttackCount = 0;
         //점프와 착지는 위 Count사용
 
-
-
+        this.attackBox.width = 160;
+        this.healthMax = 7;
+        this.healthCount = 7;
 
         this.stageNum = 6;
     }
@@ -1930,6 +1937,11 @@ class BossZombie extends NormalZombie {
     }
 
     flyToTarget(p1, p2) {
+        if (this.jumpCount == 1) {
+            for (var i = 0; i <= this.canvasLength - 100; i++) { // 점프 하는 자리 없는 걸로 취급
+                collisonCheckX[this.x + 50 + i] = -1;
+            }
+        }
         if (this.jumpCount < 60) {//1초동안 점프
             this.jumpCount++;
         }
@@ -1962,17 +1974,21 @@ class BossZombie extends NormalZombie {
                     else if (p1.dead = true && p2.dead == false) { //p2만 남아있는 경우
                         this.fallingTargetPoint = p2.x + p2.canvasLength / 2;
                     }
+                    this.x = this.fallingTargetPoint - (this.canvasLength / 2); //위치 갱신
                 }
 
                 else if (this.fallingWarningCount > 0 && this.fallingWarningCount < 150) { //2.5초동안 경고 표시
                     this.fallingWarningCount++;
                 }
                 else if (this.fallingWarningCount == 150) {
-                    this.x = this.fallingTargetPoint - this.canvasLength / 2;//떨어지는 지점으로 위치 이동
                     if (this.fallingCount < 30) {
                         this.fallingCount++;
                     }
                     else if (this.fallingCount == 30) {//착륙 완료. 플레이어가 데미지 입었는지 확인 해야함.
+                        
+                        for (var i = 0; i <= this.canvasLength - 100; i++) { // 착지하는 자리에 좌표 갱신
+                            collisonCheckX[this.x + 50 + i] = 1;
+                        }
                         if (p1.x + 50 <= this.fallingTargetPoint && this.fallingTargetPoint <= p1.x + p1.canvasLength - 50) { // p1이 착륙지점에 있었을 때
                             p1.damaged = true;
                             p1.healthCount--;
@@ -2030,6 +2046,7 @@ class BossZombie extends NormalZombie {
                         this.delayCount = 0;
                         this.fallingWarningCount = 0;
                         this.fallingCount = 0;
+                        this.moveRandNum = Math.floor(Math.random() * 10); //0~9 사이 난수 발생
                     }
 
                 }
@@ -2052,7 +2069,7 @@ class BossZombie extends NormalZombie {
         this.vel.moving = false;
         if (this.attackRandomNum <= 6) {// 0, 1, 2, 3, 4, 5, 6 -> 일반 공격
             if (this.vel.lookingRight == true) { //오른쪽 보고 있는 경우
-                if (this.attackBox.atkTimer < this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                     this.attackDone = false;
                     if (this.waitCount < 120) {
                         this.waitCount++;
@@ -2107,7 +2124,7 @@ class BossZombie extends NormalZombie {
                 }
             }
             else {//왼쪽 보고 있는 경우
-                if (this.attackBox.atkTimer < this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                     this.attackDone = false;
                     if (this.waitCount < 120) {
                         this.waitCount++;
@@ -2170,7 +2187,7 @@ class BossZombie extends NormalZombie {
             else if (this.waitCount == 120) {
                 if (this.vel.lookingRight == true) {//오른쪽 공격
                     if (this.comboAttackTime < this.comboAttackMax) {//3번발동
-                        if (this.attackBox.atkTimer < this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                        if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                             this.attackDone = false;
                             if (this.attackCut >= 2) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
                                 this.attackBox.atkTimer += 8;
@@ -2226,7 +2243,7 @@ class BossZombie extends NormalZombie {
 
                 else {//왼쪽 공격
                     if (this.comboAttackTime < this.comboAttackMax) {//3번발동
-                        if (this.attackBox.atkTimer < this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
+                        if (this.attackBox.atkTimer <= this.attackBox.width) { //왼쪽 공격 진행중. 공격 범위 -> 160, 40프레임
                             this.attackDone = false;
                             if (this.attackCut >= 2) { // 플레이어 방어 확인. 보스는 스턴 모션 없음
                                 this.attackBox.atkTimer += 8;
@@ -2300,9 +2317,12 @@ class BossZombie extends NormalZombie {
         //살아있고, 공격중이 아니고, 현재 스테이지에 해당되면 움직임
         if (this.dead == false && this.vel.attacking == false && this.stageNum == currentStageNum) {
             this.vel.moving = true;
-            for (var i = 0; i <= this.canvasLength - 100; i++) { // 위치 정보 갱신
-                collisonCheckX[this.x + 50 + i] = 1;
+            if (this.flying == false) {
+                for (var i = 0; i <= this.canvasLength - 100; i++) { // 위치 정보 갱신
+                    collisonCheckX[this.x + 50 + i] = 1;
+                }
             }
+            
 
             if (this.moveRandNum >= 8) { //공중 이동중
                 this.flyToTarget(p1, p2);
@@ -2382,7 +2402,11 @@ class BossZombie extends NormalZombie {
             }
 
         }
-
+        else if (this.dead == true) { //몹이 죽은 경우
+            for (i = 0; i <= this.width; i++) {
+                collisonCheckX[this.x + i] = -1;
+            }
+        }
 
     }
     checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
