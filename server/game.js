@@ -865,7 +865,7 @@ class RunningZombie extends NormalZombie {
         this.running = false;
         this.grabbing = false;
 
-
+        this.grabWaitCount = 0;
         //각 동작의 총 컷 수
         this.runningLoop = 6;
         this.deathLoop = 6;
@@ -891,6 +891,7 @@ class RunningZombie extends NormalZombie {
             if ((Math.abs(p2.x-p1.x) < 50 && p2.vel.interaction == true) || p1.dead == true) { //p2가 풀어준 경우이거나, p1이 죽었을 때
                 this.grabbing = false;
                 //몬스터 공격 정보 초기화
+                this.grabWaitCount = 0;
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
                 this.vel.attacking = false;
@@ -898,6 +899,16 @@ class RunningZombie extends NormalZombie {
                 this.attackRandomNum = Math.floor(Math.random() * 10); // 0~9 정수 난수 발생
                 
                 p1.grabbed = false;
+
+                if (p1.vel.lookingRight == true) { //플레이어가 왼쪽에서 잡혔을 경우
+                    p1.x = this.x -this.canvasLength - 20;
+                    p1.attackBox.position_x = p1.x + p1.canvasLength / 2;
+                }
+
+                else if (p1.vel.lookingRight == false) {//오른쪽에서 잡혔을 경우
+                    p1.x = this.x + this.canvasLength + 20;
+                    p1.attackBox.position_x = p1.x + p1.canvasLength / 2;
+                }
             }
         }
 
@@ -905,6 +916,7 @@ class RunningZombie extends NormalZombie {
             if ((Math.abs(p2.x-p1.x) < 50 && p1.vel.interaction == true) || p2.dead == true) { //p1이 풀어준 경우이거나, p2가 죽었을 때
                 this.grabbing = false;
                 //몬스터 공격 정보 초기화
+                this.grabWaitCount = 0;
                 this.waitCount = 0;
                 this.attackBox.atkTimer = 0;
                 this.vel.attacking = false;
@@ -912,6 +924,16 @@ class RunningZombie extends NormalZombie {
                 this.attackRandomNum = Math.floor(Math.random() * 10); // 0~9 정수 난수 발생
                 
                 p2.grabbed = false;
+
+                if (p2.vel.lookingRight == true) { //플레이어가 왼쪽에서 잡혔을 경우
+                    p2.x = this.x -this.canvasLength - 20;
+                    p2.attackBox.position_x = p2.x + p2.canvasLength / 2;
+                }
+
+                else if (p2.vel.lookingRight == false) {//오른쪽에서 잡혔을 경우
+                    p2.x = this.x + this.canvasLength + 20;
+                    p2.attackBox.position_x = p2.x + p2.canvasLength / 2;
+                }
             }
         }
     }
@@ -921,11 +943,11 @@ class RunningZombie extends NormalZombie {
 
         if (this.grabbing == true) {
             this.checkGrabbingCancelled(p1, p2);
-            if (this.waitCount < 300) {
-                this.waitCount++;
+            if (this.grabWaitCount < 300) {
+                this.grabWaitCount++;
             }
-            else if (this.waitCount == 300) { //5초가 지나면 데미지를 입힘
-                this.waitCount = 0;
+            else if (this.grabWaitCount == 300) { //5초가 지나면 데미지를 입힘
+                this.grabWaitCount = 0;
                 if (p1.grabbed == true) {
                     p1.healthCount--;
                     p1.checkIsDead();
@@ -938,7 +960,7 @@ class RunningZombie extends NormalZombie {
         }
 
         
-        if (this.attackRandomNum >= 6 && this.grabbing == false) {// 9, 8, 7, 6 -> 일반 공격
+        else if (this.attackRandomNum >= 6 && this.grabbing == false) {// 9, 8, 7, 6 -> 일반 공격
             if (this.vel.lookingRight == true) { // 몬스터가 오른쪽 보고있는 경우
                 if (this.attackBox.atkTimer <= this.attackBox.width) { //오른쪽 공격 진행중. 공격범위 -> 120, 40프레임 소모
                     this.attackDone = false;
@@ -1335,10 +1357,10 @@ class RunningZombie extends NormalZombie {
                }
                //텀이 지나고 다시 공격하는 경우
                else if (this.vel.attacking == true && this.waitCount == 60) {
-                   if (this.attackFrame < 10) {
+                   if (this.attackFrame < 8) {
                         this.attackFrame++;
                    }
-                   else if (this.attackFrame == 10) {
+                   else if (this.attackFrame == 8) {
                         this.attackFrame = 0;
                         if (this.attackCount < this.attackLoop - 1) {
                             this.attackCount++;
