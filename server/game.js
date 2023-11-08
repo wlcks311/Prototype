@@ -2758,20 +2758,20 @@ function gameLoop(state) {
         return 1;
     }
 
-    
+    if (state.currentStageNum == 4) {//편의점 스테이지 도달 시 회복
+        if (p1.dead == false) {
+            p1.healthCount = 3;
+        }
+        if (p2.dead == false) {
+            p2.healthCount = 3;
+        }
+    }
 
 
     updateBlockBox(p1, p1.x, p1.y);
     updateBlockBox(p2, p2.x, p2.y);
 
-    // if (nz1.vel.attacking == true && nz1.stageNum == state.currentStageNum) {
-    //     nz1.zombieAttack(p1, p2);
-    // }
-
-    // else if (nz1.vel.attacking == false && nz1.stageNum == state.currentStageNum) {
-    //     nz1.move(bigX, smallX, collisonCheckX, state.currentStageNum);
-    // }
-
+    
     sz.attack(collisonCheckX, p1, p2);
     
 
