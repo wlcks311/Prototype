@@ -30,31 +30,6 @@ function biggerX(p1_x, p2_x) {
     }
 }
 
-function moveObjectRight(collisonCheckX, obj, currentStageNum) {
-    if (obj.stageNum == currentStageNum) {
-        collisonCheckX[obj.x + 50] = -1;
-        collisonCheckX[obj.x + 51] = -1;
-        collisonCheckX[obj.x + obj.canvasLength - 49] = 1;
-        collisonCheckX[obj.x + obj.canvasLength - 48] = 1;
-        obj.x+=2;
-
-        obj.setFixedRange(obj.xMax_left + 2, obj.xMax_right + 2)
-    }
-    
-}
-
-function moveObjectLeft(collisonCheckX, obj, currentStageNum) {
-    if (obj.stageNum == currentStageNum) {
-        collisonCheckX[obj.x + 48] = 1;
-        collisonCheckX[obj.x + 49] = 1;
-        collisonCheckX[obj.x + obj.canvasLength - 50] = -1;
-        collisonCheckX[obj.x + obj.canvasLength - 51] = -1;
-        obj.x-=2;
-        obj.setFixedRange(obj.xMax_left - 2, obj.xMax_right - 2)
-    }
-    
-}
-
 function smallerX(p1_x, p2_x){
     if (p1_x <= p2_x) {
         return p1_x;
@@ -113,7 +88,9 @@ class StuckedZombie {
         this.deathCut = 0;
 
         this.healthCount = 1;
-        this.hitCheck = false
+        this.hitCheck = false;
+
+        this.dummyVariable = 0;
     }
     attack(collisonCheckX, p1, p2) {
         
@@ -185,6 +162,9 @@ class StuckedZombie {
                 this.dead = true;
             }
         }
+    }
+    setFixedRange(a, b) {
+        this.dummyVariable = a + b;
     }
 }
 
@@ -357,6 +337,10 @@ class NormalZombie extends Creature { //좀비 클래스
         this.hitCheck = false;
 
         this.sfxIndex = 0;
+
+        //test
+
+        this.checkAttackedActivated = false;
     }
 
     setSpeed(speed) {
@@ -422,6 +406,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -430,6 +415,7 @@ class NormalZombie extends Creature { //좀비 클래스
     
                     if (p2.vel.blocking == true && p2.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p2.BlockBox.x_left) {
                         //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -489,6 +475,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -496,6 +483,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     }
                     if (p2.vel.blocking == true && p2.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p2.BlockBox.x_right) {
                         // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -785,9 +773,12 @@ class NormalZombie extends Creature { //좀비 클래스
     }
 
     checkAttacked(atkTimer_p1, collisonCheckX) {//공격이 해당 물체에 가해졌는지 확인
-        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength) && this.dead == false) {
+        this.checkAttackedActivated = true;//여기까지 진입 함.
+        if ((collisonCheckX[atkTimer_p1] == 1) && (this.x <= atkTimer_p1 && atkTimer_p1 <= this.x + this.canvasLength)) {
+            //여기로 진입을 안함
             this.healthCount--;
             this.hitCheck = true;
+            
             if (this.healthCount == 0) {
                 //console.log('nz1 dead');
                 this.dead = true;
@@ -967,6 +958,7 @@ class RunningZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -975,6 +967,7 @@ class RunningZombie extends NormalZombie {
     
                     if (p2.vel.blocking == true && p2.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p2.BlockBox.x_left) {
                         //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1034,6 +1027,7 @@ class RunningZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1041,6 +1035,7 @@ class RunningZombie extends NormalZombie {
                     }
                     if (p2.vel.blocking == true && p2.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p2.BlockBox.x_right) {
                         // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1539,6 +1534,7 @@ class CrawlingZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1546,6 +1542,7 @@ class CrawlingZombie extends NormalZombie {
                     }
                     if (p2.vel.blocking == true && p2.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p2.BlockBox.x_right) {
                         // 플레이어2의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1643,6 +1640,7 @@ class CrawlingZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1651,6 +1649,7 @@ class CrawlingZombie extends NormalZombie {
     
                     if (p2.vel.blocking == true && p2.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p2.BlockBox.x_left) {
                         //플레이어2의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1989,11 +1988,11 @@ class BossZombie extends NormalZombie {
                         }
                     }
     
-                    else if (p1.dead = false && p2.dead == true) { //p1만 남아있는 경우
+                    else if (p1.dead == false && p2.dead == true) { //p1만 남아있는 경우
                         this.fallingTargetPoint = p1.x + p1.canvasLength / 2;
                     }
     
-                    else if (p1.dead = true && p2.dead == false) { //p2만 남아있는 경우
+                    else if (p1.dead == true && p2.dead == false) { //p2만 남아있는 경우
                         this.fallingTargetPoint = p2.x + p2.canvasLength / 2;
                     }
                     this.x = this.fallingTargetPoint - (this.canvasLength / 2); //위치 갱신
@@ -2551,6 +2550,31 @@ function initGame() {
     return state;
 }
 
+function moveObjectRight(collisonCheckX, obj, currentStageNum) {
+    if (obj.stageNum == currentStageNum) {
+        collisonCheckX[obj.x + 50] = -1;
+        collisonCheckX[obj.x + 51] = -1;
+        collisonCheckX[obj.x + obj.canvasLength - 49] = 1;
+        collisonCheckX[obj.x + obj.canvasLength - 48] = 1;
+        obj.x+=2;
+
+        obj.setFixedRange(obj.xMax_left + 2, obj.xMax_right + 2)
+    }
+    
+}
+
+function moveObjectLeft(collisonCheckX, obj, currentStageNum) {
+    if (obj.stageNum == currentStageNum) {
+        collisonCheckX[obj.x + 48] = 1;
+        collisonCheckX[obj.x + 49] = 1;
+        collisonCheckX[obj.x + obj.canvasLength - 50] = -1;
+        collisonCheckX[obj.x + obj.canvasLength - 51] = -1;
+        obj.x-=2;
+        obj.setFixedRange(obj.xMax_left - 2, obj.xMax_right - 2)
+    }
+    
+}
+
 function createGameState() {
     bg = new BackGround();
     //constructor(x, y, width, height, canvasLength)
@@ -2559,7 +2583,7 @@ function createGameState() {
     p1.setLoops(4, 8, 6, 0);
     p2 = new MainCharacter(500, 620, 500, 500, 200);
     p2.setLoops(4, 8, 6, 0);
-    var currentStageNum = 0; //임시로 3번째 스테이지부터
+    var currentStageNum = 0; 
 
     //zombies
     //stage0
@@ -2568,30 +2592,30 @@ function createGameState() {
     
     //stage1 일반 좀비 4마리. 1500, 3000, 4500, 7000
 
-    nz1 = new NormalZombie(1500, 620, 500, 500, 200);
+    nz1 = new NormalZombie(1000, 620, 500, 500, 200);
     nz1.setLoops(6, 7, 4, 8);
-    nz1.setFixedRange(1200, 1800);
+    nz1.setFixedRange(700, 1300);
     nz1.setStunLoop(3);
     nz1.setSfxIndex(0); //일반 좀비 중 첫 번째
     nz1.setStageNum(1);
 
-    nz2 = new NormalZombie(3000, 620, 500, 500, 200);
+    nz2 = new NormalZombie(1700, 620, 500, 500, 200);
     nz2.setLoops(6, 7, 4, 8);
-    nz2.setFixedRange(2700, 3300);
+    nz2.setFixedRange(1400, 2000);
     nz2.setStunLoop(3);
     nz2.setSfxIndex(1);
     nz2.setStageNum(1);
 
-    nz3 = new NormalZombie(4500, 620, 500, 500, 200);
+    nz3 = new NormalZombie(2400, 620, 500, 500, 200);
     nz3.setLoops(6, 7, 4, 8);
-    nz3.setFixedRange(4200, 4800);
+    nz3.setFixedRange(2100, 2700);
     nz3.setStunLoop(3);
     nz3.setSfxIndex(2);
     nz3.setStageNum(1);
 
-    nz4 = new NormalZombie(7000, 620, 500, 500, 200);
+    nz4 = new NormalZombie(3100, 620, 500, 500, 200);
     nz4.setLoops(6, 7, 4, 8);
-    nz4.setFixedRange(6700, 7300);
+    nz4.setFixedRange(2800, 3400);
     nz4.setStunLoop(3);
     nz4.setSfxIndex(3);
     nz4.setStageNum(1);
@@ -2599,37 +2623,37 @@ function createGameState() {
     
     //stage2 일반 좀비 5마리
 
-    nz5 = new NormalZombie(1000, 620, 500, 500, 200);
+    nz5 = new NormalZombie(900, 620, 500, 500, 200);
     nz5.setLoops(6, 7, 4, 8);
-    nz5.setFixedRange(700, 1300);
+    nz5.setFixedRange(600, 1200);
     nz5.setStunLoop(3);
     nz5.setSfxIndex(4);
     nz5.setStageNum(2);
 
-    nz6 = new NormalZombie(2500, 620, 500, 500, 200);
+    nz6 = new NormalZombie(1600, 620, 500, 500, 200);
     nz6.setLoops(6, 7, 4, 8);
-    nz6.setFixedRange(2200, 2800);
+    nz6.setFixedRange(1300, 1900);
     nz6.setStunLoop(3);
     nz6.setSfxIndex(5);
     nz6.setStageNum(2);
 
-    nz7 = new NormalZombie(4000, 620, 500, 500, 200);
+    nz7 = new NormalZombie(2300, 620, 500, 500, 200);
     nz7.setLoops(6, 7, 4, 8);
-    nz7.setFixedRange(3700, 4300);
+    nz7.setFixedRange(2000, 2600);
     nz7.setStunLoop(3);
     nz7.setSfxIndex(6);
     nz7.setStageNum(2);
 
-    nz8 = new NormalZombie(5500, 620, 500, 500, 200);
+    nz8 = new NormalZombie(3000, 620, 500, 500, 200);
     nz8.setLoops(6, 7, 4, 8);
-    nz8.setFixedRange(5200, 5800);
+    nz8.setFixedRange(2700, 3300);
     nz8.setStunLoop(3);
     nz8.setSfxIndex(7);
     nz8.setStageNum(2);
 
-    nz9 = new NormalZombie(7000, 620, 500, 500, 200);
+    nz9 = new NormalZombie(3700, 620, 500, 500, 200);
     nz9.setLoops(6, 7, 4, 8);
-    nz9.setFixedRange(6700, 7300);
+    nz9.setFixedRange(3400, 4000);
     nz9.setStunLoop(3);
     nz9.setSfxIndex(8);
     nz9.setStageNum(2);
@@ -2643,16 +2667,16 @@ function createGameState() {
     cz1.setSfxIndex(0);
     cz1.setStageNum(3);
 
-    cz2 = new CrawlingZombie(-3000, 620, 500, 500, 200);
+    cz2 = new CrawlingZombie(-500, 620, 500, 500, 200);
     cz2.setLoops(4, 4, 4, 7);
-    cz2.setFixedRange(-3100, -2900);
+    cz2.setFixedRange(-600, -400);
     cz2.setStunLoop(3);
     cz2.setSfxIndex(1);
     cz2.setStageNum(3);
 
-    cz3 = new CrawlingZombie(-5000, 620, 500, 500, 200);
+    cz3 = new CrawlingZombie(-900, 620, 500, 500, 200);
     cz2.setLoops(4, 4, 4, 7);
-    cz2.setFixedRange(-5100, -4900);
+    cz2.setFixedRange(-1000, -800);
     cz2.setStunLoop(3);
     cz2.setSfxIndex(2);
     cz2.setStageNum(3);
@@ -2668,16 +2692,16 @@ function createGameState() {
     rz1.setSfxIndex(0);
     rz1.setStageNum(5);
 
-    rz2 = new RunningZombie(3500, 620, 500, 500, 200);
+    rz2 = new RunningZombie(2200, 620, 500, 500, 200);
     rz2.setLoops(4, 4, 5, 6);
-    rz2.setFixedRange(3200, 3800);
+    rz2.setFixedRange(1900, 2500);
     rz2.setStunLoop(3);
     rz2.setSfxIndex(1);
     rz2.setStageNum(5);
 
-    rz3 = new RunningZombie(5000, 620, 500, 500, 200);
+    rz3 = new RunningZombie(2900, 620, 500, 500, 200);
     rz3.setLoops(4, 4, 5, 6);
-    rz3.setFixedRange(4700, 5300);
+    rz3.setFixedRange(2600, 3200);
     rz3.setStunLoop(3);
     rz3.setSfxIndex(2);
     rz3.setStageNum(5);
@@ -2723,7 +2747,7 @@ function gameLoop(state) {
     const crawlingZombies = state.crawlingZombies;
     const bz = state.bz;
     const sz = state.sz;
-    const collisonCheckX = state.collisonCheckX;
+    var collisonCheckX = state.collisonCheckX;
     var bigX = 0;
     var smallX = 0;
 
@@ -2843,7 +2867,7 @@ function gameLoop(state) {
         bz.zombieAttack(p1, p2);
     }
 
-    else if (crawlingZombies[i].attackDone == true && crawlingZombies[i].stageNum == state.currentStageNum) {
+    else if (bz.attackDone == true && bz.stageNum == state.currentStageNum) {
         bz.move(bigX, smallX, collisonCheckX, state.currentStageNum);
     }
 
@@ -3302,6 +3326,7 @@ function gameLoop(state) {
                 for (let i = 0; i < normalZombies.length; i++) {
                     if (normalZombies[i].stageNum == state.currentStageNum) {
                         normalZombies[i].checkAttacked(p1.attackBox.position_x + p1.attackTimer, collisonCheckX);
+                        //여기로 진입은 하는데 checkAttacked함수에서 조건이 안맞는듯 하다
                     }
                 }
 
@@ -3609,7 +3634,9 @@ function gameLoop(state) {
 
             if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
                 p1.x = 100;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 p2.x = 300;
+                p2.attackBox.position_x = p2.x + (p2.canvasLength / 2); 
                 bg.bg_x = 0;
 
                 p1.vel.lookingRight = true;
@@ -3617,7 +3644,9 @@ function gameLoop(state) {
             }
             else {//오른쪽 시작인 경우
                 p1.x = 1500;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 p2.x = 1800;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 bg.bg_x = bg.bg_xMax;
 
                 p1.vel.lookingRight = false;
@@ -3633,7 +3662,9 @@ function gameLoop(state) {
             state.currentStageNum++;
             if (arr_stageChangePoint[state.currentStageNum] == 0) { //왼쪽 시작인 경우
                 p1.x = 100;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 p2.x = 300;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 bg.bg_x = 0;
 
                 p1.vel.lookingRight = true;
@@ -3641,7 +3672,9 @@ function gameLoop(state) {
             }
             else {//오른쪽 시작인 경우
                 p1.x = 1500;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 p2.x = 1800;
+                p1.attackBox.position_x = p1.x + (p1.canvasLength / 2);
                 bg.bg_x = bg.bg_xMax;
 
                 p1.vel.lookingRight = false;

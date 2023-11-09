@@ -25,7 +25,7 @@ var chooseSavePoint = document.getElementById('chooseSavePoint');
 newGameButton.addEventListener('click', ()=>{
     //선택 화면 가리기
     chooseSavePoint.style.display = 'none';
-    currentStageNum = 5; //맨 처음 스테이지로
+    currentStageNum = 1; //맨 처음 스테이지로
 
     //게임 화면 띄우기
     gameScreen.style.display = "inline";
@@ -63,7 +63,7 @@ var portrait = document.getElementById('portrait');
 //대화가 있는 스테이지인지 확인하는 정보 -> 1이면 대화 있음
 var checkStageNum = 0; // 0부터 시작
 
-const arr_dialogueCheck = [1, 0, 0, 0, 0, 0, 0];
+const arr_dialogueCheck = [0, 0, 0, 0, 0, 0, 0];//임시로 첫번째 0
 const arr_textIndex = [0, 0, 0, 0, 0, 0, 0];
 const arr_dialogues = [
     ["원재: 서울역 까지 앞으로 2개 남았군...", 
@@ -1451,6 +1451,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1500,6 +1501,7 @@ class NormalZombie extends Creature { //좀비 클래스
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1917,6 +1919,7 @@ class RunningZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -1966,6 +1969,7 @@ class RunningZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -2425,6 +2429,7 @@ class CrawlingZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == true && (this.attackBox.position_x - this.attackBox.atkTimer - 6) <= p1.BlockBox.x_right) {
                         // 플레이어1의 오른쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;
@@ -2508,6 +2513,7 @@ class CrawlingZombie extends NormalZombie {
                     //공격 상자 늘리기 전에 플레이어들의 방어 확인
                     if (p1.vel.blocking == true && p1.vel.lookingRight == false && (this.attackBox.position_x + this.attackBox.atkTimer + 6) >= p1.BlockBox.x_left) { 
                         // 플레이어1의 왼쪽 방어가 먼저 활성화 되었을 때 -> 공격 막힘
+                        this.waitCount = 0;
                         this.stunned = true;
                         this.vel.attacking = false;
                         this.attackBox.atkTimer = 0;

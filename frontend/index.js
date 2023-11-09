@@ -52,20 +52,17 @@ var checkStageNum = 0; // 0부터 시작
 
 
 
-const arr_dialogueCheck = [1, 0, 0, 0, 0, 0, 0];
+const arr_dialogueCheck = [0, 0, 0, 0, 0, 0, 0]; //임시로 대화 꺼놨음
 const arr_textIndex = [0, 0, 0, 0, 0, 0, 0];
 const arr_dialogues = [
     ["원재: 서울역 까지 앞으로 2개 남았군...",
- "두혁: 정말 끝까지 갈만한 가치가 있는 거야?", 
- "원재: 보호소에 있는 보급품도 거의 다 떨어졌어.",
- "원재: 서울역에 대량의 보급품이 방치돼 있다는 정보가 있어. 반드시 우리가 가져와야 해.",
- "원재: 너도 우리 조직에 잘 보일 수 있는 기회라고.",
- "두혁: 살아 돌아간다면 말이지...",
+ "두혁: 보급품이 있다는 말이 사실이어야 할탠데.", 
+ "원재: 어차피 현재 보급도 다 떨어졌어. 가보는 수밖에.",
  "원재: 이봐, 앞으로 정신 바짝 차리고 다녀야 할거야.",
  "원재: 저 시체들이랑 싸워본 적 있나?",
  "두혁: 옆에서 본 적은 있어. 직접 싸워보진 않았지.",
- "원재: 다짜고짜 달려든다면 바로 죽을거다. 녀석들은 공격을 당하던 신경쓰지 않아.",
- "원재: 녀석들은 공격에 온힘을 실어. 타이밍을 봐서 잘 막으면 잠깐동안 행동이 느려진다.",
+ "원재: 다짜고짜 달려든다면 바로 죽을거다.",
+ "원재: 녀석들이 공격하는 타이밍을 봐서 잘 막으면 잠깐동안 행동이 느려진다.",
  "원재: 그 때 가격하는게 좋을 거야.",
  "두혁: ...명심할게.",
  "- 'a', 'd' 키로 움직입니다. 'f'키를 눌러 공격합니다",
@@ -125,7 +122,7 @@ function textAnimation(tag, text) {
                 talking = false;
             }
             tag.innerHTML += text[i];
-        } , (i+1)*100);
+        } , (i+1)*50);
     }
 }
 
@@ -353,7 +350,20 @@ img_bg_station_1.src = './img/BackGrounds/bg_station_1.png'
 var img_bg_rail = new Image();
 img_bg_rail.src = './img/BackGrounds/bg_rail.png'
 
-var bgArray = [img_bg_tutorial, img_bg_rail, img_bg_station_1, img_bg_rail];
+var img_bg_station_2 = new Image();
+img_bg_station_2.src = './img/BackGrounds/bg_station_2.png'
+
+var img_bg_convenienceStore = new Image();
+img_bg_convenienceStore.src = './img/BackGrounds/bg_convenienceStore.png'
+
+var img_bg_innerCart = new Image();
+img_bg_innerCart.src = './img/BackGrounds/bg_innerCart.png'
+
+var img_bg_finalStage = new Image();
+img_bg_finalStage.src = './img/BackGrounds/bg_finalStage.png'
+
+var bgArray = [img_bg_tutorial, img_bg_station_1, img_bg_rail, img_bg_station_2, img_bg_convenienceStore,
+    img_bg_innerCart, img_bg_finalStage];
 
 //utils
 var img_Player_health = new Image();
@@ -833,7 +843,7 @@ function drawNormalZombie(zombie, currentStageNum) {
                     }
                 }
                 //텀이 끝나고 공격하고 있는 중인 경우
-                else if (zombie.vel.attacking == true && zombie.waitCount == 30) {
+                else if (zombie.vel.attacking == true && zombie.waitCount == 60) {
                     if (zombie.attackCount == 1) {
                         arr_normalZombieAttackSfx[zombie.sfxIndex].play();
                     }
@@ -926,7 +936,7 @@ function drawRunningZombie (zombie, currentStageNum) {
                     }
                 }
                 //텀이 끝나고 공격하고 있는 중인 경우
-                else if (zombie.vel.attacking == true && zombie.waitCount == 30 && zombie.vel.grabbing == false) {
+                else if (zombie.vel.attacking == true && zombie.waitCount == 60 && zombie.vel.grabbing == false) {
                     if (zombie.attackCount == 1) {
                         arr_runningZombieAttackSfx[zombie.sfxIndex].play();
                     }
@@ -1251,6 +1261,8 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     checkStageChanged(checkStageNum, state.currentStageNum);
     
 
+    stageInfo.style.display = "block";
+    stageInfo.innerHTML = arr_stageName[state.currentStageNum];
     if (dialogueOnGoing == false && dialogueFinished == false && arr_dialogueCheck[state.currentStageNum] == 1) { // 대화 시작
         dialogueWindow.style.display = "block";
         textAnimation(dialogueText, arr_dialogues[state.currentStageNum][textIndex]);
@@ -1290,12 +1302,6 @@ function paintGame(state) { //draw 함수를 이용해야 할 듯
     }
 
     drawBossZombie(state.bz, state.currentStageNum);
-
-
-    stageInfo.style.display = "block";
-    stageInfo.style.innerHTML = arr_stageName[state.currentStageNum];
-
-
     //for test
 }
 
